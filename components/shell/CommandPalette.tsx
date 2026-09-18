@@ -22,6 +22,8 @@ const COMMANDS = [
   { label: "My Progress", href: "/progress" },
   { label: "Quest Map", href: "/map" },
   { label: "Glossary", href: "/glossary" },
+  { label: "AI Careers", href: "/careers" },
+  { label: "Certificate", href: "/certificate" },
   { label: "Final Challenge", href: "/final-challenge" },
   { label: "Toggle Theme", action: "theme" },
   { label: "Toggle Reduced Motion", action: "motion" },

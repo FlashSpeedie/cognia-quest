@@ -27,6 +27,8 @@ const NAV: { href: string; label: string; icon: IconName }[] = [
   { href: "/missions", label: "Missions", icon: "missions" },
   { href: "/achievements", label: "Achievements", icon: "achievements" },
   { href: "/progress", label: "Progress", icon: "progress" },
+  { href: "/glossary", label: "Glossary", icon: "book" },
+  { href: "/careers", label: "Careers", icon: "star" },
   { href: "/map", label: "Quest Map", icon: "network" },
 ];
 

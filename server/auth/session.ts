@@ -11,7 +11,9 @@ function secret(): string {
   const s = process.env.AUTH_SECRET;
   if (!s) {
     if (process.env.NODE_ENV === "production") {
-      throw new Error("AUTH_SECRET is required in production when Supabase is not configured");
+      console.warn(
+        "[ai-quest] AUTH_SECRET is not set — using a built-in development secret. Sessions are NOT safe for real deployments. Set AUTH_SECRET (and Supabase) before exposing this app.",
+      );
     }
     return "dev-only-insecure-secret";
   }
