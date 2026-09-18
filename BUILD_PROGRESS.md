@@ -3,7 +3,7 @@
 > Living document. Updated throughout the build so work can resume from any interruption.
 
 ## Current Phase
-**Phase 2 — Data layer** (types, repository interface, local store, Supabase SQL migrations, seed)
+**Phase 4 — Auth + onboarding** (API routes, sessions, protected routes, onboarding flow)
 
 ## Architecture Decisions
 | Decision | Choice | Rationale |
@@ -22,9 +22,9 @@
 
 ## Phase Status
 - [x] **Phase 1 — Scaffold**: Next.js+TS+Tailwind, ESLint, Vitest, design tokens, base UI kit (Button, Card, Chip, Modal, Toast, ProgressBar/Ring, Term tooltip, Input, EmptyState, Icon set). Build green.
-- [ ] **Phase 2 — Data layer** ← IN PROGRESS
-- [ ] Phase 3 — Core services
-- [ ] Phase 4 — Auth + onboarding
+- [x] **Phase 2 — Data layer**: typed schema (15 tables), Db abstraction, local JSON store (atomic, re-entrant tx), Supabase adapter + SQL migration with RLS, seed script driving real services. Demo user = Level 6 / 2669 XP / mixed mission state.
+- [x] **Phase 3 — Core services**: XP rules (dedupe/decay/daily caps), levels, streaks, badges (12 conditions), quiz grading, mission event engine, prompt rubric (8 dims), deterministic ML sim (logistic regression + imbalance/one-class detection), bias sim w/ crossover metric, detective/ethics/privacy/tool/final services, recommendations. 36 tests green.
+- [ ] **Phase 4 — Auth + onboarding** ← IN PROGRESS
 - [ ] Phase 5 — Public site
 - [ ] Phase 6 — App shell + dashboard + achievements/progress/profile/settings + search/command palette
 - [ ] Phase 7 — Academy
