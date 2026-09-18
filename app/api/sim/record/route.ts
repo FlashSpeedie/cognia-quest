@@ -18,7 +18,7 @@ export async function POST(req: Request) {
   if (!parsed.ok) return parsed.response;
 
   const db = await getDb();
-  const saved = await recordSimRun(db, auth.user, parsed.data.simId, {}, parsed.data.result);
+  const saved = await recordSimRun(db, auth.user, parsed.data.simId, {}, parsed.data.result ?? {});
   return json({
     ok: true,
     xp: saved.xp ? { awarded: saved.xp.awarded, total: saved.xp.total, leveledUp: saved.xp.leveledUp } : undefined,

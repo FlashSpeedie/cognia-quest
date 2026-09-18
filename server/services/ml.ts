@@ -31,6 +31,7 @@ export interface TrainResult {
   testCount: number;
   baseline: number; // majority-class accuracy on test set
   decisionBoundary: { slope: number; intercept: number } | null;
+  normalization: { mean: [number, number]; sd: [number, number] } | null;
   predictions: { study: number; sleep: number; prob: number; actual: boolean }[];
   classBalance: { pass: number; fail: number };
 }
@@ -81,6 +82,7 @@ export function trainModel(cfg: TrainConfig, seed = 42): TrainResult {
     testCount: 0,
     baseline: 0,
     decisionBoundary: null,
+    normalization: null,
     predictions: [],
     classBalance: { pass, fail },
   };
@@ -182,6 +184,7 @@ export function trainModel(cfg: TrainConfig, seed = 42): TrainResult {
     testCount: test.length,
     baseline: round3(baseline),
     decisionBoundary,
+    normalization: { mean: [round3(mean[0]!), round3(mean[1]!)], sd: [round3(sd[0]!), round3(sd[1]!)] },
     predictions: rows.map((r) => {
       const [x1, x2] = feats(r);
       return { study: r.study, sleep: r.sleep, prob: round3(sig(w[0]! + w[1]! * x1 + w[2]! * x2)), actual: r.passed };
