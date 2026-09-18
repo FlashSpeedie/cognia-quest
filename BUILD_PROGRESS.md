@@ -1,41 +1,49 @@
 # AI QUEST — Build Progress
 
-> Living document. Updated throughout the build so work can resume from any interruption.
+> Living document. All 10 phases complete; see final audit at bottom.
 
-## Current Phase
-**Phase 4 — Auth + onboarding** (API routes, sessions, protected routes, onboarding flow)
+## Status: ✅ PROJECT COMPLETE
 
 ## Architecture Decisions
 | Decision | Choice | Rationale |
 |---|---|---|
-| Framework | Next.js 14.2.35 (App Router, patched) + TypeScript strict | Spec-compatible, SSR, API routes, strong ecosystem |
-| Styling | Tailwind 3.4 + custom design tokens (globals.css) | Fast, consistent, dark-first; light theme via CSS vars |
-| Backend | Repository pattern. **Supabase** (Postgres + Auth + RLS) in production via `supabase/migrations`; **local JSON dev store** when Supabase env vars absent | Spec mandates Supabase; repo has no live Supabase project, so local self-contained store keeps product runnable/testable offline |
-| Auth | Cookie sessions (HMAC-signed, scrypt password hashing) locally; Supabase Auth adapter when configured | Dev-safe fallback per spec |
-| Server authority | All XP/badge/progress mutations go through `server/services/*`; API routes validate with zod | Spec §31 security |
-| Tests | Vitest (unit+integration), Playwright (e2e, phase 10) | Fast, no browser needed for logic |
-| Charts | Hand-rolled accessible SVG (`components/charts`) | Bundle-light, full a11y control |
+| Framework | Next.js 14.2.35 (App Router, patched), TypeScript strict | SSR + API routes + ecosystem; matches spec |
+| Styling | Tailwind 3.4 + CSS-variable design tokens | Dark-first, light theme via `.light` class, reduced-motion support |
+| Backend | Repository abstraction; **Supabase** (migration SQL + RLS) for production; **local JSON store** default | Fully runnable offline; no external dependency for judging |
+| Auth | scrypt + HMAC-signed httpOnly session cookies; role-guarded layouts | Server-authoritative; dev-safe; prod warns if secret unset |
+| Rewards | Server-side only: `xp_events` immutable transactions, dedupe + decay + daily caps | Spec §31/§84 |
+| Content | All curriculum in `content/*.ts` (typed, data-driven) | §40/§86 content management without UI rewrites |
+| ML sim | Deterministic logistic regression (seeded) | Honest "educational simulation", reproducible, testable |
+| Tests | Vitest unit+integration (40), Playwright e2e (8) | Full loop coverage |
 
-## Datastore switches
-- `NEXT_PUBLIC_SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` set → Supabase (service-role used **server-side only**)
-- otherwise → `LOCAL_DB_PATH` (default `data/dev-db.json`), seeded via `npm run seed`
+## Phase Ledger
+- [x] **1 Scaffold** — Next.js+TS+Tailwind, design tokens, UI kit (Button, Card, Chip, Modal, Toast, Progress, Ring, Term tooltip, Input, EmptyState, icons). Build green.
+- [x] **2 Data layer** — 15-table schema, Db abstraction, local store (atomic, re-entrant tx), Supabase migration w/ RLS, indexes.
+- [x] **3 Services** — XP economy, levels, streaks, badges (12 conditions), quiz grading, mission engine, prompt rubric, ML sim, bias sim, final-challenge scoring, recommendations.
+- [x] **4 Auth + onboarding** — register/login/logout/demo APIs (rate-limited), 4-screen onboarding, protected app layout, cookie session.
+- [x] **5 Public site** — landing (hero network + pillars + steps + gamification strip), about, preview (playable AI-or-Not), privacy, SEO, favicon, robots, sitemap.
+- [x] **6 Shell+dashboard** — sidebar/topbar/mobile nav/bottom nav, command palette (Ctrl+K), notifications, dashboard (level ring, XP spark, skills radar, recs, missions, badges, activity), achievements trophy room, progress analytics, profile editor, settings (theme/motion/sound/notifications/leaderboard opt-in), search API.
+- [x] **7 Academy** — module/lesson pages, sticky progress nav, breadcrumbs, quiz runner w/ explanations, 13 interactive widgets, glossary.
+- [x] **8 Labs** — Train the Machine (editor + boundary + confusion + problem flags), Prompt Lab, Prompt Battle (10 tasks), Bias Simulation (proxy hunt + re-audit), Dataset Explorer, Tool Selector, API validation.
+- [x] **9 Missions/Cases** — Detective (15 cases, evidence UI), Ethics Court (10 cases, coverage scoring), Privacy Challenge (10), Policy Builder (mission 09), missions hub + detail, Final Challenge (8 stages), Certificate (print), Quest Map, Careers.
+- [x] **10 Admin + hardening** — admin overview/analytics/users + content inventory + audit log, error/404/loading/offline pages, PWA (manifest + conservative SW), level-up modal + optional chimes, leaderboard (opt-in), light-theme token fix, 3 extra lessons (20 total), detective XP=150, train-config stage in final, prompt draft autosave.
 
-## Phase Status
-- [x] **Phase 1 — Scaffold**: Next.js+TS+Tailwind, ESLint, Vitest, design tokens, base UI kit (Button, Card, Chip, Modal, Toast, ProgressBar/Ring, Term tooltip, Input, EmptyState, Icon set). Build green.
-- [x] **Phase 2 — Data layer**: typed schema (15 tables), Db abstraction, local JSON store (atomic, re-entrant tx), Supabase adapter + SQL migration with RLS, seed script driving real services. Demo user = Level 6 / 2669 XP / mixed mission state.
-- [x] **Phase 3 — Core services**: XP rules (dedupe/decay/daily caps), levels, streaks, badges (12 conditions), quiz grading, mission event engine, prompt rubric (8 dims), deterministic ML sim (logistic regression + imbalance/one-class detection), bias sim w/ crossover metric, detective/ethics/privacy/tool/final services, recommendations. 36 tests green.
-- [ ] **Phase 4 — Auth + onboarding** ← IN PROGRESS
-- [ ] Phase 5 — Public site
-- [ ] Phase 6 — App shell + dashboard + achievements/progress/profile/settings + search/command palette
-- [ ] Phase 7 — Academy
-- [ ] Phase 8 — Labs & simulations
-- [ ] Phase 9 — Detective/Ethics/Missions/Final Challenge/Certificate/Quest Map
-- [ ] Phase 10 — Admin, hardening, a11y/responsive pass, PWA, e2e, README, final audit
+## Tests Performed (all green)
+| Suite | Result |
+|---|---|
+| `npm run typecheck` | ✅ 0 errors |
+| `npm run lint` | ✅ 0 warnings |
+| `npm run test` | ✅ 40/40 unit + integration |
+| `npx playwright test` | ✅ 8/8 e2e |
+| `npm run build` | ✅ clean production build |
+| Route sweep | ✅ 46 app routes + 3 admin = all HTTP 200 |
+| Manual API probes | register/login/demo/quiz/prompt/final flow all verified |
 
-## Tests Performed
-| Phase | Typecheck | Lint | Unit/Integration | Build |
-|---|---|---|---|---|
-| 1 | ✓ (via build) | ✓ | n/a | ✓ |
+## Content inventory (spec §56 ≥)
+- Modules: 7 · Lessons: 20 · Quiz questions: 40
+- Missions: 10 · Badges: 12 · Detective cases: 15 · Ethics cases: 10
+- Privacy scenarios: 10 · Prompt battles: 10 · Tool scenarios: 8
+- Glossary terms: 23 · Careers: 9 · Final challenge stages: 8
 
-## Known Issues
-_See KNOWN_ISSUES.md. None currently._
+## Known issues
+See KNOWN_ISSUES.md (password-reset seam; single-process local store by design; in-memory rate limit).

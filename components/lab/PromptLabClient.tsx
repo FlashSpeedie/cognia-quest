@@ -9,6 +9,7 @@ import { ProgressBar } from "@/components/ui/ProgressBar";
 import { Chip } from "@/components/ui/Chip";
 import { Icon } from "@/components/ui/Icon";
 import { useToast } from "@/components/ui/Toast";
+import { fireLevelUp } from "@/components/app/LevelUpModal";
 
 /**
  * Shared prompt editor + rubric display.
@@ -16,7 +17,14 @@ import { useToast } from "@/components/ui/Toast";
  * the server, which re-scores and records XP/attempts authoritatively.
  */
 export function PromptLabClient({ taskId, task }: { taskId: string; task?: string }) {
-  const [prompt, setPrompt] = useState("");
+  const [prompt, setPrompt] = useState(() => {
+    if (typeof window === "undefined") return "";
+    try {
+      return localStorage.getItem(`aq-draft:${taskId}`) ?? "";
+    } catch {
+      return "";
+    }
+  });
   const [submitted, setSubmitted] = useState<PromptScore | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -24,6 +32,16 @@ export function PromptLabClient({ taskId, task }: { taskId: string; task?: strin
   const router = useRouter();
 
   const live = useMemo(() => scorePrompt(prompt), [prompt]);
+
+  // Draft autosave on this device (spec §51)
+  useMemo(() => {
+    if (typeof window === "undefined") return;
+    try {
+      localStorage.setItem(`aq-draft:${taskId}`, prompt);
+    } catch {
+      /* storage full/blocked: ignore */
+    }
+  }, [prompt, taskId]);
 
   async function submit() {
     setLoading(true);
@@ -46,7 +64,7 @@ export function PromptLabClient({ taskId, task }: { taskId: string; task?: strin
       };
       setSubmitted(data.score);
       if (data.xp && data.xp.awarded > 0) push({ kind: "xp", title: `+${data.xp.awarded} XP`, body: `Prompt score ${data.score.total}` });
-      if (data.xp?.leveledUp) push({ kind: "badge", title: `Level up: ${data.xp.leveledUp.to}` });
+      if (data.xp?.leveledUp) fireLevelUp({ to: data.xp.leveledUp.to, level: data.xp.leveledUp.level });
       for (const b of data.badges ?? []) push({ kind: "badge", title: `Badge unlocked: ${b}` });
       router.refresh();
     } catch {

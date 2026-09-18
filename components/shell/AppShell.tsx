@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import { NotificationBell } from "./NotificationBell";
 import { CommandPalette } from "./CommandPalette";
+import { LevelUpModal } from "@/components/app/LevelUpModal";
 import { Logo } from "@/components/public/PublicNav";
 import { levelProgress } from "@/lib/levels";
 
@@ -26,6 +27,7 @@ const NAV: { href: string; label: string; icon: IconName }[] = [
   { href: "/ethics", label: "Ethics", icon: "scale" },
   { href: "/missions", label: "Missions", icon: "missions" },
   { href: "/achievements", label: "Achievements", icon: "achievements" },
+  { href: "/leaderboard", label: "Leaderboard", icon: "trophy" },
   { href: "/progress", label: "Progress", icon: "progress" },
   { href: "/glossary", label: "Glossary", icon: "book" },
   { href: "/careers", label: "Careers", icon: "star" },
@@ -192,6 +194,7 @@ export function AppShell({
       </nav>
 
       <CommandPalette />
+      <LevelUpModal />
     </div>
   );
 }

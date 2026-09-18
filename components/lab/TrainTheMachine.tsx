@@ -7,6 +7,7 @@ import { GlassCard } from "@/components/ui/Card";
 import { Chip } from "@/components/ui/Chip";
 import { useToast } from "@/components/ui/Toast";
 import { Icon } from "@/components/ui/Icon";
+import { fireLevelUp } from "@/components/app/LevelUpModal";
 import type { DataRow, TrainResult } from "@/server/services/ml";
 
 const DEFAULT_ROWS: DataRow[] = [
@@ -61,7 +62,7 @@ export function TrainTheMachine() {
       setResp(data);
       if (data.xp && data.xp.awarded > 0) push({ kind: "xp", title: `+${data.xp.awarded} XP`, body: "Lab experiment recorded" });
       for (const b of data.badges ?? []) push({ kind: "badge", title: `Badge unlocked: ${b}` });
-      if (data.xp?.leveledUp) push({ kind: "badge", title: `Level up: ${data.xp.leveledUp.to}` });
+      if (data.xp?.leveledUp) fireLevelUp({ to: data.xp.leveledUp.to, level: data.xp.leveledUp.level });
       router.refresh();
     } catch {
       setError("Network error — your dataset is still here, try again.");
@@ -169,6 +170,7 @@ export function TrainTheMachine() {
             <p className="mt-4 font-display text-lg font-bold text-ink">Model status: untrained</p>
             <p className="mt-1 max-w-sm text-sm text-ink-dim">
               Edit the data, add noise, then train. Try to get 80%+ test accuracy — then sabotage the data and train again.
+              And note: more data is not automatically better — 40 extra rows at 40% noise can make things worse.
             </p>
             <p className="mt-3 font-mono text-[10px] uppercase tracking-widest text-ink-faint">Educational simulation · deterministic logistic model</p>
           </GlassCard>

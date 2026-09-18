@@ -12,6 +12,7 @@ import { useToast } from "@/components/ui/Toast";
 type Answers = {
   "choose-data"?: string[];
   "spot-problem"?: number;
+  "train-config"?: number;
   "read-results"?: number;
   "prompt-write"?: string;
   "detect-issue"?: number;

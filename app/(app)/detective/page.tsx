@@ -52,7 +52,7 @@ export default async function DetectivePage() {
                   “{c.response.slice(0, 120)}…”
                 </p>
                 <p className="mt-3 flex items-center gap-2 font-mono text-[11px] text-ink-faint">
-                  <Icon name="detective" size={13} /> difficulty: {c.difficulty} · +75 XP on solve
+                  <Icon name="detective" size={13} /> difficulty: {c.difficulty} · +150 XP on solve
                 </p>
               </div>
             </Link>

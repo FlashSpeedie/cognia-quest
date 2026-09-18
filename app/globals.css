@@ -4,24 +4,6 @@
 
 :root {
   color-scheme: dark;
-}
-
-.light {
-  color-scheme: light;
-}
-
-/* ── Light theme token overrides (class="light" on <html>) ─────────── */
-.light {
-  --bg: #f4f7fc;
-  --bg-raised: #ffffff;
-  --bg-glass: rgba(255, 255, 255, 0.75);
-  --border-subtle: rgba(15, 30, 60, 0.12);
-  --text-primary: #101828;
-  --text-dim: #475467;
-  --text-faint: #667085;
-}
-
-:root {
   --bg: #05070f;
   --bg-raised: #0b1020;
   --bg-glass: rgba(16, 22, 41, 0.6);
@@ -29,6 +11,40 @@
   --text-primary: #e6ecf7;
   --text-dim: #9aa7c2;
   --text-faint: #5d6a86;
+  /* void scale (surfaces) as variables so light theme remaps cleanly */
+  --void-950: #05070f;
+  --void-900: #080b16;
+  --void-850: #0b1020;
+  --void-800: #101629;
+  --void-700: #182036;
+  --ink: #e6ecf7;
+  --ink-dim: #9aa7c2;
+  --ink-faint: #5d6a86;
+}
+
+.light {
+  color-scheme: light;
+  --bg: #f4f7fc;
+  --bg-raised: #ffffff;
+  --bg-glass: rgba(255, 255, 255, 0.75);
+  --border-subtle: rgba(15, 30, 60, 0.12);
+  --text-primary: #101828;
+  --text-dim: #475467;
+  --text-faint: #667085;
+  --void-950: #eef2f9;
+  --void-900: #ffffff;
+  --void-850: #f7f9fe;
+  --void-800: #eef2f9;
+  --void-700: #dbe3f0;
+  --ink: #101828;
+  --ink-dim: #3c4a63;
+  --ink-faint: #667085;
+}
+
+.light .glass-panel {
+  background: rgba(255, 255, 255, 0.8);
+  border-color: rgba(15, 30, 60, 0.1);
+  box-shadow: 0 4px 24px rgba(15, 30, 60, 0.08);
 }
 
 html {

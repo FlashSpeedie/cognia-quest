@@ -26,6 +26,9 @@ export function SettingsForm({ initial }: { initial: Preferences }) {
       document.documentElement.classList.toggle("reduce-motion", patch.reducedMotion);
       try { localStorage.setItem("aq-motion", patch.reducedMotion ? "reduced" : "normal"); } catch {}
     }
+    if (patch.sound !== undefined) {
+      try { localStorage.setItem("aq-sound", patch.sound ? "on" : "off"); } catch {}
+    }
     try {
       const res = await fetch("/api/profile", {
         method: "PATCH",

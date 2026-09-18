@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { GlassCard } from "@/components/ui/Card";
 import { Icon } from "@/components/ui/Icon";
 import { useToast } from "@/components/ui/Toast";
+import { fireLevelUp } from "@/components/app/LevelUpModal";
 
 interface QuizResult {
   score: number;
@@ -69,7 +70,7 @@ export function QuizRunner({ quiz, lessonId }: { quiz: Quiz; lessonId?: string }
         push({ kind: "xp", title: `+${data.xp.awarded} XP`, body: `Quiz scored ${data.score}/${data.total}` });
       }
       if (data.xp?.leveledUp) {
-        push({ kind: "badge", title: `LEVEL UP — ${data.xp.leveledUp.to}!`, body: `Level ${data.xp.leveledUp.level}` });
+        fireLevelUp({ to: data.xp.leveledUp.to, level: data.xp.leveledUp.level });
       }
       for (const b of data.badges ?? []) {
         push({ kind: "badge", title: `Badge unlocked: ${b}`, body: "See it in your trophy room." });

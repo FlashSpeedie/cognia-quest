@@ -11,6 +11,7 @@ import { logActivity, notify } from "./activity";
 export interface FinalSubmission {
   "choose-data"?: string[];
   "spot-problem"?: number;
+  "train-config"?: number;
   "read-results"?: number;
   "prompt-write"?: string;
   "detect-issue"?: number;

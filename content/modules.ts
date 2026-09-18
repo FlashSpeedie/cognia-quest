@@ -131,6 +131,36 @@ export const MODULES: ModuleDef[] = [
         ],
       },
       {
+        id: "fund-daily",
+        slug: "ai-all-day",
+        title: "AI All Day",
+        minutes: 6,
+        xp: 50,
+        outcomes: [
+          "Spot AI in a normal day without a textbook",
+          "Connect each encounter to a system type",
+        ],
+        sections: [
+          {
+            id: "concept",
+            kind: "concept",
+            heading: "You met AI before breakfast",
+            body: [
+              "Alarm dismissed. The phone's face unlock used computer vision. The news feed you scrolled was ranked by a recommender. Autocorrect fixed your texts using a language model. Your music app queued a playlist generated from your history.",
+              "None of that felt like science fiction — because AI, done well, disappears into features. The skill you're building here is noticing it, understanding the mechanism, and knowing when to trust it.",
+            ],
+          },
+          {
+            id: "try-daily",
+            kind: "interactive",
+            widget: "ai-types-match",
+            heading: "Try it: name the machinery",
+            body: "Same game, new instincts: match these everyday systems to their AI type.",
+          },
+          { id: "check", kind: "quiz", quizId: "quiz-fund-5" },
+        ],
+      },
+      {
         id: "fund-wrong",
         slug: "why-ai-gets-it-wrong",
         title: "Why AI Gets Things Wrong",
@@ -268,6 +298,35 @@ export const MODULES: ModuleDef[] = [
         ],
       },
       {
+        id: "ml-tasks",
+        slug: "classification-and-regression",
+        title: "Classification vs. Regression",
+        minutes: 6,
+        xp: 50,
+        outcomes: [
+          "Distinguish classification (categories) from regression (numbers)",
+          "Pick the right task type for a problem",
+        ],
+        sections: [
+          {
+            id: "concept",
+            kind: "concept",
+            heading: "Categorize or quantify?",
+            body: [
+              "Most prediction tasks fall into two families. Classification picks a category: spam or not, pass or fail, cat or dog. Regression predicts a number: tomorrow's temperature, a house price, your movie enjoyment score.",
+              "Choosing which you're solving matters: they use different measurements of success. A spam filter gets evaluated on false alarms; a price predictor on typical size of error.",
+            ],
+          },
+          {
+            id: "try-cls",
+            kind: "interactive",
+            widget: "classify-or-regress",
+            heading: "Try it: which family is this problem?",
+          },
+          { id: "check", kind: "quiz", quizId: "quiz-ml-5" },
+        ],
+      },
+      {
         id: "ml-eval",
         slug: "measuring-models",
         title: "Measuring Models",
@@ -367,6 +426,36 @@ export const MODULES: ModuleDef[] = [
             heading: "See it: text becomes tokens",
           },
           { id: "check", kind: "quiz", quizId: "quiz-gen-2" },
+        ],
+      },
+      {
+        id: "gen-multimodal",
+        slug: "multimodal-worlds",
+        title: "Images, Audio, and Multimodal AI",
+        minutes: 7,
+        xp: 50,
+        outcomes: [
+          "Describe image generation as pattern synthesis, not understanding",
+          "Explain what 'multimodal' means and why it raises the stakes",
+        ],
+        sections: [
+          {
+            id: "concept",
+            kind: "concept",
+            heading: "Beyond text",
+            body: [
+              "Image generators learn the statistics of pictures: which pixel patterns follow prompts like 'sunset over mountains'. They compose pixels the way language models compose tokens — plausible first, truthful never guaranteed. A hand might have six fingers because plausibility doesn't count.",
+              "Multimodal models combine channels: text + images + audio in one system. Captioning a photo, transcribing speech, reading a chart. More senses → more uses → more ways to be confidently wrong: mis-read charts, mis-heard names, doctored-looking photos.",
+            ],
+          },
+          {
+            id: "warning",
+            kind: "callout",
+            variant: "warning",
+            title: "Deepfakes live here",
+            body: "The same tech that makes beautiful art can forge a face, a voice, a document. Verification habits from the Detective module matter even more when the evidence is audiovisual.",
+          },
+          { id: "check", kind: "quiz", quizId: "quiz-gen-4" },
         ],
       },
       {

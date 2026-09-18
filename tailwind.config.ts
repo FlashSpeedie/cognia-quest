@@ -10,18 +10,18 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Design tokens — dark futuristic command center
+        // Design tokens — themeable via CSS variables (see app/globals.css)
         void: {
-          950: "#05070f",
-          900: "#080b16",
-          850: "#0b1020",
-          800: "#101629",
-          700: "#182036",
+          950: "var(--void-950)",
+          900: "var(--void-900)",
+          850: "var(--void-850)",
+          800: "var(--void-800)",
+          700: "var(--void-700)",
         },
         ink: {
-          DEFAULT: "#e6ecf7",
-          dim: "#9aa7c2",
-          faint: "#5d6a86",
+          DEFAULT: "var(--ink)",
+          dim: "var(--ink-dim)",
+          faint: "var(--ink-faint)",
         },
         pulse: {
           300: "#7dd3fc",

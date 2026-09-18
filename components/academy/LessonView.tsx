@@ -25,6 +25,7 @@ import { ConfidenceLab } from "@/components/widgets/ConfidenceLab";
 import { HallucinationClaims } from "@/components/widgets/HallucinationClaims";
 import { PromptUpgrade } from "@/components/widgets/PromptUpgrade";
 import { CanIUseAI } from "@/components/widgets/CanIUseAI";
+import { ClassifyOrRegress } from "@/components/widgets/ClassifyOrRegress";
 
 const WIDGETS: Record<string, (props: { onComplete?: () => void }) => React.JSX.Element> = {
   "ai-or-not": AIOrNot,
@@ -40,6 +41,7 @@ const WIDGETS: Record<string, (props: { onComplete?: () => void }) => React.JSX.
   "hallucination-claims": HallucinationClaims,
   "prompt-upgrade": PromptUpgrade,
   "can-i-use-ai": CanIUseAI,
+  "classify-or-regress": ClassifyOrRegress,
 };
 
 /** Simple inline-term highlighting for key vocabulary. */
@@ -114,9 +116,8 @@ export function LessonView({
   }
 
   function goTo(i: number) {
-    // allow any previously-visited/current step, plus the very next one
-    const furthest = Math.max(inProgressIdx + 1, 0);
-    setActiveStep(Math.min(i, Math.max(furthest, ...sections.map((s, idx) => (done.has(s.id) ? idx : -1))) + 1));
+    // free navigation; completion still requires each step to be genuinely done
+    setActiveStep(Math.max(0, Math.min(i, sections.length - 1)));
     document.getElementById("lesson-stage")?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 

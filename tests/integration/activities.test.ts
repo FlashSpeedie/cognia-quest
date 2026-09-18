@@ -20,7 +20,7 @@ describe("AI Detective", () => {
     expect(wrong.correct).toBe(false);
     const right = await submitDetective(db, user, "case-001", "hallucination");
     expect(right.correct).toBe(true);
-    expect(right.xp?.awarded).toBe(75);
+    expect(right.xp?.awarded).toBe(150);
     // repeat correct answer on same case pays nothing
     const again = await submitDetective(db, user, "case-001", "hallucination");
     expect(again.xp?.awarded).toBe(0);
@@ -90,6 +90,7 @@ describe("Final challenge", () => {
   const good = {
     "choose-data": ["grades", "assignments", "attendance", "advisor"],
     "spot-problem": 1,
+    "train-config": 1,
     "read-results": 1,
     "prompt-write":
       "You are writing short flag explanations for busy teachers. For each flagged student, summarize the 2-3 contributing signals in plain language (bullets, max 60 words), avoid labels or blame, suggest one concrete next step, and end with an uncertainty note: this is a prediction to review, not a verdict.",

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { ToastProvider } from "@/components/ui/Toast";
+import { ServiceWorkerRegistration } from "@/components/app/ServiceWorkerRegistration";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),
@@ -35,6 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to main content
         </a>
         <ToastProvider>{children}</ToastProvider>
+        <ServiceWorkerRegistration />
         <script
           dangerouslySetInnerHTML={{
             __html: `try{if(localStorage.getItem("aq-theme")==="light")document.documentElement.classList.add("light");if(localStorage.getItem("aq-motion")==="reduced")document.documentElement.classList.add("reduce-motion")}catch(e){}`,

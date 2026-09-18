@@ -28,7 +28,7 @@ export const XP_RULES: Record<XPSourceType, XPRule> = {
   simulation: repeat(30, 6),
   challenge: repeat(75, 6),
   prompt: repeat(60, 8),
-  detective: once(75), // per case
+  detective: once(150), // per case (spec §8)
   ethics: once(150), // per case
   privacy: once(60), // per scenario
   mission: once(0), // amount comes from mission definition

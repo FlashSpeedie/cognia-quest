@@ -33,7 +33,7 @@ async function main() {
     password: "admin1234",
   });
   if (!adminReg.ok) throw new Error(adminReg.error);
-  await db.table("users").update(adminReg.user.id, { role: "admin" });
+  await db.table("users").update(adminReg.user.id, { role: "admin", onboarding: { completed: true } });
 
   // ── Demo student shown on the landing "Try demo" flow ────────────────
   const demoReg = await registerUser(db, {

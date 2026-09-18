@@ -75,9 +75,23 @@ export const FINAL_STAGES: FinalStage[] = [
     why: "Representation problems in data become blind spots in models. The fix is balanced, representative data — not more of the same.",
   },
   {
+    id: "train-config",
+    kind: "mcq",
+    title: "Stage 3 — Configure the Training",
+    briefing:
+      "You have a balanced dataset of 6,000 student records. Which training setup gives an honest picture of how the model will perform on next year's students?",
+    options: [
+      "Train on ALL 6,000 records, then report accuracy on the same data — maximum data for learning",
+      "Hold out 25% for testing, tune on the rest, and audit accuracy separately by student group",
+      "Train on this year's data and test on the same students next week, since they're the same people",
+    ],
+    correct: 1,
+    why: "A held-out test plus group-level audits. Training on everything measures memory, not skill; 'same students next week' leaks the future into the evaluation.",
+  },
+  {
     id: "read-results",
     kind: "mcq",
-    title: "Stage 3 — Read the Results",
+    title: "Stage 4 — Read the Results",
     briefing:
       "After retraining on balanced data: overall accuracy 89%, but among students with intermittent attendance the model misses 3 out of 5 who later needed help. What does this mean?",
     options: [
@@ -92,7 +106,7 @@ export const FINAL_STAGES: FinalStage[] = [
   {
     id: "prompt-write",
     kind: "prompt",
-    title: "Stage 4 — Write the Explanation Prompt",
+    title: "Stage 5 — Write the Explanation Prompt",
     briefing:
       "The system will show teachers AI-generated explanations of why a student was flagged. Write the prompt that generates those explanations. Make it specific: audience (busy teachers), format, tone (supportive, not labeling), what to avoid (blame), what to include (concrete next steps, uncertainty note).",
     passScore: 70,
@@ -100,7 +114,7 @@ export const FINAL_STAGES: FinalStage[] = [
   {
     id: "detect-issue",
     kind: "mcq",
-    title: "Stage 5 — Review the AI Output",
+    title: "Stage 6 — Review the AI Output",
     briefing:
       "The system tells a teacher: 'Student #4471 will fail math this quarter (certainty: 99.2%). This is final and requires no further review.' What's the biggest issue?",
     options: [
@@ -115,7 +129,7 @@ export const FINAL_STAGES: FinalStage[] = [
   {
     id: "checklist",
     kind: "checklist",
-    title: "Stage 6 — The Deployment Checklist",
+    title: "Stage 7 — The Deployment Checklist",
     briefing: "Which conditions must be true before this system goes live? Select all that apply.",
     items: [
       { id: "c1", label: "Students & families are told the system exists", important: true },
@@ -131,7 +145,7 @@ export const FINAL_STAGES: FinalStage[] = [
   {
     id: "verdict",
     kind: "verdict",
-    title: "Stage 7 — Your Recommendation",
+    title: "Stage 8 — Your Recommendation",
     briefing: "You've seen the data, the model's strengths and blind spots, and the deployment risks. What should the school do?",
     options: [
       { label: "Deploy immediately, exactly as proposed", defensible: false, why: "The proposal lacks transparency, review, contestability, and bias auditing." },

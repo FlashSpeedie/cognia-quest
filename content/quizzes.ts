@@ -482,6 +482,76 @@ export const QUIZZES: Quiz[] = [
   },
 ];
 
+const EXTRA_QUIZZES: Quiz[] = [
+  {
+    id: "quiz-fund-5",
+    title: "AI All Day — Check yourself",
+    questions: [
+      {
+        id: "q1", kind: "multi",
+        prompt: "Which of these everyday features likely use AI? (choose all)",
+        choices: ["Face-unlock on your phone", "Autocorrect suggestions", "A kitchen timer", "Your music app's Discover playlist"],
+        correct: [0, 1, 3],
+        explanation: "Timers follow fixed rules; the others learn patterns from data.",
+      },
+      {
+        id: "q2", kind: "tf",
+        prompt: "Good AI features usually announce themselves loudly so you notice them.",
+        choices: ["True", "False"],
+        correct: [1],
+        explanation: "Great AI tends to disappear into the feature — you notice it only when it misbehaves.",
+      },
+    ],
+  },
+  {
+    id: "quiz-ml-5",
+    title: "Classification vs Regression — Check yourself",
+    questions: [
+      {
+        id: "q1", kind: "mcq",
+        prompt: "'Will this customer churn?' is an example of:",
+        choices: ["Classification (a category: yes/no)", "Regression (a number)", "Neither", "Both simultaneously"],
+        correct: [0],
+        explanation: "Churn yes/no = categories → classification.",
+      },
+      {
+        id: "q2", kind: "mcq",
+        prompt: "'How much will this house sell for?' is:",
+        choices: ["Regression — the output is a number", "Classification", "Clustering", "A prompt"],
+        correct: [0],
+        explanation: "Numeric output (a price) → regression.",
+      },
+    ],
+  },
+  {
+    id: "quiz-gen-4",
+    title: "Multimodal AI — Check yourself",
+    questions: [
+      {
+        id: "q1", kind: "mcq",
+        prompt: "An AI-generated photo shows a hand with six fingers. This happens because:",
+        choices: [
+          "Image models produce statistically plausible pixels, not anatomically verified bodies",
+          "The model is broken and needs repair",
+          "Someone manually edited the photo",
+          "Cameras distort fingers",
+        ],
+        correct: [0],
+        explanation: "Generation optimizes plausibility. Nobody counts the fingers unless a checker does.",
+      },
+      {
+        id: "q2", kind: "tf",
+        prompt: "A convincing video clip of a public figure is strong evidence the event happened.",
+        choices: ["True", "False"],
+        correct: [1],
+        explanation: "Deepfakes make video forgeable; source and corroboration matter more than realism.",
+      },
+    ],
+  },
+];
+
+QUIZZES.push(...EXTRA_QUIZZES);
+
 export function quizById(id: string) {
   return QUIZZES.find((q) => q.id === id);
 }

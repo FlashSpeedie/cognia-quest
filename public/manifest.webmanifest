@@ -1,0 +1,12 @@
+{
+  "name": "AI Quest",
+  "short_name": "AI Quest",
+  "description": "Learn AI. Challenge AI. Use AI Responsibly.",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#05070f",
+  "theme_color": "#05070f",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

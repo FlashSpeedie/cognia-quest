@@ -6,6 +6,7 @@ import { json, requireUser, throttle } from "@/server/http";
 const schema = z.object({
   "choose-data": z.array(z.string().max(20)).max(10).optional(),
   "spot-problem": z.number().int().min(0).max(3).optional(),
+  "train-config": z.number().int().min(0).max(3).optional(),
   "read-results": z.number().int().min(0).max(3).optional(),
   "prompt-write": z.string().max(2000).optional(),
   "detect-issue": z.number().int().min(0).max(3).optional(),
