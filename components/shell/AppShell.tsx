@@ -17,6 +17,28 @@ export interface ShellUser {
   avatarId: string;
   xpTotal: number;
   role: "student" | "admin";
+  preferences?: { theme: string; reducedMotion: boolean; sound: boolean };
+}
+
+/** Apply server-saved preferences to this device once per mount. */
+function usePreferenceSync(prefs: ShellUser["preferences"]) {
+  useEffect(() => {
+    if (!prefs) return;
+    try {
+      const storedTheme = localStorage.getItem("aq-theme");
+      if (!storedTheme) {
+        localStorage.setItem("aq-theme", prefs.theme === "light" ? "light" : "dark");
+        document.documentElement.classList.toggle("light", prefs.theme === "light");
+      }
+      if (localStorage.getItem("aq-motion") == null) {
+        localStorage.setItem("aq-motion", prefs.reducedMotion ? "reduced" : "normal");
+        document.documentElement.classList.toggle("reduce-motion", prefs.reducedMotion);
+      }
+      if (localStorage.getItem("aq-sound") == null) {
+        localStorage.setItem("aq-sound", prefs.sound ? "on" : "off");
+      }
+    } catch {}
+  }, [prefs]);
 }
 
 const NAV: { href: string; label: string; icon: IconName }[] = [
@@ -49,6 +71,7 @@ export function AppShell({
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const lp = levelProgress(user.xpTotal);
+  usePreferenceSync(user.preferences);
 
   async function logout() {
     await fetch("/api/auth/logout", { method: "POST" });

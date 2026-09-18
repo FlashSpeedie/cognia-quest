@@ -1,10 +1,4 @@
 import { test, expect } from "@playwright/test";
-import { execSync } from "child_process";
-
-// Reseed once so the demo account exists and flows are deterministic.
-test.beforeAll(() => {
-  execSync("npm run seed", { stdio: "ignore" });
-});
 
 test.describe("public site", () => {
   test("landing renders hero, pillars, CTAs", async ({ page }) => {

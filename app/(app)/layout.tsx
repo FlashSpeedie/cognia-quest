@@ -22,6 +22,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         avatarId: user.avatarId,
         xpTotal: user.xpTotal,
         role: user.role,
+        preferences: user.preferences,
       }}
       unreadCount={unread}
     >

@@ -25,6 +25,13 @@ export default async function SettingsPage() {
         <p className="mt-2 text-sm text-ink-dim">
           Theme and motion preferences apply instantly and persist on this device too.
         </p>
+        <a
+          href="/api/me/export"
+          download
+          className="mt-4 inline-flex items-center gap-2 rounded-xl border border-void-700 px-4 py-2.5 text-sm font-semibold text-ink-dim transition-colors hover:border-pulse-400/40 hover:text-ink focus-ring"
+        >
+          Download my data (JSON)
+        </a>
       </Card>
     </div>
   );

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { getSessionUser } from "@/server/auth/session";
+import { getDb } from "@/server/db/db";
 import { promptTaskById } from "@/content/prompts";
 import { SectionHeading, GlassCard } from "@/components/ui/Card";
 import { PromptLabClient } from "@/components/lab/PromptLabClient";
@@ -20,6 +21,10 @@ export default async function PromptBattleTaskPage({ params }: { params: Promise
   const task = promptTaskById(taskId);
   if (!task) notFound();
 
+  const db = await getDb();
+  const attempts = await db.table("prompt_attempts").find({ userId: user.id, taskId: task.id });
+  const best = attempts.reduce((m, a) => Math.max(m, a.score), 0);
+
   return (
     <div>
       <nav aria-label="Breadcrumb" className="mb-5 flex items-center gap-1.5 text-xs text-ink-faint">
@@ -30,6 +35,12 @@ export default async function PromptBattleTaskPage({ params }: { params: Promise
         <span className="text-pulse-300">{task.category}</span>
       </nav>
       <SectionHeading kicker={task.category} title={task.task} />
+      {attempts.length > 0 && (
+        <GlassCard className="mt-6 flex items-center justify-between p-4">
+          <p className="text-sm text-ink-dim">Your best on this task</p>
+          <p className={`font-display text-2xl font-black ${best >= 80 ? "text-mint-300" : "text-ink"}`}>{best}/100</p>
+        </GlassCard>
+      )}
       <GlassCard className="mt-6 border-amber-400/25 bg-amber-400/5 p-5">
         <p className="text-sm text-ink-dim">
           <span className="font-semibold text-amber-300">Weak start:</span> “{task.weakExample}” — improve on this.
