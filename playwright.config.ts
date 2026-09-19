@@ -14,6 +14,8 @@ export default defineConfig({
     url: "http://localhost:3199",
     reuseExistingServer: false,
     timeout: 120_000,
+    // Test-only: make request limiting deterministic for the suite.
+    env: { ...process.env, AQ_DISABLE_RATE_LIMIT: "1" } as Record<string, string>,
   },
   projects: [
     { name: "setup", testMatch: /auth\.setup\.ts/ },
