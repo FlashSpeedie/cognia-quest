@@ -24,6 +24,7 @@ export default async function PromptBattleTaskPage({ params }: { params: Promise
   const db = await getDb();
   const attempts = await db.table("prompt_attempts").find({ userId: user.id, taskId: task.id });
   const best = attempts.reduce((m, a) => Math.max(m, a.score), 0);
+  const recent = [...attempts].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 6);
 
   return (
     <div>
@@ -36,9 +37,23 @@ export default async function PromptBattleTaskPage({ params }: { params: Promise
       </nav>
       <SectionHeading kicker={task.category} title={task.task} />
       {attempts.length > 0 && (
-        <GlassCard className="mt-6 flex items-center justify-between p-4">
-          <p className="text-sm text-ink-dim">Your best on this task</p>
-          <p className={`font-display text-2xl font-black ${best >= 80 ? "text-mint-300" : "text-ink"}`}>{best}/100</p>
+        <GlassCard className="mt-6 flex flex-wrap items-center justify-between gap-4 p-4">
+          <div>
+            <p className="text-sm text-ink-dim">Your best on this task</p>
+            <p className="mt-1 flex gap-1" aria-label={`Recent attempts: ${recent.map((a) => a.score).join(", ")}`}>
+              {recent.map((a) => (
+                <span
+                  key={a.id}
+                  title={new Date(a.createdAt).toLocaleString()}
+                  className={`inline-block h-2.5 w-2.5 rounded-full ${a.score >= 80 ? "bg-mint-400" : a.score >= 50 ? "bg-amber-400" : "bg-void-700"}`}
+                />
+              ))}
+            </p>
+          </div>
+          <div className="text-right">
+            <p className={`font-display text-2xl font-black ${best >= 80 ? "text-mint-300" : "text-ink"}`}>{best}/100</p>
+            <p className="font-mono text-[10px] uppercase tracking-widest text-ink-faint">{attempts.length} attempt{attempts.length === 1 ? "" : "s"}</p>
+          </div>
         </GlassCard>
       )}
       <GlassCard className="mt-6 border-amber-400/25 bg-amber-400/5 p-5">

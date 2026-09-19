@@ -34,10 +34,15 @@
 | `npm run typecheck` | ✅ 0 errors |
 | `npm run lint` | ✅ 0 warnings |
 | `npm run test` | ✅ 40/40 unit + integration |
-| `npx playwright test` | ✅ 8/8 e2e |
+| `npx playwright test` | ✅ 14/14 e2e (stable under `--repeat-each=3`: 38/38, then 26/26 with override off) |
 | `npm run build` | ✅ clean production build |
-| Route sweep | ✅ 46 app routes + 3 admin = all HTTP 200 |
-| Manual API probes | register/login/demo/quiz/prompt/final flow all verified |
+| Route sweep | ✅ 46 app routes + 3 admin = all HTTP 200 (rechecked post-fix: 42 authenticated routes) |
+| Rate limiter proof | ✅ prod: 30×200 then 429s on sim/train; `AQ_DISABLE_RATE_LIMIT` only wires into Playwright's test server |
+| Data export | ✅ `/api/me/export` → JSON attachment |
+
+## Incidents found & fixed during validation
+1. **JSON store write race (500 on /api/sim/train under concurrency)** — Next.js bundles modules per route chunk; two store instances shared one `.tmp` name. Fixed with unique temp filenames + `globalThis` Db singleton (`b5c98d5`).
+2. **Seed-vs-server race / Playwright parallel login storms** — solved with a `setup` project producing storage states once per run (`b5c98d5`), and a test-only rate-limit bypass env var set only by the Playwright webServer (`bf38eca`).
 
 ## Content inventory (spec §56 ≥)
 - Modules: 7 · Lessons: 20 · Quiz questions: 40
