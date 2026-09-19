@@ -45,6 +45,7 @@ export async function createLocalDb(dbPath?: string): Promise<Db> {
   let queue: Promise<unknown> = Promise.resolve();
   /** >0 while executing inside tx() — inner ops run directly (re-entrant). */
   let depth = 0;
+  let tmpCounter = 0;
 
   async function load(): Promise<StoreShape> {
     if (data) return data;
@@ -62,7 +63,10 @@ export async function createLocalDb(dbPath?: string): Promise<Db> {
   async function persist(): Promise<void> {
     if (!data) return;
     await fs.mkdir(path.dirname(file), { recursive: true });
-    const tmp = `${file}.tmp`;
+    // Unique tmp per call: Next.js can bundle this module into multiple
+    // chunks (one per route), each with its own copy of this store; a shared
+    // static tmp filename caused cross-writer ENOENT collisions on rename.
+    const tmp = `${file}.${process.pid}.${++tmpCounter}.tmp`;
     await fs.writeFile(tmp, JSON.stringify(data));
     await fs.rename(tmp, file);
   }

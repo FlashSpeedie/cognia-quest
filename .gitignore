@@ -12,3 +12,5 @@ data/*.json
 test-results/
 playwright-report/
 .DS_Store
+
+tests/e2e/.auth/

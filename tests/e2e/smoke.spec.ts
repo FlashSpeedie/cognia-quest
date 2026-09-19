@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { DEMO_STATE, ADMIN_STATE } from "./states";
 
 test.describe("public site", () => {
   test("landing renders hero, pillars, CTAs", async ({ page }) => {
@@ -65,14 +66,10 @@ test.describe("student journey (spec §78)", () => {
     await expect(page.getByText(/XP/).first()).toBeVisible();
   });
 
-  test("detective case flow: inspect → verdict → feedback", async ({ page }) => {
-    // log in as demo
-    await page.goto("/login");
-    await page.getByLabel("Email").fill("demo@aiquest.dev");
-    await page.getByLabel("Password").fill("demo1234");
-    await page.getByRole("button", { name: /Log in/i }).click();
-    await expect(page).toHaveURL(/\/dashboard/);
+  test.describe("demo flows", () => {
+    test.use({ storageState: DEMO_STATE });
 
+    test("detective case flow: inspect → verdict → feedback", async ({ page }) => {
     await page.goto("/detective/case-001");
     await expect(page.getByText(/CASE #0001/)).toBeVisible();
     // inspect evidence
@@ -85,12 +82,6 @@ test.describe("student journey (spec §78)", () => {
   });
 
   test("prompt lab scores weak vs strong", async ({ page }) => {
-    await page.goto("/login");
-    await page.getByLabel("Email").fill("demo@aiquest.dev");
-    await page.getByLabel("Password").fill("demo1234");
-    await page.getByRole("button", { name: /Log in/i }).click();
-    await expect(page).toHaveURL(/\/dashboard/);
-
     await page.goto("/lab/prompt-battle/pb-bio-study");
     const editor = page.getByLabel(/Prompt editor/i);
     await editor.fill("study cells");
@@ -103,25 +94,19 @@ test.describe("student journey (spec §78)", () => {
     await expect(page.getByText(/official score/i)).toBeVisible();
   });
 
-  test("students cannot reach /admin", async ({ page }) => {
-    await page.goto("/login");
-    await page.getByLabel("Email").fill("demo@aiquest.dev");
-    await page.getByLabel("Password").fill("demo1234");
-    await page.getByRole("button", { name: /Log in/i }).click();
-    await expect(page).toHaveURL(/\/dashboard/);
+    test("students cannot reach /admin", async ({ page }) => {
     await page.goto("/admin");
     await expect(page).toHaveURL(/\/dashboard/);
   });
+  });
 
-  test("admin sees analytics", async ({ page }) => {
-    await page.goto("/login");
-    await page.getByLabel("Email").fill("admin@aiquest.dev");
-    await page.getByLabel("Password").fill("admin1234");
-    await page.getByRole("button", { name: /Log in/i }).click();
-    await expect(page).toHaveURL(/\/dashboard/);
+  test("admin sees analytics", async ({ browser }) => {
+    const adminCtx = await browser.newContext({ storageState: ADMIN_STATE });
+    const page = await adminCtx.newPage();
     await page.goto("/admin");
     await expect(page.getByText("Admin Overview")).toBeVisible();
     await expect(page.getByText("Students").first()).toBeVisible();
     await expect(page.getByText("Badge distribution")).toBeVisible();
+    await adminCtx.close();
   });
 });

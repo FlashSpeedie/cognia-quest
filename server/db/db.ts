@@ -21,25 +21,27 @@ export interface Db {
   tx<R>(fn: () => Promise<R>): Promise<R>;
 }
 
-let cached: { dbView: Db } | null = null;
+// Next.js bundles the same module into separate chunks per route, so a plain
+// module-level singleton is NOT unique per process. globalThis is.
+const g = globalThis as unknown as { __aqDb?: Db };
 
 export async function getDb(): Promise<Db> {
-  if (cached) return cached.dbView;
+  if (g.__aqDb) return g.__aqDb;
   const useSupabase =
     !!process.env.NEXT_PUBLIC_SUPABASE_URL && !!process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (useSupabase) {
     const { createSupabaseDb } = await import("./supabase");
-    cached = { dbView: createSupabaseDb() };
+    g.__aqDb = createSupabaseDb();
   } else {
     const { createLocalDb } = await import("./local");
-    cached = { dbView: await createLocalDb() };
+    g.__aqDb = await createLocalDb();
   }
-  return cached.dbView;
+  return g.__aqDb;
 }
 
 /** Test hook: reset the cached Db so tests can point at a temp file. */
 export function __resetDbForTests() {
-  cached = null;
+  delete g.__aqDb;
 }
 
 export function newId(): string {
