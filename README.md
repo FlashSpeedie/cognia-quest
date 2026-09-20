@@ -104,7 +104,7 @@ If the Supabase variables are absent, the app runs fully on the local datastore 
 
 ## Testing status
 
-`npm run validate` runs typecheck + lint + unit/integration tests + build. Playwright e2e covers: landing, preview interactivity, register→onboarding→dashboard, lesson+quiz with XP, detective verdict, prompt battle scoring, admin gating.
+`npm run validate` runs typecheck + lint + unit/integration tests + build. Playwright e2e covers: landing, preview interactivity, register→onboarding→dashboard, lesson+quiz with XP, detective verdict, prompt battle scoring, admin gating, Train the Machine (train → model report), Ethics Court coverage scoring, mission gating, and certificate gating.
 
 ## A note on honesty
 

@@ -14,7 +14,7 @@
 | Rewards | Server-side only: `xp_events` immutable transactions, dedupe + decay + daily caps | Spec §31/§84 |
 | Content | All curriculum in `content/*.ts` (typed, data-driven) | §40/§86 content management without UI rewrites |
 | ML sim | Deterministic logistic regression (seeded) | Honest "educational simulation", reproducible, testable |
-| Tests | Vitest unit+integration (40), Playwright e2e (8) | Full loop coverage |
+| Tests | Vitest unit+integration (40), Playwright e2e (14) | Full loop coverage |
 
 ## Phase Ledger
 - [x] **1 Scaffold** — Next.js+TS+Tailwind, design tokens, UI kit (Button, Card, Chip, Modal, Toast, Progress, Ring, Term tooltip, Input, EmptyState, icons). Build green.
@@ -34,11 +34,15 @@
 | `npm run typecheck` | ✅ 0 errors |
 | `npm run lint` | ✅ 0 warnings |
 | `npm run test` | ✅ 40/40 unit + integration |
-| `npx playwright test` | ✅ 14/14 e2e (stable under `--repeat-each=3`: 38/38, then 26/26 with override off) |
+| `npx playwright test` | ✅ 14/14 e2e; repeat `--repeat-each=2` → 26/26 (earlier `--repeat-each=3`: 38/38) |
 | `npm run build` | ✅ clean production build |
-| Route sweep | ✅ 46 app routes + 3 admin = all HTTP 200 (rechecked post-fix: 42 authenticated routes) |
-| Rate limiter proof | ✅ prod: 30×200 then 429s on sim/train; `AQ_DISABLE_RATE_LIMIT` only wires into Playwright's test server |
-| Data export | ✅ `/api/me/export` → JSON attachment |
+| Route sweep | ✅ 9 public + 25 app + 3 admin routes HTTP 200; 28 protected routes redirect anon to /login; 31-page browser sweep (incl. dynamic lesson/mission/case/battle detail) with zero console/page errors; dashboard's 21 internal links all resolve |
+| Rate limiter proof | ✅ prod: 30×200 then 429 on sim/train; `AQ_DISABLE_RATE_LIMIT` only wired into Playwright's test server |
+| Data export | ✅ `/api/me/export` → JSON attachment; 401 anonymous |
+| Anti-forgery | ✅ no XP-accepting endpoint exists (404s); `/api/profile` strips unknown keys — XP unchanged after forge attempts; malformed quiz payload → 422 |
+| Authorization | ✅ student → /admin = 307 to /dashboard; admin console only for admin role |
+
+*Final audit (this session): all suites re-run green; no code changes required — implementation was already complete. Housekeeping: removed 13 stale pre-fix `data/*.tmp` artifacts from git and added `data/*.tmp` to .gitignore.*
 
 ## Incidents found & fixed during validation
 1. **JSON store write race (500 on /api/sim/train under concurrency)** — Next.js bundles modules per route chunk; two store instances shared one `.tmp` name. Fixed with unique temp filenames + `globalThis` Db singleton (`b5c98d5`).
