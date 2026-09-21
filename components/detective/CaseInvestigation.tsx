@@ -65,7 +65,7 @@ export function CaseInvestigation({ caseFile, alreadySolved }: { caseFile: Detec
   }
 
   return (
-    <div className="grid gap-6 lg:grid-cols-5">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
       {/* Evidence panel */}
       <div className="space-y-4 lg:col-span-3">
         <GlassCard glow className="border-void-700 p-0 overflow-hidden">

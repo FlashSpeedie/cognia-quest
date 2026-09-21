@@ -141,5 +141,15 @@ export async function createLocalDb(dbPath?: string): Promise<Db> {
           depth--;
         }
       }),
+    incrementUserXp: (userId, delta) =>
+      enqueue(async () => {
+        const d = await load();
+        const u = d.users.find((r) => r.id === userId);
+        if (!u) throw new Error(`incrementUserXp: unknown user ${userId}`);
+        const next = u.xpTotal + delta;
+        u.xpTotal = next;
+        await persist();
+        return next;
+      }),
   };
 }

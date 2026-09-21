@@ -55,7 +55,7 @@ export function EthicsCourt({ caseData }: { caseData: EthicsCase }) {
   }
 
   return (
-    <div className="grid gap-6 lg:grid-cols-5">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
       {/* briefing */}
       <div className="space-y-4 lg:col-span-2">
         <GlassCard className="border-amber-400/30 p-5">

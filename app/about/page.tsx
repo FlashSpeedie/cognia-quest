@@ -3,6 +3,7 @@ import { PublicNav } from "@/components/public/PublicNav";
 import { PublicFooter } from "@/app/page";
 import { SectionHeading, GlassCard } from "@/components/ui/Card";
 import { Icon } from "@/components/ui/Icon";
+import { isDemoEnabled } from "@/lib/env";
 
 export const metadata: Metadata = {
   title: "About AI Quest",
@@ -45,7 +46,7 @@ const PRINCIPLES = [
 export default function AboutPage() {
   return (
     <div className="app-backdrop min-h-screen">
-      <PublicNav />
+      <PublicNav demoEnabled={isDemoEnabled()} />
       <main id="main" className="mx-auto max-w-4xl px-4 pb-20 pt-32">
         <SectionHeading
           kicker="About the project"

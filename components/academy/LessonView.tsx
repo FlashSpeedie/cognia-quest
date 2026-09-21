@@ -11,6 +11,7 @@ import { Chip } from "@/components/ui/Chip";
 import { QuizRunner } from "./QuizRunner";
 import { useToast } from "@/components/ui/Toast";
 import { Term } from "@/components/ui/Tooltip";
+import { TutorPanel } from "@/components/ai/TutorPanel";
 
 // Widget registry — interactive components referenced by content
 import { AIOrNot } from "@/components/widgets/AIOrNot";
@@ -124,7 +125,7 @@ export function LessonView({
   const current = sections[activeStep] as (typeof sections)[number] | undefined;
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[220px_1fr]">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-[220px_1fr]">
       {/* ── Sticky learning nav ── */}
       <aside className="lg:sticky lg:top-20 lg:self-start" aria-label="Lesson progress">
         <Card className="p-4">
@@ -243,6 +244,8 @@ export function LessonView({
             <Icon name="trophy" size={30} className="text-amber-400" />
           </GlassCard>
         )}
+
+        <TutorPanel lessonId={lesson.id} lessonTitle={lesson.title} />
       </div>
     </div>
   );

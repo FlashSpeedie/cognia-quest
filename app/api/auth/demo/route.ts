@@ -1,10 +1,17 @@
 import { cookies } from "next/headers";
 import { getDb } from "@/server/db/db";
 import { createSession, SESSION_COOKIE, DEMO_EMAIL } from "@/server/auth/session";
+import { isDemoEnabled } from "@/lib/env";
 import { json, throttle } from "@/server/http";
 
-/** Demo mode (spec §73): sign in to the seeded demo account. */
+/**
+ * Demo mode (spec §73): one-click sign-in to the seeded demo account.
+ * Disabled whenever Supabase (production backend) is configured — a real
+ * deployment must not offer shared demo logins. See lib/env.isDemoEnabled.
+ */
 export async function POST(req: Request) {
+  if (!isDemoEnabled()) return json({ error: "Not found" }, 404);
+
   const limited = throttle(req, "demo", 10, 60_000);
   if (limited) return limited;
 

@@ -40,9 +40,11 @@ export default function RegisterPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, displayName: displayName.trim(), password }),
       });
-      const data = (await res.json()) as { error?: string };
+      const data = (await res.json()) as { error?: string; confirmEmail?: boolean };
       if (!res.ok) {
         setGeneral(data.error ?? "Registration failed");
+      } else if (data.confirmEmail) {
+        router.push(`/login?message=${encodeURIComponent("Check your email to confirm your account, then log in.")}`);
       } else {
         router.push("/onboarding");
         router.refresh();

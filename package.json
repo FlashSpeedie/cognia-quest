@@ -13,11 +13,14 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "seed": "tsx scripts/seed.ts",
+    "make-admin": "tsx scripts/make-admin.ts",
+    "verify-rls": "tsx scripts/verify-rls.ts",
     "validate": "npm run typecheck && npm run lint && npm run test && npm run build"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.45.4",
-    "next": "14.2.35",
+    "next": "^15.5.25",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "zod": "3.23.8"
@@ -30,11 +33,11 @@
     "@vitejs/plugin-react": "^4.3.2",
     "autoprefixer": "^10.4.20",
     "eslint": "^8.57.1",
-    "eslint-config-next": "14.2.35",
-    "postcss": "^8.4.47",
+    "eslint-config-next": "^15.5.25",
+    "postcss": "^8.5.28",
     "tailwindcss": "^3.4.13",
     "tsx": "^4.19.1",
     "typescript": "^5.6.3",
-    "vitest": "^2.1.2"
+    "vitest": "^3.2.7"
   }
 }

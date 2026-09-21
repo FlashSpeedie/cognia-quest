@@ -79,7 +79,7 @@ export function DataExplorer() {
   }
 
   return (
-    <div className="grid gap-6 lg:grid-cols-2">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
       <GlassCard className="overflow-hidden p-0">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-void-700 p-3">
           <p className="font-mono text-[10px] uppercase tracking-widest text-ink-faint">student_study_v3.csv — {DATA.length} rows</p>

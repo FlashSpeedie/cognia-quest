@@ -1,3 +1,4 @@
+import { isSupabaseConfigured } from "@/lib/env";
 import type { Schema, TableName } from "@/lib/types";
 
 /**
@@ -19,6 +20,11 @@ export interface Db {
   table<K extends TableName>(name: K): Table<Schema[K]>;
   /** Serializes writes (local store flushes; supabase is a passthrough). */
   tx<R>(fn: () => Promise<R>): Promise<R>;
+  /**
+   * Atomically add delta to users.xpTotal and return the new total.
+   * Local store: serialized queue. Supabase: single-statement RPC.
+   */
+  incrementUserXp(userId: string, delta: number): Promise<number>;
 }
 
 // Next.js bundles the same module into separate chunks per route, so a plain
@@ -27,12 +33,17 @@ const g = globalThis as unknown as { __aqDb?: Db };
 
 export async function getDb(): Promise<Db> {
   if (g.__aqDb) return g.__aqDb;
-  const useSupabase =
-    !!process.env.NEXT_PUBLIC_SUPABASE_URL && !!process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (useSupabase) {
+  if (isSupabaseConfigured()) {
     const { createSupabaseDb } = await import("./supabase");
     g.__aqDb = createSupabaseDb();
   } else {
+    if (process.env.NODE_ENV === "production") {
+      console.warn(
+        "[ai-quest] Supabase is not configured — running on the LOCAL JSON datastore. " +
+          "That store is for development/judging only; do not use it as production state. " +
+          "Set NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY / SUPABASE_SECRET_KEY.",
+      );
+    }
     const { createLocalDb } = await import("./local");
     g.__aqDb = await createLocalDb();
   }

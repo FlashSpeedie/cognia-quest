@@ -5,6 +5,7 @@ import { HeroNetwork } from "@/components/public/HeroNetwork";
 import { GlassCard, SectionHeading } from "@/components/ui/Card";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import { Chip } from "@/components/ui/Chip";
+import { isDemoEnabled } from "@/lib/env";
 
 export const metadata: Metadata = {
   title: "AI Quest — Learn AI. Challenge AI. Use AI Responsibly.",
@@ -59,9 +60,10 @@ const BADGES_PREVIEW = [
 ];
 
 export default function LandingPage() {
+  const demo = isDemoEnabled();
   return (
     <div className="app-backdrop min-h-screen">
-      <PublicNav />
+      <PublicNav demoEnabled={demo} />
       <main id="main">
         {/* ── HERO ─────────────────────────────────────────────── */}
         <section className="mx-auto grid min-h-[92vh] max-w-6xl items-center gap-10 px-4 pb-16 pt-32 lg:grid-cols-2">
@@ -91,10 +93,12 @@ export default function LandingPage() {
                 EXPLORE AI
               </Link>
             </div>
-            <p className="mt-6 flex items-center gap-2 text-sm text-ink-faint">
-              <Icon name="shield" size={16} />
-              No paywall demos for judges: hit &quot;Try demo&quot; up top and explore instantly.
-            </p>
+            {demo && (
+              <p className="mt-6 flex items-center gap-2 text-sm text-ink-faint">
+                <Icon name="shield" size={16} />
+                No paywall for judges: hit &quot;Try demo&quot; up top and explore instantly.
+              </p>
+            )}
           </div>
           <div className="relative hidden h-[480px] lg:block">
             <div className="glass-panel absolute inset-0 rounded-3xl p-2 shadow-card">
@@ -211,7 +215,9 @@ export default function LandingPage() {
               The AI age won&apos;t wait. <span className="text-gradient">Neither should your understanding.</span>
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-ink-dim">
-              Free to try in demo mode. Progress saved when you create an account.
+              {demo
+                ? "Free to try in demo mode. Progress saved when you create an account."
+                : "Create your account and start earning XP in minutes."}
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Link

@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { getDb } from "@/server/db/db";
 import { loginUser, loginSchema } from "@/server/services/authService";
 import { createSession, SESSION_COOKIE } from "@/server/auth/session";
+import { isSupabaseConfigured } from "@/lib/env";
 import { json, parseBody, throttle } from "@/server/http";
 
 export async function POST(req: Request) {
@@ -14,6 +15,11 @@ export async function POST(req: Request) {
   const db = await getDb();
   const result = await loginUser(db, parsed.data);
   if (!result.ok) return json({ error: result.error }, 401);
+
+  if (isSupabaseConfigured()) {
+    // Session cookies were written by the Supabase Auth sign-in above.
+    return json({ ok: true, onboard: result.user.onboarding.completed ? false : true });
+  }
 
   const cookie = await createSession(result.user.id);
   const jar = await cookies();

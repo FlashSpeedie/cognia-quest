@@ -28,6 +28,8 @@ export function PromptLabClient({ taskId, task }: { taskId: string; task?: strin
   const [submitted, setSubmitted] = useState<PromptScore | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [coach, setCoach] = useState<{ text: string } | { unavailable: string } | null>(null);
+  const [coachLoading, setCoachLoading] = useState(false);
   const { push } = useToast();
   const router = useRouter();
 
@@ -76,8 +78,31 @@ export function PromptLabClient({ taskId, task }: { taskId: string; task?: strin
 
   const display = submitted ?? live;
 
+  /** Optional AI coaching layer. The score stays the deterministic rubric. */
+  async function askCoach() {
+    setCoachLoading(true);
+    setCoach(null);
+    try {
+      const res = await fetch("/api/ai/coach", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt, taskId }),
+      });
+      const data = (await res.json()) as { feedback?: string; error?: string };
+      if (!res.ok) {
+        setCoach({ unavailable: data.error ?? "Coach unavailable right now." });
+      } else if (data.feedback) {
+        setCoach({ text: data.feedback });
+      }
+    } catch {
+      setCoach({ unavailable: "Network error — check your connection." });
+    } finally {
+      setCoachLoading(false);
+    }
+  }
+
   return (
-    <div className="grid gap-6 lg:grid-cols-2">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
       <div className="space-y-4">
         {task && (
           <Card className="border-amber-400/30 p-4">
@@ -105,11 +130,22 @@ export function PromptLabClient({ taskId, task }: { taskId: string; task?: strin
             <Button onClick={submit} loading={loading} disabled={prompt.trim().length < 2}>
               Analyze &amp; submit
             </Button>
-            <Button variant="ghost" onClick={() => { setPrompt(""); setSubmitted(null); }}>
+            <Button variant="secondary" onClick={askCoach} loading={coachLoading} disabled={prompt.trim().length < 10}>
+              AI coach feedback
+            </Button>
+            <Button variant="ghost" onClick={() => { setPrompt(""); setSubmitted(null); setCoach(null); }}>
               Clear
             </Button>
           </div>
           {error && <p role="alert" className="mt-3 text-sm text-rose-400">{error}</p>}
+          {coach && (
+            <div className="mt-3 rounded-xl border border-volt-400/30 bg-volt-400/5 p-4" role="status">
+              <p className="font-mono text-[10px] uppercase tracking-widest text-volt-300">AI coach (advisory — the rubric is the score)</p>
+              <p className="mt-1.5 whitespace-pre-wrap text-sm leading-relaxed text-ink">
+                {"text" in coach ? coach.text : coach.unavailable}
+              </p>
+            </div>
+          )}
         </GlassCard>
       </div>
 

@@ -8,6 +8,7 @@ import { AIOrNot } from "@/components/widgets/AIOrNot";
 import { MODULES } from "@/content/modules";
 import { DETECTIVE_CASES } from "@/content/detective";
 import { Icon } from "@/components/ui/Icon";
+import { isDemoEnabled } from "@/lib/env";
 
 export const metadata: Metadata = {
   title: "Preview the Experience",
@@ -18,7 +19,7 @@ export default function PreviewPage() {
   const s = DETECTIVE_CASES[0]!;
   return (
     <div className="app-backdrop min-h-screen">
-      <PublicNav />
+      <PublicNav demoEnabled={isDemoEnabled()} />
       <main id="main" className="mx-auto max-w-5xl px-4 pb-24 pt-32">
         <SectionHeading
           kicker="Try before you enroll"

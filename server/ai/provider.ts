@@ -1,50 +1,82 @@
+import { getGeminiConfig } from "@/lib/env";
+
 /**
- * Optional real-LLM seam (spec §112/§113).
+ * Server-side Gemini provider for the optional live-AI features
+ * (lesson tutor, prompt coach).
  *
- * The entire product works without any external AI provider: every learning
- * experience uses deterministic, inspectable educational engines by design.
- * If a deployer WANTS a live model for e.g. freeform question answering,
- * they can set OPENAI_API_KEY and call `generateExplanation`, which:
- *  - runs server-side only (this file is never shipped to the browser),
- *  - enforces a small input budget and per-context rate limiting (caller),
- *  - falls back gracefully (returns null) when no key is configured.
- *
- * No call site ships enabled by default — deterministic fallbacks are the
- * product, not a degraded mode.
+ * Non-negotiables:
+ *  - GEMINI_API_KEY never leaves the server (this module must not be
+ *    imported from client components);
+ *  - deterministic educational scoring (prompt rubric, quizzes, missions)
+ *    NEVER goes through the LLM — Gemini only adds conversational help;
+ *  - bounded input/output, hard timeout, no silent swallowing: failures
+ *    surface as typed results so routes can answer 503/504 honestly.
  */
 
-export interface AIProviderStatus {
-  configured: boolean;
-  provider: "openai" | "none";
+export type AIResult =
+  | { ok: true; text: string }
+  | { ok: false; reason: "unconfigured" | "timeout" | "provider_error" | "empty"; detail?: string };
+
+const MAX_INPUT_CHARS = 4000;
+const MAX_OUTPUT_TOKENS = 512;
+const TIMEOUT_MS = 12_000;
+
+export function aiConfigured(): boolean {
+  return getGeminiConfig() !== null;
 }
 
-export function aiProviderStatus(): AIProviderStatus {
-  return process.env.OPENAI_API_KEY
-    ? { configured: true, provider: "openai" }
-    : { configured: false, provider: "none" };
+interface GeminiResponse {
+  candidates?: { content?: { parts?: { text?: string }[] } }[];
+  promptFeedback?: { blockReason?: string };
+  error?: { code?: number; message?: string; status?: string };
 }
 
-export async function generateExplanation(prompt: string, opts?: { maxChars?: number }): Promise<string | null> {
-  const key = process.env.OPENAI_API_KEY;
-  if (!key) return null; // deterministic fallback: caller uses curated content
-  const input = prompt.slice(0, opts?.maxChars ?? 2000);
+/**
+ * Single-turn generation. Returns a typed failure instead of throwing so
+ * routes can log appropriately and answer with a useful status code.
+ */
+export async function callGemini(system: string, user: string): Promise<AIResult> {
+  const cfg = getGeminiConfig();
+  if (!cfg) return { ok: false, reason: "unconfigured" };
+
+  const input = user.slice(0, MAX_INPUT_CHARS);
+  const sys = system.slice(0, 2000);
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
   try {
-    const res = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
-      body: JSON.stringify({
-        model: process.env.AI_QUEST_MODEL ?? "gpt-4o-mini",
-        messages: [
-          { role: "system", content: "You are a careful AI-literacy tutor for high school students. Be accurate, brief, and honest about uncertainty. Never invent citations." },
-          { role: "user", content: input },
-        ],
-        max_tokens: 400,
-      }),
-    });
-    if (!res.ok) return null;
-    const data = (await res.json()) as { choices?: { message?: { content?: string } }[] };
-    return data.choices?.[0]?.message?.content ?? null;
-  } catch {
-    return null;
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(cfg.model)}:generateContent`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-goog-api-key": cfg.apiKey },
+        body: JSON.stringify({
+          systemInstruction: { parts: [{ text: sys }] },
+          contents: [{ role: "user", parts: [{ text: input }] }],
+          generationConfig: { maxOutputTokens: MAX_OUTPUT_TOKENS, temperature: 0.4 },
+        }),
+        signal: controller.signal,
+      },
+    );
+    const data = (await res.json()) as GeminiResponse;
+    if (!res.ok) {
+      // Never log request bodies (may contain prompts) or the key.
+      console.warn(`[ai-quest] gemini ${res.status} ${data.error?.status ?? ""}: ${data.error?.message?.slice(0, 160) ?? "unknown"}`);
+      return { ok: false, reason: "provider_error", detail: `HTTP ${res.status}` };
+    }
+    if (data.promptFeedback?.blockReason) {
+      return { ok: false, reason: "provider_error", detail: `blocked: ${data.promptFeedback.blockReason}` };
+    }
+    const text = (data.candidates?.[0]?.content?.parts ?? [])
+      .map((p) => p.text ?? "")
+      .join("")
+      .trim();
+    if (!text) return { ok: false, reason: "empty" };
+    return { ok: true, text: text.slice(0, 4000) };
+  } catch (e) {
+    if (e instanceof Error && e.name === "AbortError") return { ok: false, reason: "timeout" };
+    console.warn(`[ai-quest] gemini network failure: ${e instanceof Error ? e.message : "unknown"}`);
+    return { ok: false, reason: "provider_error", detail: "network" };
+  } finally {
+    clearTimeout(timer);
   }
 }

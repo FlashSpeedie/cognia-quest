@@ -4,6 +4,11 @@
  * is always consistent with business logic (spec §87/§119).
  *
  *   npm run seed
+ *
+ * DEVELOPMENT/TEST ONLY. This creates demo accounts with well-known
+ * credentials in the LOCAL datastore. It refuses to touch a real Supabase
+ * project; production data is created by real users, and admin access is
+ * granted with scripts/make-admin.ts instead.
  */
 import { promises as fs } from "fs";
 import path from "path";
@@ -18,6 +23,16 @@ import { MODULES } from "../content/modules";
 import type { User } from "../lib/types";
 
 const dbPath = process.env.LOCAL_DB_PATH ?? "data/dev-db.json";
+
+// The seed script drives REAL services against the LOCAL datastore only.
+// .env.local may set Supabase keys (that's the production path) — they must
+// not be visible here or registerUser() would try to use Supabase Auth.
+// Production must never get demo accounts; there is deliberately no
+// supabase path in this file at all.
+delete process.env.NEXT_PUBLIC_SUPABASE_URL;
+delete process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+delete process.env.SUPABASE_SECRET_KEY;
+delete process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 async function main() {
   // Fresh start

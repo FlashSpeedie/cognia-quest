@@ -1,22 +1,22 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { getSupabaseEnv } from "@/lib/env";
 import type { Schema, TableName } from "@/lib/types";
 import type { Db, Table } from "./db";
 
 /**
  * Supabase implementation of the Db abstraction.
- * Uses the SERVICE ROLE key — this module must only be imported on the
- * server (all data access happens in route handlers / server services).
- * RLS remains enabled as defense-in-depth; see supabase/migrations.
+ * Uses the SECRET KEY (service role equivalent) — this module must only be
+ * imported on the server (all data access happens in route handlers /
+ * server services). RLS stays enabled as defense-in-depth; see
+ * supabase/migrations.
  *
- * Rows are stored JSONB-friendly: snake_case table names, columns match
- * the camelCase fields via jsonb payload column "data" plus indexed
- * scalar columns for filtering (id, userId, ...). Simplest robust shape:
- * one jsonb `data` column + generated id; filtering reads `data->>key`.
+ * Rows are stored JSONB-friendly: snake_case table names, full row in a
+ * jsonb `data` column; filtering reads `data->>key` expression indexes.
  */
 export function createSupabaseDb(): Db {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-  const client: SupabaseClient = createClient(url, key, {
+  const env = getSupabaseEnv();
+  if (!env) throw new Error("Supabase is not configured");
+  const client: SupabaseClient = createClient(env.url, env.secretKey, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
 
@@ -86,5 +86,15 @@ export function createSupabaseDb(): Db {
     // PostgREST can't multi-statement; mutation flows use side-effect-safe
     // ordering (check-then-act with deterministic ids) in services.
     tx: (fn) => fn(),
+    incrementUserXp: async (userId, delta) => {
+      // Single atomic statement (see supabase/migrations/0002): concurrent
+      // awarders can not lost-update the cached total.
+      const { data, error } = await client.rpc("aq_increment_xp", {
+        p_user_id: userId,
+        p_delta: delta,
+      });
+      if (error) throw new Error(`Supabase incrementUserXp: ${error.message}`);
+      return (data as { xp_total: number }).xp_total;
+    },
   };
 }

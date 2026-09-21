@@ -17,7 +17,7 @@ export function Logo({ size = "md" }: { size?: "sm" | "md" }) {
   );
 }
 
-export function PublicNav() {
+export function PublicNav({ demoEnabled = false }: { demoEnabled?: boolean }) {
   const [scrolled, setScrolled] = useState(false);
   const [demoLoading, setDemoLoading] = useState(false);
   const router = useRouter();
@@ -60,9 +60,11 @@ export function PublicNav() {
           </Link>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" onClick={tryDemo} loading={demoLoading}>
-            Try demo
-          </Button>
+          {demoEnabled && (
+            <Button variant="ghost" size="sm" onClick={tryDemo} loading={demoLoading}>
+              Try demo
+            </Button>
+          )}
           <Link href="/login" className="rounded-lg px-3 py-2 text-sm font-semibold text-ink-dim transition-colors hover:text-ink focus-ring">
             Log in
           </Link>

@@ -65,9 +65,9 @@ export default async function DashboardPage() {
         </div>
       </GlassCard>
 
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid min-w-0 grid-cols-1 gap-6 lg:grid-cols-3">
         {/* ── Left column: continue + missions ── */}
-        <div className="space-y-6 lg:col-span-2">
+        <div className="min-w-0 space-y-6 lg:col-span-2">
           {d.continueTarget ? (
             <Card className="flex flex-wrap items-center justify-between gap-4 p-5">
               <div>
@@ -94,8 +94,8 @@ export default async function DashboardPage() {
               {d.recommendations.map((r) => (
                 <li key={r.id}>
                   <Link href={r.href} className="flex items-center justify-between gap-3 rounded-xl border border-void-700/70 p-3.5 transition hover:border-pulse-400/40 hover:bg-void-800/50 focus-ring">
-                    <div>
-                      <p className="text-sm font-semibold text-ink">{r.title}</p>
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold text-ink">{r.title}</p>
                       <p className="text-xs text-ink-dim">{r.reason}</p>
                     </div>
                     <Icon name="arrow-right" size={16} className="shrink-0 text-ink-faint" />
@@ -145,7 +145,7 @@ export default async function DashboardPage() {
         </div>
 
         {/* ── Right column ── */}
-        <div className="space-y-6">
+        <div className="min-w-0 space-y-6">
           <Card className="p-5">
             <h2 className="font-display font-bold text-ink">XP this fortnight</h2>
             <div className="mt-3">

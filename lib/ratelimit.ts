@@ -1,10 +1,13 @@
+import { isRateLimitBypassActive } from "./env";
+
 /**
  * Tiny in-memory sliding-window rate limiter (spec §31).
  * Suitable for single-instance deployments; swap for Redis/Upstash at scale.
  *
- * Test-only escape hatch: if AQ_DISABLE_RATE_LIMIT=1 (set by the Playwright
- * webServer process), limiting is a no-op so E2E runs are deterministic.
- * Never set in production — the variable only exists server-side.
+ * Test-only escape hatch: AQ_DISABLE_RATE_LIMIT=1 (set by the Playwright
+ * webServer process) makes limiting a no-op so E2E runs are deterministic.
+ * It can never weaken a real deployment: when Supabase (production backend)
+ * is configured the bypass is ignored — see lib/env.ts.
  */
 
 interface Bucket {
@@ -16,8 +19,7 @@ const buckets = new Map<string, Bucket>();
 
 const WINDOW_MS = 60_000;
 
-// Evaluated once at server boot; only ever set by the E2E webServer config.
-const LIMITS_DISABLED = process.env.AQ_DISABLE_RATE_LIMIT === "1";
+const LIMITS_DISABLED = isRateLimitBypassActive();
 
 export function rateLimit(key: string, limit: number, windowMs = WINDOW_MS): { ok: boolean; remaining: number } {
   if (LIMITS_DISABLED) return { ok: true, remaining: limit };

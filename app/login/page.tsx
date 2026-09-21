@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
+import { useState, Suspense, type FormEvent } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { AuthShell } from "@/components/auth/AuthCard";
 import { Input } from "@/components/ui/Input";
@@ -39,9 +39,17 @@ export default function LoginPage() {
 
   return (
     <AuthShell title="Welcome back, Apprentice" subtitle="Log in to continue your AI Quest.">
+      <Suspense fallback={null}>
+        <MessageBanner />
+      </Suspense>
       <form onSubmit={onSubmit} className="space-y-4" noValidate={false}>
         <Input label="Email" name="email" type="email" autoComplete="email" required placeholder="you@school.edu" />
         <Input label="Password" name="password" type="password" autoComplete="current-password" required placeholder="••••••••" />
+        <div className="text-right">
+          <Link href="/forgot-password" className="text-xs font-medium text-ink-faint hover:text-ink focus-ring rounded">
+            Forgot password?
+          </Link>
+        </div>
         {error && (
           <p role="alert" className="rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-sm text-rose-400">
             {error}
@@ -58,5 +66,15 @@ export default function LoginPage() {
         </Link>
       </p>
     </AuthShell>
+  );
+}
+
+function MessageBanner() {
+  const message = useSearchParams().get("message");
+  if (!message) return null;
+  return (
+    <p role="status" className="mb-4 rounded-lg border border-mint-400/30 bg-mint-400/10 px-3 py-2 text-sm text-mint-300">
+      {message}
+    </p>
   );
 }
