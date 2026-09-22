@@ -113,7 +113,7 @@ All pages, APIs, and services are backend-agnostic — they go through `server/d
 
 ## Deploying
 
-1. Create a Supabase project; in the SQL editor run `supabase/migrations/0001_init.sql` then `0002_hardening.sql` in order.
+1. Create a Supabase project; in the SQL editor run `supabase/migrations/0001_init.sql`, then `0002_hardening.sql`, then `0003_grants_repair.sql` — in that order (0003 is safe to run even after a previously applied 0001/0002).
 2. Set the env vars above. Redirect/URLs: add `<app-url>/auth/callback` to Supabase Auth allowed redirect URLs (for email confirm + password recovery).
 3. `npm ci && npm run build && npm start` (or any Node/Vercel host).
 4. Bootstrap the first admin — user registers normally first, then an operator runs with the secret key in their local env:

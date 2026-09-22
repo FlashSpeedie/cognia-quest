@@ -1,17 +1,14 @@
 # AI Quest — Known Issues
 
-## 1. Live Supabase verification is blocked on the project's API keys
-As of the final audit, the publishable key in `.env.local` works (user signup succeeded against the real project), but the `SUPABASE_SECRET_KEY` returns HTTP 401 from both GoTrue and PostgREST — indistinguishable from a revoked/mistyped key. Until a valid secret key is in place:
-- End-to-end production-mode verification (real DB writes, live RLS checks) can't complete.
-- The migration files are ready: apply `supabase/migrations/0001_init.sql` then `0002_hardening.sql` in the Supabase SQL editor, then run `npx tsx scripts/verify-rls.ts` — it performs real cross-user attacks and must report all-pass before launch.
-**Severity:** launch-blocking for production; everything else is verified in local mode.
+## 1. Dev-toolchain advisories (accepted risk, not shipped to users)
+`npm audit` still flags `vitest`/`vite`/`esbuild` (test-only tooling) and the `postcss@8.4.31` bundled inside `next` (build-time only; we never process untrusted CSS). None of this code runs in the production server bundle. The Next.js RCE/DoS criticals were resolved by upgrading to `next@15.5.25`.
+**Decision:** deliberately accepted; upgrading further would require `next@16` + `vitest@5` major jumps that break compatibility.
 
 ## 2. Rate limiting is in-memory, single instance
-Fine for single-node deploys; multi-instance production should move `lib/ratelimit.ts` to a shared store (e.g. Upstash Redis). Interface is swap-ready.
+Fine for single-node deploys; multi-instance production should swap `lib/ratelimit.ts` for a shared store (e.g. Upstash Redis). Interface is already swap-ready.
 
-## 3. Dev-toolchain advisories (accepted risk, not shipped to users)
-`npm audit` still flags `vite`/`vitest`/`esbuild` (test-only tooling) and `postcss@8.4.31` bundled *inside* `next` (build-time only; we never process untrusted CSS). None of this code runs in the production server bundle. The Next.js RCE/DoS criticals were resolved by upgrading to `next@15.5.25`.
-**Decision:** deliberately accepted; upgrading further would require `next@16` (breaking) and `vitest@5` (requires vite 8 + Node type churn), both disproportionate here.
+## 3. Local JSON datastore is single-process
+Development/judging fallback only (zero-config offline operation). Production auto-switches to Supabase whenever `NEXT_PUBLIC_SUPABASE_URL` + `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` + `SUPABASE_SECRET_KEY` are set.
 
-## 4. Local JSON datastore is single-process
-Used only in development/judging/E2E runs (zero-config offline operation). In production the Supabase adapter is the source of truth, and a production boot with Supabase vars missing now logs a loud warning.
+## 4. Test-suite env isolation
+`vitest.config.ts` clears Supabase/Gemini env at setup so unit+integration tests always exercise the local backend deterministically — no matter what's in `.env.local`. The live RLS suite (`tests/integration/rls.test.ts`) deliberately bypasses this by reading `.env.local` from disk, so it goes live exactly when a real project exists.

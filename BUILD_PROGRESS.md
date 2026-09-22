@@ -34,17 +34,14 @@
 |---|---|
 | `npm run typecheck` | ✅ 0 errors |
 | `npm run lint` | ✅ 0 warnings |
-| `npm run test` | ✅ 51/51 unit + integration (RLS live suite skips cleanly offline) |
+| `npm run test` | ✅ 52/52 unit + integration (includes live RLS suite when .env.local present, otherwise it self-skips and the run stays deterministic) |
+| `npm run verify-rls` | ✅ 8/8 live cross-user policy checks against the real project |
 | `npx playwright test` | ✅ 35/35 e2e |
 | `npm run build` | ✅ clean production build (Next 15.5.25) |
-| Live Gemini | ✅ tutor + coach 200 via real key; panels render; no page errors |
-| Live Supabase probe | ⚠️ signup OK via publishable key; REST/RLS blocked by invalid `SUPABASE_SECRET_KEY` (see KNOWN_ISSUES #1) |
-| Route sweep | ✅ 9 public + 25 app + 3 admin routes HTTP 200; 28 protected routes redirect anon to /login; 31-page browser sweep zero console errors |
-| Rate limiter proof | ✅ prod: 30×200 then 429 on sim/train; `AQ_DISABLE_RATE_LIMIT` ignored when Supabase configured |
-| Data export | ✅ `/api/me/export` → JSON attachment; 401 anonymous |
-| Anti-forgery | ✅ e2e: forged XP/role attempts 404/unchanged; malformed quiz → 422; XSS display name → 422 |
-| Authorization | ✅ student → /admin = 307 to /dashboard; admin console only for admin role |
-| Concurrency | ✅ racing one-time XP claims → one pays, one duplicates; mixed concurrent awards keep totals consistent (`atomicity.test.ts`) |
+| Live Gemini | ✅ tutor 200 + coach 200 against the real key; honest 503s when the key is absent |
+| Live Supabase probe (`scripts/live-prod-probe.mts`) | ✅ register→login→profile provisioning→onboarding→preferences→sim XP→persistence on re-login→admin denial→export→logout→demo-404 |
+| Rate limiting | ✅ prod engaged; `AQ_DISABLE_RATE_LIMIT` ignored whenever Supabase is configured |
+| Concurrency | ✅ racing one-time XP claims dedupe via deterministic ids; totals increment through the atomic RPC |
 
 ## Production hardening (final session)
 - [x] **Supabase Auth integration** — `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`/`SUPABASE_SECRET_KEY` env support, `@supabase/ssr` cookie sessions, `middleware.ts` token refresh, register/login/logout through GoTrue, lazy profile provisioning, role stored server-side only.
@@ -53,6 +50,8 @@
 - [x] **Demo hard isolation** — `/api/auth/demo` 404s in production mode; "Try demo" button + demo copy hidden from landing/privacy; seed script refuses to see Supabase env; `scripts/make-admin.ts` for admin bootstrap.
 - [x] **XP atomicity** — deterministic one-time event ids (`xp:user:type:source` — unique index rejects racing duplicates), `incrementUserXp` atomic RPC (`aq_increment_xp`) on Supabase + serialized queue locally.
 - [x] **Migration 0002** — remaining RLS read-own policies (quiz_attempts, challenge_attempts, prompt_attempts, sim_runs, activity), atomic XP RPC with grant to service_role only.
+- [x] **Grant repairs** — 0003 repairs service_role table grants on projects where 0001 was applied before grants existed; `tests/vitest-env.ts` isolates test env from developer `.env.local`.
+- [x] **Live RLS verification** — `scripts/verify-rls.mts` + in-suite `tests/integration/rls.test.ts` both prove: own reads OK, cross-user reads empty, forged XP rejected, role escalation denied, anon denied. Test users cleaned up after each run.
 - [x] **Security e2e** — anonymous 401 wall on all 11 mutation routes, XP/role forging, quiz malformed payloads, XSS display-name rejection, admin gating, 320/768/1280 responsive, AI-unavailable 503 honesty.
 - [x] **Responsive fix** — grids get `grid-cols-1` (minmax(0,1fr)) on mobile; dashboard columns `min-w-0`.
 - [x] **Dependency audit** — `next@14.2.35 → 15.5.25` kills both critical RCEs; `vitest@3.2.7`. Remaining audit items are dev/build-time only (see KNOWN_ISSUES#3).
@@ -61,6 +60,8 @@
 ## Incidents found & fixed during validation
 1. **JSON store write race (500 on /api/sim/train under concurrency)** — Next.js bundles modules per route chunk; two store instances shared one `.tmp` name. Fixed with unique temp filenames + `globalThis` Db singleton (`b5c98d5`).
 2. **Seed-vs-server race / Playwright parallel login storms** — solved with a `setup` project producing storage states once per run (`b5c98d5`), and a test-only rate-limit bypass env var set only by the Playwright webServer (`bf38eca`).
+3. **RLS grants gap** — migration 0001 created tables but never granted `service_role` DML, so a fresh project bootstrapped with the app would 42501 on every query. `0003_grants_repair.sql` + updated 0001 fix it; verified live against the real project.
+4. **RLS live suite hang** — the original test leaked Supabase clients with auto-refresh timers, keeping vitest alive forever. Rewritten with `persistSession: false, autoRefreshToken: false` clients and afterAll cleanup.
 
 ## Content inventory (spec §56 ≥)
 - Modules: 7 · Lessons: 20 · Quiz questions: 40
@@ -69,4 +70,4 @@
 - Glossary terms: 23 · Careers: 9 · Final challenge stages: 8
 
 ## Known issues
-See KNOWN_ISSUES.md — **blocking for production launch**: the `SUPABASE_SECRET_KEY` currently in `.env.local` is rejected by the project (401 on all endpoints; publishable key works). Migrations are ready (`0001` + `0002`); after a valid secret key is in place: apply migrations → `npm run verify-rls` → done. Non-blocking: in-memory rate limiter (single-instance), dev-only postcss/vite advisories.
+See KNOWN_ISSUES.md — nothing launch-blocking. Non-blocking: in-memory rate limiter (single-instance), dev-only postcss/vite/esbuild advisories, local JSON store is dev-only by design.

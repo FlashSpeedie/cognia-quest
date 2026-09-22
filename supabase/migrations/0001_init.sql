@@ -35,6 +35,14 @@ select aq_make_table('audit_log');
 
 drop function aq_make_table(text);
 
+-- Grants: the server talks to these tables with the service role.
+-- (create table in a migration doesn't grant anything by itself.)
+grant select, insert, update, delete on
+  users, sessions, xp_events, badge_states, lesson_progress, mission_progress,
+  quiz_attempts, challenge_attempts, prompt_attempts, sim_runs, streaks,
+  activity, notifications, final_results, audit_log
+  to service_role;
+
 -- Helpful indexes
 create index if not exists xp_events_user_idx on xp_events ((data->>'userId'));
 create index if not exists xp_events_source_idx on xp_events ((data->>'sourceType'), (data->>'sourceId'));

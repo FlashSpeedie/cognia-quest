@@ -9,5 +9,6 @@ export default defineConfig({
     environment: "node",
     include: ["tests/unit/**/*.test.ts", "tests/integration/**/*.test.ts"],
     globals: false,
+    setupFiles: ["tests/vitest-env.ts"],
   },
 });

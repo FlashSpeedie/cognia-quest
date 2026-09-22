@@ -18,6 +18,17 @@
  * Exits 1 with details on any policy failure.
  */
 import { createClient } from "@supabase/supabase-js";
+import { readFileSync } from "fs";
+
+// Load local env if present (tsx does not auto-load .env.local)
+for (const file of [".env", ".env.local"]) {
+  try {
+    for (const line of readFileSync(file, "utf8").split(/\r?\n/)) {
+      const m = line.match(/^([A-Z_]+)=(.*)$/);
+      if (m && process.env[m[1]] === undefined) process.env[m[1]] = m[2].trim();
+    }
+  } catch { /* file absent */ }
+}
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const pub = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
@@ -40,10 +51,19 @@ const credsA = { email: `rls-a-${stamp}@verify.dev`, password: `pass-${stamp}-aA
 const credsB = { email: `rls-b-${stamp}@verify.dev`, password: `pass-${stamp}-bBb2` };
 
 async function makeUser(creds: { email: string; password: string }) {
+  // Confirm-email is on, so use the admin API to create a confirmed user,
+  // then sign in for a real JWT.
+  const { data: created, error: cerr } = await admin.auth.admin.createUser({
+    email: creds.email,
+    password: creds.password,
+    email_confirm: true,
+    user_metadata: { display_name: "RLS Verify" },
+  });
+  if (cerr || !created.user) throw new Error(`admin createUser failed: ${cerr?.message}`);
   const c = createClient(url!, pub!, { auth: { persistSession: false } });
-  const { data, error } = await c.auth.signUp(creds);
-  if (error || !data.user || !data.session) throw new Error(`signup failed: ${error?.message ?? "no session"}`);
-  return { id: data.user.id, client: c };
+  const { data: sess, error: serr } = await c.auth.signInWithPassword(creds);
+  if (serr || !sess.session) throw new Error(`signin failed: ${serr?.message ?? "no session"}`);
+  return { id: created.user.id, client: c, jwt: sess.session.access_token };
 }
 
 async function rest(jwt: string, path: string, init?: RequestInit) {
@@ -57,6 +77,8 @@ async function rest(jwt: string, path: string, init?: RequestInit) {
 // Set up two users and minimal rows as service role would (mimic provisionProfile + one xp event).
 const a = await makeUser(credsA);
 const b = await makeUser(credsB);
+const jwtA = a.jwt;
+const jwtB = b.jwt;
 
 async function seed(table: string, row: unknown) {
   const { error } = await admin.from(table).insert({ data: row });
@@ -68,9 +90,6 @@ const profileB = { ...profileA, id: b.id, email: credsB.email, displayName: "RLS
 await seed("users", profileA);
 await seed("users", profileB);
 await seed("xp_events", { id: `rls-${stamp}`, userId: a.id, amount: 10, sourceType: "lesson", sourceId: "rls", day: "2026-01-01", createdAt: new Date().toISOString() });
-
-const jwtA = (await a.client.auth.getSession()).data.session!.access_token;
-const jwtB = (await b.client.auth.getSession()).data.session!.access_token;
 
 // 1. A reads own profile
 {

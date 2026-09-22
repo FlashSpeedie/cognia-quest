@@ -24,7 +24,15 @@ end $$;
 revoke all on function aq_increment_xp(text, int) from public, anon, authenticated;
 grant execute on function aq_increment_xp(text, int) to service_role;
 
--- ── RLS: finish read-own coverage for remaining user-owned tables ────────
+-- Authenticated students may SELECT their own rows (RLS scopes this to
+-- auth.uid()). All writes remain server-only — no insert/update/delete grant.
+grant select on
+  users, sessions, xp_events, badge_states, lesson_progress, mission_progress,
+  quiz_attempts, challenge_attempts, prompt_attempts, sim_runs, streaks,
+  activity, notifications, final_results
+  to authenticated;
+
+-- RLS: finish read-own coverage for remaining user-owned tables ────────
 -- (users, sessions, xp_events, badge_states, lesson_progress,
 --  mission_progress, notifications, streaks, final_results got policies in
 --  0001. These were missing read policies — deny-by-default covered them,
