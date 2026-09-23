@@ -21,7 +21,7 @@ export interface Preferences {
 }
 
 export const DEFAULT_PREFERENCES: Preferences = {
-  theme: "dark",
+  theme: "light",
   reducedMotion: false,
   sound: false,
   leaderboardOptIn: false,

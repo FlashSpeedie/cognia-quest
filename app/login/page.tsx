@@ -31,14 +31,14 @@ export default function LoginPage() {
         router.refresh();
       }
     } catch {
-      setError("Network error — please try again.");
+      setError("We couldn't reach the server right now. Please try again.");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <AuthShell title="Welcome back, Apprentice" subtitle="Log in to continue your AI Quest.">
+    <AuthShell title="Welcome back" subtitle="Continue your AI learning journey.">
       <Suspense fallback={null}>
         <MessageBanner />
       </Suspense>
@@ -46,23 +46,23 @@ export default function LoginPage() {
         <Input label="Email" name="email" type="email" autoComplete="email" required placeholder="you@school.edu" />
         <Input label="Password" name="password" type="password" autoComplete="current-password" required placeholder="••••••••" />
         <div className="text-right">
-          <Link href="/forgot-password" className="text-xs font-medium text-ink-faint hover:text-ink focus-ring rounded">
+          <Link href="/forgot-password" className="text-xs font-medium text-ink-dim hover:text-pulse-600 focus-ring rounded">
             Forgot password?
           </Link>
         </div>
         {error && (
-          <p role="alert" className="rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-sm text-rose-400">
+          <p role="alert" className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2.5 text-sm text-rose-700 dark:border-rose-700/50 dark:bg-rose-950/40 dark:text-rose-300">
             {error}
           </p>
         )}
-        <Button type="submit" loading={loading} className="w-full">
+        <Button type="submit" loading={loading} className="w-full" size="lg">
           Log in
         </Button>
       </form>
-      <p className="mt-6 text-center text-sm text-ink-dim">
+      <p className="mt-7 text-center text-sm text-ink-dim">
         New here?{" "}
-        <Link href="/register" className="font-semibold text-pulse-300 hover:underline focus-ring rounded">
-          Start your quest
+        <Link href="/register" className="font-semibold text-pulse-600 hover:underline focus-ring rounded">
+          Create an account
         </Link>
       </p>
     </AuthShell>
@@ -73,7 +73,7 @@ function MessageBanner() {
   const message = useSearchParams().get("message");
   if (!message) return null;
   return (
-    <p role="status" className="mb-4 rounded-lg border border-mint-400/30 bg-mint-400/10 px-3 py-2 text-sm text-mint-300">
+    <p role="status" className="mb-4 rounded-lg border border-mint-200 bg-mint-50 px-3 py-2.5 text-sm text-mint-700 dark:border-mint-700/50 dark:bg-mint-950/40 dark:text-mint-300">
       {message}
     </p>
   );

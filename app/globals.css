@@ -2,49 +2,46 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Design tokens ────────────────────────────────────────────────────────
+   Light is the default product theme. A `.dark` class on <html> switches
+   into the dark theme; the two share the same variables so every component
+   is theme-agnostic. */
 :root {
-  color-scheme: dark;
-  --bg: #05070f;
-  --bg-raised: #0b1020;
-  --bg-glass: rgba(16, 22, 41, 0.6);
-  --border-subtle: rgba(125, 211, 252, 0.12);
-  --text-primary: #e6ecf7;
-  --text-dim: #9aa7c2;
-  --text-faint: #5d6a86;
-  /* void scale (surfaces) as variables so light theme remaps cleanly */
-  --void-950: #05070f;
-  --void-900: #080b16;
-  --void-850: #0b1020;
-  --void-800: #101629;
-  --void-700: #182036;
-  --ink: #e6ecf7;
-  --ink-dim: #9aa7c2;
-  --ink-faint: #5d6a86;
-}
-
-.light {
   color-scheme: light;
-  --bg: #f4f7fc;
+
+  --bg: #f8fafc;
   --bg-raised: #ffffff;
-  --bg-glass: rgba(255, 255, 255, 0.75);
-  --border-subtle: rgba(15, 30, 60, 0.12);
-  --text-primary: #101828;
-  --text-dim: #475467;
-  --text-faint: #667085;
-  --void-950: #eef2f9;
+  --bg-soft: #eef3f9;
+  --bg-glass: rgba(255, 255, 255, 0.9);
+  --border-subtle: rgba(16, 24, 40, 0.1);
+
+  --ink: #101828;        /* charcoal navy — primary text */
+  --ink-dim: #475467;    /* slate — secondary text */
+  --ink-faint: #667085;  /* gray — tertiary text */
+
+  /* Neutral surface scale (legacy name kept so components stay unchanged) */
+  --void-950: #f1f5f9;
   --void-900: #ffffff;
-  --void-850: #f7f9fe;
-  --void-800: #eef2f9;
-  --void-700: #dbe3f0;
-  --ink: #101828;
-  --ink-dim: #3c4a63;
-  --ink-faint: #667085;
+  --void-850: #f8fafc;
+  --void-800: #f1f5f9;
+  --void-700: #e2e8f0;
 }
 
-.light .glass-panel {
-  background: rgba(255, 255, 255, 0.8);
-  border-color: rgba(15, 30, 60, 0.1);
-  box-shadow: 0 4px 24px rgba(15, 30, 60, 0.08);
+.dark {
+  color-scheme: dark;
+  --bg: #0b1220;
+  --bg-raised: #101828;
+  --bg-soft: #182336;
+  --bg-glass: rgba(16, 24, 40, 0.8);
+  --border-subtle: rgba(226, 232, 240, 0.12);
+  --ink: #f2f4f7;
+  --ink-dim: #98a2b3;
+  --ink-faint: #667085;
+  --void-950: #0b1220;
+  --void-900: #101828;
+  --void-850: #182336;
+  --void-800: #1d2939;
+  --void-700: #2d3a4f;
 }
 
 html {
@@ -54,44 +51,56 @@ html {
 body {
   @apply font-body antialiased;
   background-color: var(--bg);
-  color: var(--text-primary);
+  color: var(--ink);
 }
 
-/* Subtle mission-control grid backdrop */
+::selection {
+  background: #bae6fd;
+  color: #0c4a6e;
+}
+
+/* Clean, quiet page background. One barely-there warm glow in the
+   top-right is the only decoration. */
 .app-backdrop {
-  background-image:
-    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(56, 189, 248, 0.12), transparent),
-    radial-gradient(ellipse 60% 40% at 90% 110%, rgba(139, 92, 246, 0.1), transparent),
-    linear-gradient(rgba(125, 211, 252, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(125, 211, 252, 0.035) 1px, transparent 1px);
-  background-size: 100% 100%, 100% 100%, 36px 36px, 36px 36px;
+  background:
+    radial-gradient(600px 260px at 85% -60px, rgba(14, 165, 233, 0.06), transparent 60%),
+    radial-gradient(520px 240px at -10% 20%, rgba(139, 92, 246, 0.06), transparent 60%),
+    var(--bg);
+}
+.dark .app-backdrop {
+  background:
+    radial-gradient(600px 260px at 85% -60px, rgba(14, 165, 233, 0.08), transparent 60%),
+    radial-gradient(520px 240px at -10% 20%, rgba(139, 92, 246, 0.07), transparent 60%),
+    var(--bg);
 }
 
 @layer components {
+  /* White card with crisp border. Glass/glow treatments are gone. */
   .glass-panel {
-    background: var(--bg-glass);
+    background: var(--bg-raised);
     border: 1px solid var(--border-subtle);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
   }
 
   .text-gradient {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(120deg, #7dd3fc, #a78bfa 55%, #34d399);
+    background-image: linear-gradient(120deg, #0284c7, #6d28d9);
+  }
+  .dark .text-gradient {
+    background-image: linear-gradient(120deg, #38bdf8, #8b5cf6);
   }
 
   .focus-ring {
-    @apply outline-none focus-visible:ring-2 focus-visible:ring-pulse-400 focus-visible:ring-offset-2 focus-visible:ring-offset-void-900;
+    @apply outline-none focus-visible:ring-2 focus-visible:ring-pulse-500 focus-visible:ring-offset-2 focus-visible:ring-offset-void-900;
   }
 
   .skeleton {
     @apply animate-shimmer rounded-md;
-    background: linear-gradient(
-      100deg,
-      rgba(125, 211, 252, 0.06) 40%,
-      rgba(125, 211, 252, 0.14) 50%,
-      rgba(125, 211, 252, 0.06) 60%
-    );
+    background: linear-gradient(100deg, #eef2f7 40%, #e2e8f0 50%, #eef2f7 60%);
+    background-size: 200% 100%;
+  }
+  .dark .skeleton {
+    background: linear-gradient(100deg, #182336 40%, #24344d 50%, #182336 60%);
     background-size: 200% 100%;
   }
 }
@@ -118,20 +127,6 @@ body {
   transition-duration: 0.01ms !important;
 }
 
-/* ── Light theme utility remaps ────────────────────────────────────── */
-.light body,
-.light .text-ink {
-  color: var(--text-primary);
-}
-.light .app-backdrop {
-  background-image:
-    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(14, 165, 233, 0.1), transparent),
-    radial-gradient(ellipse 60% 40% at 90% 110%, rgba(124, 58, 237, 0.08), transparent),
-    linear-gradient(rgba(2, 132, 199, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(2, 132, 199, 0.05) 1px, transparent 1px);
-  background-size: 100% 100%, 100% 100%, 36px 36px, 36px 36px;
-}
-
 /* ── Print styles (certificate, lessons) ───────────────────────────── */
 @media print {
   .no-print {
@@ -156,9 +151,15 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(125, 211, 252, 0.18);
+  background: #cbd5e1;
   border-radius: 8px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(125, 211, 252, 0.3);
+  background: #94a3b8;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #2d3a4f;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #3d4c64;
 }

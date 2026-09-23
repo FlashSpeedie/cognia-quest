@@ -37,7 +37,7 @@ export default function ResetPasswordPage() {
         router.refresh();
       }
     } catch {
-      setError("Network error — please try again.");
+      setError("We couldn't reach the server right now. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -49,16 +49,16 @@ export default function ResetPasswordPage() {
         <Input label="New password" name="password" type="password" autoComplete="new-password" required minLength={8} placeholder="••••••••" />
         <Input label="Confirm password" name="confirm" type="password" autoComplete="new-password" required minLength={8} placeholder="••••••••" />
         {error && (
-          <p role="alert" className="rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-sm text-rose-400">
+          <p role="alert" className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2.5 text-sm text-rose-700 dark:border-rose-700/50 dark:bg-rose-950/40 dark:text-rose-300">
             {error}
           </p>
         )}
-        <Button type="submit" loading={loading} className="w-full">
+        <Button type="submit" loading={loading} className="w-full" size="lg">
           Update password
         </Button>
       </form>
-      <p className="mt-6 text-center text-sm text-ink-dim">
-        <Link href="/login" className="font-semibold text-pulse-300 hover:underline focus-ring rounded">
+      <p className="mt-7 text-center text-sm text-ink-dim">
+        <Link href="/login" className="font-semibold text-pulse-600 hover:underline focus-ring rounded">
           Back to log in
         </Link>
       </p>

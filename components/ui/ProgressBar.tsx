@@ -15,10 +15,10 @@ export function ProgressBar({
 }) {
   const pct = max <= 0 ? 0 : Math.min(100, Math.max(0, (value / max) * 100));
   const tones: Record<string, string> = {
-    pulse: "from-pulse-500 to-volt-500",
-    volt: "from-volt-500 to-rose-500",
-    mint: "from-mint-500 to-pulse-500",
-    amber: "from-amber-500 to-rose-500",
+    pulse: "bg-pulse-600",
+    volt: "bg-volt-600",
+    mint: "bg-mint-600",
+    amber: "bg-amber-500",
   };
   return (
     <div className={className}>
@@ -36,10 +36,10 @@ export function ProgressBar({
         aria-valuemin={0}
         aria-valuemax={100}
         aria-label={label}
-        className="mt-1.5 h-2.5 overflow-hidden rounded-full bg-void-700"
+        className="mt-1.5 h-2 overflow-hidden rounded-full bg-void-700"
       >
         <div
-          className={`h-full rounded-full bg-gradient-to-r transition-[width] duration-700 ease-out ${tones[tone]}`}
+          className={`h-full rounded-full transition-[width] duration-500 ease-out ${tones[tone]}`}
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -71,11 +71,11 @@ export function ProgressRing({
       <svg width={size} height={size} aria-hidden="true" className="-rotate-90">
         <defs>
           <linearGradient id={id} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#38bdf8" />
-            <stop offset="100%" stopColor="#8b5cf6" />
+            <stop offset="0%" stopColor="#0284c7" />
+            <stop offset="100%" stopColor="#7c3aed" />
           </linearGradient>
         </defs>
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#182036" strokeWidth={stroke} />
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--void-700)" strokeWidth={stroke} />
         <circle
           cx={size / 2}
           cy={size / 2}

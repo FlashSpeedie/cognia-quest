@@ -18,9 +18,9 @@ export function SettingsForm({ initial }: { initial: Preferences }) {
     setSavingKey(key);
     // apply locally instantly
     if (patch.theme !== undefined) {
-      const light = patch.theme === "light";
-      document.documentElement.classList.toggle("light", light);
-      try { localStorage.setItem("aq-theme", light ? "light" : "dark"); } catch {}
+      const dark = patch.theme === "dark";
+      document.documentElement.classList.toggle("dark", dark);
+      try { localStorage.setItem("aq-theme", dark ? "dark" : "light"); } catch {}
     }
     if (patch.reducedMotion !== undefined) {
       document.documentElement.classList.toggle("reduce-motion", patch.reducedMotion);

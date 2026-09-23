@@ -5,21 +5,22 @@ type Variant = "primary" | "secondary" | "ghost" | "danger" | "success";
 type Size = "sm" | "md" | "lg";
 
 const variantClasses: Record<Variant, string> = {
+  // Solid, professional blue. Subtle shadow, clean hover, no glow.
   primary:
-    "bg-gradient-to-r from-pulse-500 to-volt-500 text-white shadow-glow hover:brightness-110 active:scale-[0.98]",
+    "border border-pulse-600 bg-pulse-600 text-white shadow-card hover:bg-pulse-700 hover:border-pulse-700 active:translate-y-px",
   secondary:
-    "border border-pulse-400/30 bg-pulse-400/10 text-pulse-300 hover:bg-pulse-400/20 active:scale-[0.98]",
-  ghost: "text-ink-dim hover:text-ink hover:bg-void-700/60 active:scale-[0.98]",
+    "border border-void-700 bg-white text-ink hover:border-pulse-500/50 hover:text-pulse-700 active:translate-y-px dark:bg-void-800 dark:hover:border-pulse-400/50 dark:hover:text-pulse-300",
+  ghost: "text-ink-dim hover:text-ink hover:bg-void-700/50 dark:hover:bg-void-700 active:translate-y-px",
   danger:
-    "border border-rose-500/40 bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 active:scale-[0.98]",
+    "border border-rose-300 bg-white text-rose-700 hover:border-rose-400 hover:bg-rose-50 active:translate-y-px dark:border-rose-700/60 dark:bg-void-800 dark:text-rose-300 dark:hover:bg-rose-950/40",
   success:
-    "bg-gradient-to-r from-mint-500 to-pulse-500 text-white hover:brightness-110 active:scale-[0.98]",
+    "border border-mint-600 bg-mint-600 text-white shadow-card hover:bg-mint-700 hover:border-mint-700 active:translate-y-px",
 };
 
 const sizeClasses: Record<Size, string> = {
   sm: "px-3 py-1.5 text-sm rounded-lg gap-1.5",
-  md: "px-4 py-2.5 text-sm rounded-xl gap-2",
-  lg: "px-6 py-3.5 text-base rounded-xl gap-2",
+  md: "px-4 py-2.5 text-sm rounded-lg gap-2",
+  lg: "px-6 py-3 text-base rounded-lg gap-2",
 };
 
 const base =

@@ -85,9 +85,9 @@ export function CommandPalette() {
     (c: (typeof COMMANDS)[number]) => {
       if (c.action === "theme") {
         const el = document.documentElement;
-        const light = el.classList.toggle("light");
+        const dark = el.classList.toggle("dark");
         try {
-          localStorage.setItem("aq-theme", light ? "light" : "dark");
+          localStorage.setItem("aq-theme", dark ? "dark" : "light");
         } catch {}
       } else if (c.action === "motion") {
         const el = document.documentElement;

@@ -27,8 +27,9 @@ function usePreferenceSync(prefs: ShellUser["preferences"]) {
     try {
       const storedTheme = localStorage.getItem("aq-theme");
       if (!storedTheme) {
-        localStorage.setItem("aq-theme", prefs.theme === "light" ? "light" : "dark");
-        document.documentElement.classList.toggle("light", prefs.theme === "light");
+        const dark = prefs.theme === "dark";
+        localStorage.setItem("aq-theme", dark ? "dark" : "light");
+        document.documentElement.classList.toggle("dark", dark);
       }
       if (localStorage.getItem("aq-motion") == null) {
         localStorage.setItem("aq-motion", prefs.reducedMotion ? "reduced" : "normal");
@@ -84,10 +85,10 @@ export function AppShell({
   return (
     <div className="app-backdrop min-h-screen">
       {/* ── Top bar ── */}
-      <header className="fixed inset-x-0 top-0 z-40 border-b border-void-700/70 bg-void-950/85 backdrop-blur-md">
-        <div className="mx-auto flex h-14 max-w-[1400px] items-center gap-3 px-3 sm:px-4">
+      <header className="fixed inset-x-0 top-0 z-40 border-b border-void-700/60 bg-void-900/95 dark:bg-void-900/80 dark:backdrop-blur-md">
+        <div className="mx-auto flex h-14 max-w-[1400px] items-center gap-3 px-4 sm:px-6">
           <button
-            className="rounded-lg p-2 text-ink-dim hover:text-ink focus-ring md:hidden"
+            className="rounded-lg p-2 text-ink-dim hover:text-ink hover:bg-void-800 focus-ring md:hidden"
             aria-label="Open navigation menu"
             onClick={() => setMenuOpen(true)}
           >
@@ -99,8 +100,8 @@ export function AppShell({
 
           {/* XP / level cluster */}
           <div className="ml-auto flex items-center gap-2 sm:gap-3">
-            <div className="hidden items-center gap-2 sm:flex" aria-label={`Level ${lp.current.level}, ${lp.current.title}, ${user.xpTotal} XP`}>
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-amber-400 to-rose-500 font-display text-[11px] font-black text-void-950">
+            <div className="hidden items-center gap-2.5 sm:flex" aria-label={`Level ${lp.current.level}, ${lp.current.title}, ${user.xpTotal} XP`}>
+              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-500 font-display text-[11px] font-black text-white">
                 {lp.current.level}
               </span>
               <div className="w-28 lg:w-40">
@@ -110,11 +111,11 @@ export function AppShell({
                     {lp.next ? `${lp.into}/${lp.next.minXP - lp.current.minXP}` : "MAX"}
                   </span>
                 </div>
-                <div className="mt-1 h-1.5 rounded-full bg-void-700" role="progressbar" aria-valuenow={lp.pct} aria-valuemin={0} aria-valuemax={100} aria-label="XP progress to next level">
-                  <div className="h-full rounded-full bg-gradient-to-r from-amber-400 to-rose-500 transition-[width] duration-700" style={{ width: `${lp.pct}%` }} />
+                <div className="mt-1 h-1 rounded-full bg-void-700" role="progressbar" aria-valuenow={lp.pct} aria-valuemin={0} aria-valuemax={100} aria-label="XP progress to next level">
+                  <div className="h-full rounded-full bg-pulse-600 transition-[width] duration-500" style={{ width: `${lp.pct}%` }} />
                 </div>
               </div>
-              <span className="font-mono text-xs font-bold text-amber-300">{user.xpTotal.toLocaleString()} XP</span>
+              <span className="font-mono text-xs font-bold text-amber-600 dark:text-amber-400">{user.xpTotal.toLocaleString()} XP</span>
             </div>
 
             <NotificationBell initialUnread={unreadCount} />
@@ -126,15 +127,15 @@ export function AppShell({
       </header>
 
       {/* ── Sidebar (desktop) ── */}
-      <nav aria-label="Primary" className="fixed bottom-0 left-0 top-14 z-30 hidden w-56 flex-col border-r border-void-700/60 bg-void-950/60 p-3 backdrop-blur-md md:flex">
-        <div className="flex-1 space-y-1">
+      <nav aria-label="Primary" className="fixed bottom-0 left-0 top-14 z-30 hidden w-60 flex-col border-r border-void-700/60 bg-void-900 p-3 md:flex">
+        <div className="flex-1 space-y-0.5 pt-1">
           {NAV.map((n) => (
             <Link
               key={n.href}
               href={n.href}
               aria-current={isActive(n.href) ? "page" : undefined}
-              className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors focus-ring ${
-                isActive(n.href) ? "bg-pulse-400/15 text-pulse-300" : "text-ink-dim hover:bg-void-800 hover:text-ink"
+              className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors focus-ring ${
+                isActive(n.href) ? "bg-pulse-50 text-pulse-700 dark:bg-pulse-950/50 dark:text-pulse-300" : "text-ink-dim hover:bg-void-800 hover:text-ink"
               }`}
             >
               <Icon name={n.icon} size={17} />
@@ -142,51 +143,51 @@ export function AppShell({
             </Link>
           ))}
         </div>
-        <div className="space-y-1 border-t border-void-700/60 pt-3">
+        <div className="space-y-0.5 border-t border-void-700/60 pt-3">
           {user.role === "admin" && (
-            <Link href="/admin" className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-amber-300 hover:bg-void-800 focus-ring">
-              <Icon name="shield" size={17} /> Admin
+            <Link href="/admin" className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold text-amber-600 hover:bg-amber-50 focus-ring dark:text-amber-400 dark:hover:bg-amber-950/40">
+              <Icon name="shield" size={16} /> Admin
             </Link>
           )}
-          <Link href="/profile" className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-ink-dim hover:bg-void-800 hover:text-ink focus-ring">
-            <Icon name="profile" size={17} /> Profile
+          <Link href="/profile" className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-ink-dim hover:bg-void-800 hover:text-ink focus-ring">
+            <Icon name="profile" size={16} /> Profile
           </Link>
-          <Link href="/settings" className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-ink-dim hover:bg-void-800 hover:text-ink focus-ring">
-            <Icon name="settings" size={17} /> Settings
+          <Link href="/settings" className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-ink-dim hover:bg-void-800 hover:text-ink focus-ring">
+            <Icon name="settings" size={16} /> Settings
           </Link>
         </div>
       </nav>
 
       {/* ── Mobile drawer ── */}
       {menuOpen && (
-        <div className="fixed inset-0 z-50 md:hidden">
-          <div className="absolute inset-0 bg-void-950/80" onClick={() => setMenuOpen(false)} />
-          <nav aria-label="Mobile" className="absolute left-0 top-0 h-full w-64 animate-fade-up border-r border-void-700 bg-void-900 p-4">
+        <div className="fixed inset-0 z-50 md:hidden" role="dialog" aria-modal="true" aria-label="Navigation menu">
+          <div className="absolute inset-0 bg-void-950/40 backdrop-blur-[2px]" onClick={() => setMenuOpen(false)} />
+          <nav aria-label="Mobile" className="absolute left-0 top-0 h-full w-72 animate-fade-up border-r border-void-700/70 bg-void-900 p-4 shadow-pop">
             <div className="mb-4 flex items-center justify-between">
               <Logo size="sm" />
-              <button onClick={() => setMenuOpen(false)} aria-label="Close menu" className="rounded-lg p-2 text-ink-dim focus-ring">
+              <button onClick={() => setMenuOpen(false)} aria-label="Close menu" className="rounded-lg p-2 text-ink-dim hover:bg-void-800 focus-ring">
                 <Icon name="x" />
               </button>
             </div>
-            <div className="space-y-1">
+            <div className="space-y-0.5">
               {[...NAV, { href: "/profile", label: "Profile", icon: "profile" as IconName }, { href: "/settings", label: "Settings", icon: "settings" as IconName }].map((n) => (
                 <Link
                   key={n.href}
                   href={n.href}
                   onClick={() => setMenuOpen(false)}
-                  className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium focus-ring ${
-                    isActive(n.href) ? "bg-pulse-400/15 text-pulse-300" : "text-ink-dim"
+                  className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium focus-ring ${
+                    isActive(n.href) ? "bg-pulse-50 text-pulse-700 dark:bg-pulse-950/50 dark:text-pulse-300" : "text-ink-dim"
                   }`}
                 >
                   <Icon name={n.icon} size={17} /> {n.label}
                 </Link>
               ))}
               {user.role === "admin" && (
-                <Link href="/admin" onClick={() => setMenuOpen(false)} className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-amber-300">
+                <Link href="/admin" onClick={() => setMenuOpen(false)} className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-amber-600 dark:text-amber-400">
                   <Icon name="shield" size={17} /> Admin
                 </Link>
               )}
-              <button onClick={logout} className="mt-2 flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-rose-400 focus-ring">
+              <button onClick={logout} className="mt-3 flex w-full items-center gap-3 rounded-lg border-t border-void-700/60 px-3 py-2.5 text-left text-sm font-medium text-rose-600 focus-ring dark:text-rose-400">
                 <Icon name="x" size={17} /> Log out
               </button>
             </div>
@@ -195,19 +196,19 @@ export function AppShell({
       )}
 
       {/* ── Main ── */}
-      <main id="main" className="pb-24 pt-14 md:pb-10 md:pl-56">
-        <div className="mx-auto max-w-6xl px-4 py-6">{children}</div>
+      <main id="main" className="pb-24 pt-14 md:pb-12 md:pl-60">
+        <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">{children}</div>
       </main>
 
       {/* ── Mobile bottom nav ── */}
-      <nav aria-label="Quick" className="fixed inset-x-0 bottom-0 z-40 flex items-stretch justify-around border-t border-void-700/70 bg-void-950/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden">
+      <nav aria-label="Quick" className="fixed inset-x-0 bottom-0 z-40 flex items-stretch justify-around border-t border-void-700/60 bg-void-900 pb-[env(safe-area-inset-bottom)] md:hidden">
         {MOBILE_NAV.map((n) => (
           <Link
             key={n.href}
             href={n.href}
             aria-current={isActive(n.href) ? "page" : undefined}
             className={`flex min-h-[52px] flex-1 flex-col items-center justify-center gap-0.5 text-[10px] font-medium focus-ring ${
-              isActive(n.href) ? "text-pulse-300" : "text-ink-faint"
+              isActive(n.href) ? "text-pulse-600" : "text-ink-faint hover:text-ink-dim"
             }`}
           >
             <Icon name={n.icon} size={19} />
@@ -246,15 +247,15 @@ function AccountMenu({ user, logout }: { user: ShellUser; logout: () => void }) 
         <span aria-hidden="true">{user.avatarId}</span>
       </button>
       {open && (
-        <div className="absolute right-0 top-11 z-50 w-56 animate-fade-up rounded-2xl border border-void-700 bg-void-850 shadow-card" role="menu">
-          <div className="border-b border-void-700 px-4 py-3">
+        <div className="absolute right-0 top-11 z-50 w-56 animate-fade-up rounded-xl border border-void-700/70 bg-void-900 shadow-pop" role="menu">
+          <div className="border-b border-void-700/60 px-4 py-3">
             <p className="font-display text-sm font-bold text-ink">{user.displayName}</p>
             <p className="text-xs text-ink-faint">{user.title}</p>
           </div>
           <div className="p-1.5 text-sm">
             <Link href="/profile" onClick={() => setOpen(false)} className="block rounded-lg px-3 py-2 text-ink-dim hover:bg-void-800 hover:text-ink focus-ring">Profile</Link>
             <Link href="/settings" onClick={() => setOpen(false)} className="block rounded-lg px-3 py-2 text-ink-dim hover:bg-void-800 hover:text-ink focus-ring">Settings</Link>
-            <button onClick={logout} className="w-full rounded-lg px-3 py-2 text-left text-rose-400 hover:bg-void-800 focus-ring">Log out</button>
+            <button onClick={logout} className="w-full rounded-lg px-3 py-2 text-left text-rose-600 hover:bg-void-800 focus-ring dark:text-rose-400">Log out</button>
           </div>
         </div>
       )}

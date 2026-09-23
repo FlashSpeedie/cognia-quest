@@ -27,7 +27,7 @@ export default function ForgotPasswordPage() {
       if (!res.ok) setError(data.error ?? "Something went wrong");
       else setMessage(data.message ?? "Check your email for a reset link.");
     } catch {
-      setError("Network error — please try again.");
+      setError("We couldn't reach the server right now. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -38,22 +38,22 @@ export default function ForgotPasswordPage() {
       <form onSubmit={onSubmit} className="space-y-4">
         <Input label="Email" name="email" type="email" autoComplete="email" required placeholder="you@school.edu" />
         {error && (
-          <p role="alert" className="rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-sm text-rose-400">
+          <p role="alert" className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2.5 text-sm text-rose-700 dark:border-rose-700/50 dark:bg-rose-950/40 dark:text-rose-300">
             {error}
           </p>
         )}
         {message && (
-          <p role="status" className="rounded-lg border border-mint-400/30 bg-mint-400/10 px-3 py-2 text-sm text-mint-300">
+          <p role="status" className="rounded-lg border border-mint-200 bg-mint-50 px-3 py-2.5 text-sm text-mint-700 dark:border-mint-700/50 dark:bg-mint-950/40 dark:text-mint-300">
             {message}
           </p>
         )}
-        <Button type="submit" loading={loading} className="w-full">
+        <Button type="submit" loading={loading} className="w-full" size="lg">
           Send reset link
         </Button>
       </form>
-      <p className="mt-6 text-center text-sm text-ink-dim">
+      <p className="mt-7 text-center text-sm text-ink-dim">
         Remembered it?{" "}
-        <Link href="/login" className="font-semibold text-pulse-300 hover:underline focus-ring rounded">
+        <Link href="/login" className="font-semibold text-pulse-600 hover:underline focus-ring rounded">
           Back to log in
         </Link>
       </p>

@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#05070f",
+  themeColor: "#f8fafc",
   width: "device-width",
   initialScale: 1,
 };
@@ -39,7 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ServiceWorkerRegistration />
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{if(localStorage.getItem("aq-theme")==="light")document.documentElement.classList.add("light");if(localStorage.getItem("aq-motion")==="reduced")document.documentElement.classList.add("reduce-motion")}catch(e){}`,
+            __html: `try{if(localStorage.getItem("aq-theme")==="dark")document.documentElement.classList.add("dark");if(localStorage.getItem("aq-motion")==="reduced")document.documentElement.classList.add("reduce-motion")}catch(e){}`,
           }}
         />
       </body>

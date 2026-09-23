@@ -50,31 +50,34 @@ export default function RegisterPage() {
         router.refresh();
       }
     } catch {
-      setGeneral("Network error — please try again.");
+      setGeneral("We couldn't reach the server right now. Please try again.");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <AuthShell title="Become an AI Apprentice" subtitle="Create your account. No personal data beyond an email — we keep it minimal.">
+    <AuthShell title="Start your AI journey" subtitle="Create your account and begin learning AI through interactive challenges.">
       <form onSubmit={onSubmit} className="space-y-4">
         <Input label="Display name" name="displayName" autoComplete="username" required placeholder="e.g. Alex" error={errors.displayName} hint="Shown on your profile. Nicknames welcome." />
         <Input label="Email" name="email" type="email" autoComplete="email" required placeholder="you@school.edu" error={errors.email} />
         <Input label="Password" name="password" type="password" autoComplete="new-password" required placeholder="8+ characters" error={errors.password} />
         <Input label="Confirm password" name="confirm" type="password" autoComplete="new-password" required placeholder="Repeat it" error={errors.confirm} />
         {general && (
-          <p role="alert" className="rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-sm text-rose-400">
+          <p role="alert" className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2.5 text-sm text-rose-700 dark:border-rose-700/50 dark:bg-rose-950/40 dark:text-rose-300">
             {general}
           </p>
         )}
-        <Button type="submit" loading={loading} className="w-full">
+        <Button type="submit" loading={loading} className="w-full" size="lg">
           Create account
         </Button>
+        <p className="text-xs leading-relaxed text-ink-faint">
+          We only collect the information needed to provide your account and learning experience.
+        </p>
       </form>
-      <p className="mt-6 text-center text-sm text-ink-dim">
+      <p className="mt-7 text-center text-sm text-ink-dim">
         Already have an account?{" "}
-        <Link href="/login" className="font-semibold text-pulse-300 hover:underline focus-ring rounded">
+        <Link href="/login" className="font-semibold text-pulse-600 hover:underline focus-ring rounded">
           Log in
         </Link>
       </p>

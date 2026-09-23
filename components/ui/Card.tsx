@@ -7,7 +7,7 @@ export function Card({
 }: HTMLAttributes<HTMLDivElement> & { children: ReactNode }) {
   return (
     <div
-      className={`rounded-2xl border border-void-700 bg-void-800/80 shadow-card ${className}`}
+      className={`rounded-xl border border-void-700/70 bg-void-900 shadow-card ${className}`}
       {...props}
     >
       {children}
@@ -23,7 +23,7 @@ export function GlassCard({
 }: HTMLAttributes<HTMLDivElement> & { children: ReactNode; glow?: boolean }) {
   return (
     <div
-      className={`glass-panel rounded-2xl ${glow ? "shadow-glow" : "shadow-card"} ${className}`}
+      className={`glass-panel rounded-xl ${glow ? "shadow-lift" : ""} ${className}`}
       {...props}
     >
       {children}
@@ -45,12 +45,12 @@ export function SectionHeading({
   return (
     <header className={className}>
       {kicker && (
-        <p className="mb-2 font-mono text-xs font-semibold uppercase tracking-[0.2em] text-pulse-400">
+        <p className="mb-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-pulse-600">
           {kicker}
         </p>
       )}
-      <h2 className="font-display text-2xl font-bold text-ink sm:text-3xl">{title}</h2>
-      {description && <p className="mt-2 max-w-2xl text-ink-dim">{description}</p>}
+      <h2 className="font-display text-2xl font-bold tracking-tight text-ink sm:text-[1.75rem]">{title}</h2>
+      {description && <p className="mt-2 max-w-2xl leading-relaxed text-ink-dim">{description}</p>}
     </header>
   );
 }
