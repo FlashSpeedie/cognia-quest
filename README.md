@@ -1,4 +1,4 @@
-# AI QUEST
+# COGNIA QUEST
 
 **Learn AI. Question AI. Use AI Responsibly.**
 

@@ -1,4 +1,4 @@
-# AI QUEST - Build Progress
+# COGNIA QUEST - Build Progress
 
 > Living document. All 10 phases complete; see final audit at bottom.
 

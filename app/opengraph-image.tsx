@@ -42,13 +42,14 @@ export default function OpenGraphImage() {
             Cognia Quest
           </div>
         </div>
-        <div>
-          <div style={{ fontSize: 68, fontWeight: 700, color: "#101828", lineHeight: 1.1, letterSpacing: "-0.02em" }}>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <div style={{ display: "flex", fontSize: 68, fontWeight: 700, color: "#101828", lineHeight: 1.1, letterSpacing: "-0.02em" }}>
             Learn AI. Question AI.
-            <br />
+          </div>
+          <div style={{ display: "flex", fontSize: 68, fontWeight: 700, color: "#101828", lineHeight: 1.1, letterSpacing: "-0.02em" }}>
             Use AI Responsibly.
           </div>
-          <div style={{ fontSize: 30, color: "#475467", marginTop: 24 }}>
+          <div style={{ display: "flex", fontSize: 30, color: "#475467", marginTop: 24 }}>
             Interactive AI learning for high school students.
           </div>
         </div>

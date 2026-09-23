@@ -4,8 +4,8 @@ import { DEMO_STATE, ADMIN_STATE } from "./states";
 test.describe("public site", () => {
   test("landing renders hero, pillars, CTAs", async ({ page }) => {
     await page.goto("/");
-    await expect(page.getByRole("heading", { name: /BECOME AN/i })).toBeVisible();
-    await expect(page.getByRole("link", { name: /START YOUR QUEST/i }).first()).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Learn AI\./i })).toBeVisible();
+    await expect(page.getByRole("link", { name: /Start learning/i }).first()).toBeVisible();
     await expect(page.getByText(/AI Detective/).first()).toBeVisible();
   });
 
