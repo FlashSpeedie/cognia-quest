@@ -75,11 +75,11 @@ body {
 }
 
 @layer components {
-  /* White card with crisp border. Glass/glow treatments are gone. */
+  /* White card with crisp border and subtle elevation. */
   .glass-panel {
     background: var(--bg-raised);
     border: 1px solid var(--border-subtle);
-    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+    box-shadow: 0 1px 3px rgba(16, 24, 40, 0.07), 0 1px 2px rgba(16, 24, 40, 0.04);
   }
 
   .text-gradient {

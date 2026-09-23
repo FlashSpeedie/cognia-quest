@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { PublicNav } from "@/components/public/PublicNav";
-import { PublicFooter } from "@/app/page";
+import { PublicFooter } from "@/components/public/PublicFooter";
 import { SectionHeading, GlassCard } from "@/components/ui/Card";
 import { isDemoEnabled } from "@/lib/env";
 import { pageMetadata } from "@/lib/seo";

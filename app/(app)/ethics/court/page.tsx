@@ -38,7 +38,7 @@ export default async function CourtPage() {
           const best = bestByCase.get(c.id);
           return (
             <Link key={c.id} href={`/ethics/court/${c.id}`} className="focus-ring rounded-2xl">
-              <GlassCard className="h-full p-5 transition-all hover:-translate-y-1 hover:shadow-glow-volt">
+              <GlassCard className="h-full p-5 transition-all hover:-translate-y-1 hover:shadow-lift">
                 <div className="flex items-center justify-between">
                   <span className="font-mono text-[11px] uppercase tracking-widest text-ink-faint">{c.setting}</span>
                   {best != null && (

@@ -37,7 +37,7 @@ export default async function CertificatePage() {
         <PrintButton />
       </div>
 
-      <div className="print-page mx-auto max-w-3xl rounded-3xl border-2 border-volt-400/50 bg-gradient-to-b from-void-850 to-void-900 p-10 shadow-glow sm:p-14 print:border-black print:bg-white">
+      <div className="print-page mx-auto max-w-3xl rounded-3xl border-2 border-volt-400/50 bg-gradient-to-b from-void-850 to-void-900 p-10 shadow-lift sm:p-14 print:border-black print:bg-white">
         <div className="text-center font-mono text-xs uppercase tracking-[0.4em] text-pulse-700 dark:text-pulse-300 print:text-black">Cognia Quest</div>
         <h1 className="mt-4 text-center font-display text-3xl font-black text-ink print:text-black">
           CERTIFICATE OF COMPLETION

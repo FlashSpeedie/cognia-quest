@@ -39,7 +39,7 @@ export default async function PromptBattlePage() {
           const cleared = (best ?? 0) >= 80;
           return (
             <Link key={t.id} href={`/lab/prompt-battle/${t.id}`} className="focus-ring rounded-2xl">
-              <GlassCard className="h-full p-5 transition-all hover:-translate-y-1 hover:shadow-glow">
+              <GlassCard className="h-full p-5 transition-all hover:-translate-y-1 hover:shadow-lift">
                 <div className="flex items-start justify-between">
                   <Chip tone={cleared ? "mint" : best != null ? "amber" : "neutral"}>
                     {cleared ? `cleared · ${best}` : best != null ? `best ${best}` : "unattempted"}

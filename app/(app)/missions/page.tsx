@@ -41,7 +41,7 @@ export default async function MissionsPage() {
                 className={`block focus-ring rounded-2xl ${status === "locked" ? "pointer-events-none opacity-60" : ""}`}
               >
                 <div className={`flex flex-wrap items-center gap-4 rounded-2xl border p-4 transition-all sm:p-5 ${
-                  status === "completed" ? "border-mint-400/30 bg-mint-400/5" : status === "locked" ? "border-void-700/50 bg-void-900/40" : "border-void-700 bg-void-800/80 hover:border-pulse-400/40 hover:shadow-glow"
+                  status === "completed" ? "border-mint-400/30 bg-mint-400/5" : status === "locked" ? "border-void-700/50 bg-void-900/40" : "border-void-700 bg-void-800/80 hover:border-pulse-400/40 hover:shadow-lift"
                 }`}>
                   <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl font-display text-lg font-black ${
                     status === "completed" ? "bg-mint-400/15 text-mint-700 dark:text-mint-300" : status === "locked" ? "bg-void-700 text-ink-faint" : "bg-gradient-to-br from-pulse-500 to-volt-500 text-white"

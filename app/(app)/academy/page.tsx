@@ -33,7 +33,7 @@ export default async function AcademyPage() {
           const started = m.lessons.some((l) => doneIds.has(l.id));
           return (
             <Link key={m.id} href={`/academy/${m.slug}`} className="focus-ring rounded-2xl">
-              <GlassCard className="h-full p-6 transition-all hover:-translate-y-1 hover:shadow-glow">
+              <GlassCard className="h-full p-6 transition-all hover:-translate-y-1 hover:shadow-lift">
                 <div className="flex items-start justify-between">
                   <span className={`flex h-11 w-11 items-center justify-center rounded-xl border text-pulse-700 dark:text-pulse-300 border-${m.color}-400/30 bg-void-800/60`}>
                     <Icon name={m.icon as never} size={22} />

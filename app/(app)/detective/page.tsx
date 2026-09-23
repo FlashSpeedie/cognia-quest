@@ -38,7 +38,7 @@ export default async function DetectivePage() {
           const tried = triedIds.has(c.id);
           return (
             <Link key={c.id} href={`/detective/${c.id}`} className="focus-ring rounded-2xl">
-              <div className={`h-full rounded-2xl border p-5 transition-all hover:-translate-y-0.5 hover:shadow-glow ${
+              <div className={`h-full rounded-2xl border p-5 transition-all hover:-translate-y-0.5 hover:shadow-lift ${
                 solved ? "border-mint-400/30 bg-mint-400/5" : "border-void-700 bg-void-800/80"
               }`}>
                 <div className="flex items-center justify-between">

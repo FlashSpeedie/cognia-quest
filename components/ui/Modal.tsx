@@ -49,7 +49,7 @@ export function Modal({
         aria-modal="true"
         aria-label={title}
         tabIndex={-1}
-        className={`glass-panel w-full ${wide ? "max-w-3xl" : "max-w-lg"} max-h-[85vh] overflow-y-auto rounded-2xl p-6 shadow-card outline-none`}
+        className={`glass-panel w-full ${wide ? "max-w-3xl" : "max-w-lg"} max-h-[85vh] overflow-y-auto rounded-xl p-6 shadow-pop outline-none`}
       >
         <div className="mb-4 flex items-start justify-between gap-4">
           <h2 className="font-display text-xl font-bold text-ink">{title}</h2>

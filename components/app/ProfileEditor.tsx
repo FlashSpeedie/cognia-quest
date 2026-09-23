@@ -49,7 +49,7 @@ export function ProfileEditor({ initialName, initialAvatar }: { initialName: str
               aria-label={`Avatar ${a}`}
               onClick={() => setAvatar(a)}
               className={`flex h-11 w-11 items-center justify-center rounded-xl border text-xl transition-all focus-ring ${
-                avatar === a ? "border-pulse-400 bg-pulse-400/15 shadow-glow" : "border-void-700 bg-void-800 hover:border-pulse-400/40"
+                avatar === a ? "border-pulse-400 bg-pulse-400/15 shadow-lift" : "border-void-700 bg-void-800 hover:border-pulse-400/40"
               }`}
             >
               {a}

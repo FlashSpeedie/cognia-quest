@@ -85,12 +85,10 @@ const config: Config = {
         mono: ["'Cascadia Code'", "Consolas", "monospace"],
       },
       boxShadow: {
-        // Clean, layered card shadows - no neon glow.
-        card: "0 1px 2px rgba(16, 24, 40, 0.05)",
+        // Clean, layered elevation system - no glow.
+        card: "0 1px 3px rgba(16, 24, 40, 0.07), 0 1px 2px rgba(16, 24, 40, 0.04)",
         lift: "0 4px 8px rgba(16, 24, 40, 0.06), 0 2px 4px rgba(16, 24, 40, 0.04)",
         pop: "0 12px 24px rgba(16, 24, 40, 0.08), 0 4px 8px rgba(16, 24, 40, 0.04)",
-        glow: "0 1px 2px rgba(16, 24, 40, 0.05)", // legacy alias: no glow, same as card
-        "glow-volt": "0 1px 2px rgba(16, 24, 40, 0.05)",
       },
       keyframes: {
         "fade-up": {

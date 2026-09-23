@@ -87,7 +87,7 @@ export default async function LabPage() {
       <div className="mt-8 grid gap-5 md:grid-cols-2">
         {LABS.map((lab) => (
           <Link key={lab.href} href={lab.href} className="focus-ring rounded-2xl">
-            <GlassCard className="h-full p-6 transition-all hover:-translate-y-1 hover:shadow-glow">
+            <GlassCard className="h-full p-6 transition-all hover:-translate-y-1 hover:shadow-lift">
               <div className="flex items-start justify-between">
                 <span className={`flex h-11 w-11 items-center justify-center rounded-xl border bg-void-800/60 ${lab.tone}`}>
                   <Icon name={lab.icon} size={22} />

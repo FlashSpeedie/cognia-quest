@@ -108,7 +108,7 @@ export function CanIUseAI({ onComplete }: { onComplete?: () => void }) {
           <button
             onClick={() => { setChecked(true); if (correct >= 6) onComplete?.(); }}
             disabled={!done}
-            className="rounded-xl bg-gradient-to-r from-pulse-500 to-volt-500 px-5 py-2.5 text-sm font-bold text-white shadow-glow disabled:opacity-40 focus-ring"
+            className="rounded-xl bg-gradient-to-r from-pulse-500 to-volt-500 px-5 py-2.5 text-sm font-bold text-white shadow-lift disabled:opacity-40 focus-ring"
           >
             Check my calls
           </button>

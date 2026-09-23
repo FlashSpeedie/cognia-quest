@@ -70,7 +70,7 @@ export default async function QuestMapPage() {
                     state === "complete"
                       ? "border-mint-400/40 bg-mint-400/8"
                       : state === "in_progress"
-                        ? "border-pulse-400/50 bg-pulse-400/10 shadow-glow"
+                        ? "border-pulse-400/50 bg-pulse-400/10 shadow-lift"
                         : state === "available"
                           ? "border-void-700 bg-void-800/80 hover:border-pulse-400/40"
                           : "border-void-700/50 bg-void-900/40 opacity-60"

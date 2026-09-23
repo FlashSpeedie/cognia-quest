@@ -54,7 +54,7 @@ export function OnboardingWizard({ name }: { name: string }) {
   const steps = [
     // 1 - Welcome
     <div key="welcome" className="text-center">
-      <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-pulse-500 to-volt-500 text-4xl shadow-glow">
+      <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-pulse-500 to-volt-500 text-4xl shadow-lift">
         ⚡
       </div>
       <p className="font-mono text-xs uppercase tracking-[0.3em] text-pulse-400">Welcome, AI Apprentice</p>
@@ -86,7 +86,7 @@ export function OnboardingWizard({ name }: { name: string }) {
             aria-pressed={learnerType === t.id}
             className={`rounded-2xl border p-4 text-left transition-all focus-ring ${
               learnerType === t.id
-                ? "border-pulse-400 bg-pulse-400/10 shadow-glow"
+                ? "border-pulse-400 bg-pulse-400/10 shadow-lift"
                 : "border-void-700 bg-void-800/60 hover:border-pulse-400/40"
             }`}
           >
@@ -118,7 +118,7 @@ export function OnboardingWizard({ name }: { name: string }) {
             aria-pressed={goal === g.id}
             className={`w-full rounded-2xl border p-4 text-left transition-all focus-ring ${
               goal === g.id
-                ? "border-pulse-400 bg-pulse-400/10 shadow-glow"
+                ? "border-pulse-400 bg-pulse-400/10 shadow-lift"
                 : "border-void-700 bg-void-800/60 hover:border-pulse-400/40"
             }`}
           >

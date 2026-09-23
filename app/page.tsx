@@ -1,14 +1,13 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 import { PublicNav } from "@/components/public/PublicNav";
 import { HeroNetwork } from "@/components/public/HeroNetwork";
-import { BrandLogo } from "@/components/public/BrandLogo";
 import { GlassCard, SectionHeading } from "@/components/ui/Card";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import { Chip } from "@/components/ui/Chip";
 import { LinkButton } from "@/components/ui/Button";
 import { isDemoEnabled } from "@/lib/env";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { PublicFooter } from "@/components/public/PublicFooter";
 
 export const metadata: Metadata = {
   title: "Cognia Quest | Interactive AI Learning for High School Students",
@@ -291,29 +290,8 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
-      </main>
+       </main>
       <PublicFooter />
     </div>
-  );
-}
-
-export function PublicFooter() {
-  return (
-    <footer className="border-t border-void-700/60 py-10">
-      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-5 px-4 sm:flex-row">
-        <Link href="/" aria-label="Cognia Quest home" className="focus-ring rounded-lg">
-          <BrandLogo size="sm" />
-        </Link>
-        <nav className="flex gap-5 text-sm" aria-label="Footer">
-          <Link className="font-medium text-ink-dim hover:text-ink focus-ring rounded" href="/about">About the platform</Link>
-          <Link className="font-medium text-ink-dim hover:text-ink focus-ring rounded" href="/preview">Preview lessons</Link>
-          <Link className="font-medium text-ink-dim hover:text-ink focus-ring rounded" href="/privacy">Privacy</Link>
-          <Link className="font-medium text-ink-dim hover:text-ink focus-ring rounded" href="/login">Log in</Link>
-        </nav>
-      </div>
-      <p className="mx-auto mt-6 max-w-6xl px-4 text-xs text-ink-faint">
-        Cognia Quest is an interactive learning project built for the TSA Webmaster competition.
-      </p>
-    </footer>
   );
 }
