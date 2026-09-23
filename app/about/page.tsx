@@ -62,7 +62,7 @@ export default function AboutPage() {
             <em> try it, break it, verify it, and govern it.</em>
           </p>
           <p>
-            In Cognia Quest, grades 9â€“12 students become AI Apprentices: they train a real (simplified, transparent)
+            In Cognia Quest, grades 9–12 students become AI Apprentices: they train a real (simplified, transparent)
             classifier, dissect how language models produce fluent nonsense, interrogate AI answers like investigators,
             and sit in judgment over realistic deployment scenarios. Gamification keeps momentum; server-side validation
             keeps it honest.

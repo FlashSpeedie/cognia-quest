@@ -31,7 +31,7 @@ export default function PreviewPage() {
 
         {/* Fundamentals preview: playable */}
         <section className="mt-14">
-          <Chip tone="pulse" className="mb-3 font-mono uppercase tracking-widest">AI Fundamentals Â· Lesson 1</Chip>
+          <Chip tone="pulse" className="mb-3 font-mono uppercase tracking-widest">AI Fundamentals · Lesson 1</Chip>
           <h2 className="font-display text-2xl font-bold text-ink">AI or Not?</h2>
           <p className="mt-1 mb-5 max-w-2xl text-ink-dim">
             Eight systems. Which are actually AI? This is the real activity from the first lesson of the course.
@@ -56,7 +56,7 @@ export default function PreviewPage() {
                 </div>
                 <p className="mt-2 text-sm text-ink-dim">{m.tagline}</p>
                 <p className="mt-3 font-mono text-xs text-ink-faint">
-                  {m.lessons.length} lessons Â· {m.lessons.reduce((n, l) => n + l.minutes, 0)} min
+                  {m.lessons.length} lessons · {m.lessons.reduce((n, l) => n + l.minutes, 0)} min
                 </p>
               </GlassCard>
             ))}
@@ -65,7 +65,7 @@ export default function PreviewPage() {
 
         {/* Detective preview */}
         <section className="mt-20">
-          <Chip tone="rose" className="mb-3 font-mono uppercase tracking-widest">AI Detective Â· Case preview</Chip>
+          <Chip tone="rose" className="mb-3 font-mono uppercase tracking-widest">AI Detective · Case preview</Chip>
           <h2 className="font-display text-2xl font-bold text-ink">{s.title}</h2>
           <GlassCard className="mt-4 border-rose-400/20 p-6">
             <p className="font-mono text-xs uppercase tracking-widest text-ink-faint">AI generated response</p>
@@ -81,7 +81,7 @@ export default function PreviewPage() {
 
         {/* Ethics preview */}
         <section className="mt-20">
-          <Chip tone="mint" className="mb-3 font-mono uppercase tracking-widest">Ethics Court Â· Preview</Chip>
+          <Chip tone="mint" className="mb-3 font-mono uppercase tracking-widest">Ethics Court · Preview</Chip>
           <h2 className="font-display text-2xl font-bold text-ink">You are the reviewer</h2>
           <p className="mt-2 max-w-2xl text-ink-dim">
             A school wants AI that predicts which students might fail. Good idea? That&rsquo;s not the question.

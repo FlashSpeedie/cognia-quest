@@ -158,7 +158,7 @@ export function CommandPalette() {
           <ul id={listId} role="listbox" className="max-h-[46vh] overflow-y-auto p-2">
             {items.length === 0 && (
               <li className="px-3 py-8 text-center text-sm text-ink-faint">
-                {query ? `No results for â€œ${query}â€. Try â€œtokenâ€, â€œoverfittingâ€, or â€œbiasâ€.` : "Type to search everything."}
+                {query ? `No results for “${query}”. Try “token”, “overfitting”, or “bias”.` : "Type to search everything."}
               </li>
             )}
             {items.map((it, i) => {
@@ -198,8 +198,8 @@ export function CommandPalette() {
             })}
           </ul>
           <div className="border-t border-void-700 px-4 py-2 text-[11px] text-ink-faint">
-            <kbd className="rounded border border-void-700 bg-void-800 px-1">â†‘â†“</kbd> navigate Â·{" "}
-            <kbd className="rounded border border-void-700 bg-void-800 px-1">â†µ</kbd> open Â·{" "}
+            <kbd className="rounded border border-void-700 bg-void-800 px-1">↑↓</kbd> navigate ·{" "}
+            <kbd className="rounded border border-void-700 bg-void-800 px-1">↵</kbd> open ·{" "}
             <kbd className="rounded border border-void-700 bg-void-800 px-1">ctrl k</kbd> toggle
           </div>
         </div>

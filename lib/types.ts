@@ -43,6 +43,8 @@ export interface User {
   /** Cached total XP - always kept consistent with xp_events by awardXP(). */
   xpTotal: number;
   isDemo: boolean;
+  /** "active" (default) or "suspended". Suspended accounts cannot sign in. */
+  status?: "active" | "suspended";
 }
 
 export interface Session {

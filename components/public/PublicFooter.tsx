@@ -16,7 +16,7 @@ export function PublicFooter() {
         </nav>
       </div>
       <p className="mx-auto mt-6 max-w-6xl px-4 text-xs text-ink-faint">
-        Cognia Quest is an interactive learning project built for the TSA Webmaster competition.
+        Cognia Quest is an interactive AI learning platform for students.
       </p>
     </footer>
   );

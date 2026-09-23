@@ -73,7 +73,7 @@ export function NotificationBell({ initialUnread }: { initialUnread: number }) {
         <div className="absolute right-0 top-12 z-50 w-80 max-w-[86vw] animate-fade-up rounded-xl border border-void-700 bg-void-900 shadow-pop">
           <p className="border-b border-void-700 px-4 py-3 font-display text-sm font-bold text-ink">Notifications</p>
           <div className="max-h-80 overflow-y-auto">
-            {!items && <p className="px-4 py-6 text-center text-sm text-ink-faint">Loadingâ€¦</p>}
+            {!items && <p className="px-4 py-6 text-center text-sm text-ink-faint">Loading...</p>}
             {items && items.length === 0 && (
               <p className="px-4 py-8 text-center text-sm text-ink-faint">All quiet. Your next badge will land here.</p>
             )}

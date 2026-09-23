@@ -133,6 +133,7 @@ export async function loginUser(
 async function loginLocal(db: Db, data: { email: string; password: string }): Promise<Result> {
   const user = await db.table("users").first({ email: data.email });
   if (!user || !user.passwordHash) return { ok: false, error: "Invalid email or password" };
+  if (user.status === "suspended") return { ok: false, error: "This account has been suspended" };
   const ok = await verifyPassword(data.password, user.passwordHash);
   if (!ok) return { ok: false, error: "Invalid email or password" };
   await audit(db, user.id, "user.login", user.id);

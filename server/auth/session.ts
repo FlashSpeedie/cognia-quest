@@ -93,7 +93,10 @@ async function getLocalUser(dbOverride?: Db): Promise<User | null> {
     await db.table("sessions").remove(id);
     return null;
   }
-  return db.table("users").get(session.userId);
+  const user = await db.table("users").get(session.userId);
+  // Suspended accounts are treated as signed out everywhere.
+  if (user?.status === "suspended") return null;
+  return user;
 }
 
 /**
@@ -110,6 +113,8 @@ async function getSupabaseUser(dbOverride?: Db): Promise<User | null> {
     if (error || !data.user) return null;
     const db = dbOverride ?? (await getDb());
     const existing = await db.table("users").get(data.user.id);
+    // Suspended accounts are treated as signed out everywhere.
+    if (existing?.status === "suspended") return null;
     if (existing) return existing;
     return await provisionProfile(db, data.user.id, data.user.email ?? "", data.user.user_metadata?.display_name);
   } catch {
