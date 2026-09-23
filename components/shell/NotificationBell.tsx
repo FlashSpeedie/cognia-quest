@@ -79,7 +79,7 @@ export function NotificationBell({ initialUnread }: { initialUnread: number }) {
             )}
             {items?.map((n) => (
               <div key={n.id} className="flex gap-3 border-b border-void-700/50 px-4 py-3 last:border-0">
-                <span className="mt-0.5 text-pulse-300">
+                <span className="mt-0.5 text-pulse-700 dark:text-pulse-300">
                   <Icon name={KIND_ICON[n.kind] ?? "flag"} size={16} />
                 </span>
                 <div className="min-w-0">

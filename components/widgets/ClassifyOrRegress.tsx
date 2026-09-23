@@ -37,7 +37,7 @@ export function ClassifyOrRegress({ onComplete }: { onComplete?: () => void }) {
                     disabled={checked}
                     onClick={() => setAnswers((a) => ({ ...a, [i]: t }))}
                     className={`rounded-lg border px-3 py-1.5 text-xs font-semibold capitalize focus-ring ${
-                      chosen === t ? "border-pulse-400 bg-pulse-400/15 text-pulse-300" : "border-void-700 text-ink-dim hover:text-ink"
+                      chosen === t ? "border-pulse-400 bg-pulse-400/15 text-pulse-700 dark:text-pulse-300" : "border-void-700 text-ink-dim hover:text-ink"
                     }`}
                   >
                     {t}
@@ -53,7 +53,7 @@ export function ClassifyOrRegress({ onComplete }: { onComplete?: () => void }) {
           <Button disabled={!done} onClick={() => { setChecked(true); if (correct >= 5) onComplete?.(); }}>Check</Button>
         ) : (
           <p className="text-sm font-semibold text-ink">
-            {correct}/{PROBLEMS.length} right. {correct === PROBLEMS.length ? "Task-types sorted." : "Category or number — that question settles it."}
+            {correct}/{PROBLEMS.length} right. {correct === PROBLEMS.length ? "Task-types sorted." : "Category or number - that question settles it."}
           </p>
         )}
       </div>

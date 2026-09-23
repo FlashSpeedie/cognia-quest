@@ -74,7 +74,7 @@ export function BiasSim() {
           <div>
             <p className="font-mono text-[10px] uppercase tracking-widest text-ink-faint">Scenario</p>
             <p className="mt-1 text-sm text-ink">
-              A school awards <strong>6 scholarships</strong>. A model was trained on historical decisions. Review its output below —
+              A school awards <strong>6 scholarships</strong>. A model was trained on historical decisions. Review its output below -
               then figure out <em>which feature is leaking bias into it</em>.
             </p>
           </div>
@@ -94,14 +94,14 @@ export function BiasSim() {
               <p className="text-[11px] text-ink-faint">approval · live ≥30 min away</p>
             </div>
             <div className="text-center">
-              <p className={`font-display text-3xl font-black ${result.disparity > 20 ? "text-rose-400" : "text-mint-300"}`}>
+              <p className={`font-display text-3xl font-black ${result.disparity > 20 ? "text-rose-400" : "text-mint-700 dark:text-mint-300"}`}>
                 {result.disparity > 0 ? "+" : ""}{result.disparity}
               </p>
               <p className="text-[11px] text-ink-faint">point gap</p>
             </div>
           </div>
           {result.crossover && (
-            <p className="max-w-xs text-xs leading-relaxed text-amber-300">
+            <p className="max-w-xs text-xs leading-relaxed text-amber-600 dark:text-amber-300">
               🚩 A <strong>{result.crossover.approvedGPA.toFixed(1)} GPA</strong> applicant 12 minutes away was approved while a{" "}
               <strong>{result.crossover.rejectedGPA.toFixed(1)} GPA</strong> applicant 48 minutes out was rejected.
             </p>
@@ -111,7 +111,7 @@ export function BiasSim() {
 
       {/* feature inspector */}
       <GlassCard className="p-5">
-        <p className="font-mono text-[10px] uppercase tracking-widest text-ink-faint">Feature inspector — which one is the leak?</p>
+        <p className="font-mono text-[10px] uppercase tracking-widest text-ink-faint">Feature inspector - which one is the leak?</p>
         <div className="mt-3 flex flex-wrap gap-2">
           {BIAS_FEATURES.map((f) => {
             const on = active.has(f.key);
@@ -122,7 +122,7 @@ export function BiasSim() {
                   aria-pressed={selectedFeature === f.key}
                   className={`rounded-lg px-3 py-1.5 text-xs font-semibold focus-ring ${
                     identified && f.suspicious
-                      ? "bg-rose-400/20 text-rose-300"
+                      ? "bg-rose-400/20 text-rose-700 dark:text-rose-300"
                       : selectedFeature === f.key && !f.suspicious
                         ? "bg-void-700 text-ink-dim"
                         : "bg-void-800 text-ink hover:bg-void-700"
@@ -147,20 +147,20 @@ export function BiasSim() {
           <div className="mt-3 space-y-1">
             {selectedFeature === "commuteMin" ? null : (
               <p className="text-xs text-ink-faint">
-                {selectedFeature === "grades" && "GPA is a legitimate feature — and it doesn't explain the geographic pattern."}
+                {selectedFeature === "grades" && "GPA is a legitimate feature - and it doesn't explain the geographic pattern."}
                 {selectedFeature === "activities" && "Extracurriculars matter, but they don't correlate with distance from school."}
-                {selectedFeature === "attendance" && "Attendance is a fair signal — unrelated to the gap you're seeing."}
+                {selectedFeature === "attendance" && "Attendance is a fair signal - unrelated to the gap you're seeing."}
               </p>
             )}
           </div>
         )}
         {identified && (
           <div className="mt-3 rounded-xl border border-rose-400/30 bg-rose-400/10 p-4 text-sm text-ink">
-            <p className="font-semibold text-rose-300">Leak found: commute distance.</p>
+            <p className="font-semibold text-rose-700 dark:text-rose-300">Leak found: commute distance.</p>
             <p className="mt-1 text-ink-dim">
-              Distance proxies neighborhood and income. The model never needed to see race or wealth — the proxy smuggled the pattern in.
+              Distance proxies neighborhood and income. The model never needed to see race or wealth - the proxy smuggled the pattern in.
               <strong> Switch off &quot;Commute distance&quot;</strong> and re-run to see the gap collapse. (And remember: removing one
-              proxy doesn&apos;t guarantee fairness — you have to re-audit.)
+              proxy doesn&apos;t guarantee fairness - you have to re-audit.)
             </p>
           </div>
         )}
@@ -188,8 +188,8 @@ export function BiasSim() {
                   <td className="px-4 py-2 font-mono">{r.grades.toFixed(1)}</td>
                   <td className="px-4 py-2 font-mono">{r.activities}</td>
                   <td className="px-4 py-2 font-mono">{r.attendance}%</td>
-                  <td className={`px-4 py-2 font-mono ${usingProxy && r.commuteMin >= 30 ? "text-rose-300" : ""}`}>{r.commuteMin} min</td>
-                  <td className="px-4 py-2 font-mono text-pulse-300">{r.score.toFixed(1)}</td>
+                  <td className={`px-4 py-2 font-mono ${usingProxy && r.commuteMin >= 30 ? "text-rose-700 dark:text-rose-300" : ""}`}>{r.commuteMin} min</td>
+                  <td className="px-4 py-2 font-mono text-pulse-700 dark:text-pulse-300">{r.score.toFixed(1)}</td>
                   <td className="px-4 py-2">
                     <Chip tone={r.approved ? "mint" : "neutral"}>{r.approved ? "APPROVED" : "declined"}</Chip>
                   </td>
@@ -203,9 +203,9 @@ export function BiasSim() {
       {!usingProxy ? (
         <GlassCard className="border-mint-400/30 bg-mint-400/5 p-5">
           <div className="flex items-start gap-3">
-            <Icon name="check" size={22} className="mt-0.5 shrink-0 text-mint-300" />
+            <Icon name="check" size={22} className="mt-0.5 shrink-0 text-mint-700 dark:text-mint-300" />
             <div>
-              <p className="font-semibold text-mint-300">Re-check complete: the gap collapsed.</p>
+              <p className="font-semibold text-mint-700 dark:text-mint-300">Re-check complete: the gap collapsed.</p>
               <p className="mt-1 text-sm text-ink-dim">
                 With commute distance removed, approvals track academic merit. Three lessons to keep:
                 biased history teaches biased models; proxies can smuggle in what you removed directly; and fairness work means

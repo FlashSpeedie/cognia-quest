@@ -11,8 +11,8 @@ interface Turn {
 }
 
 /**
- * "Ask the tutor" — optional live-AI help about the current lesson.
- * When Gemini isn't configured on the server the panel says so honestly
+ * "Ask the tutor" - optional live-AI help about the current lesson.
+ * When the AI assistant isn't configured on the server the panel says so honestly
  * instead of faking an answer.
  */
 export function TutorPanel({ lessonId, lessonTitle }: { lessonId: string; lessonTitle: string }) {
@@ -40,7 +40,7 @@ export function TutorPanel({ lessonId, lessonTitle }: { lessonId: string; lesson
         setQuestion("");
       }
     } catch {
-      setStatus("Network error — the tutor couldn't be reached.");
+      setStatus("Network error - the tutor couldn't be reached.");
     } finally {
       setLoading(false);
     }
@@ -49,12 +49,12 @@ export function TutorPanel({ lessonId, lessonTitle }: { lessonId: string; lesson
   return (
     <GlassCard className="mt-6 p-5">
       <div className="flex items-center gap-2">
-        <Icon name="spark" size={16} className="text-volt-300" />
+        <Icon name="spark" size={16} className="text-volt-700 dark:text-volt-300" />
         <h2 className="font-display text-base font-bold text-ink">Ask the tutor</h2>
         <span className="font-mono text-[10px] uppercase tracking-widest text-ink-faint">about “{lessonTitle}”</span>
       </div>
       <p className="mt-1 text-xs text-ink-faint">
-        Live answers from Gemini when enabled on this server. It never marks work or changes scores.
+        Live answers from the AI learning assistant when enabled on this server. It never marks work or changes scores.
       </p>
 
       {turns.map((t, i) => (
@@ -89,7 +89,7 @@ export function TutorPanel({ lessonId, lessonTitle }: { lessonId: string; lesson
         </Button>
       </form>
       {status && (
-        <p role="alert" className="mt-3 text-sm text-amber-300">
+        <p role="alert" className="mt-3 text-sm text-amber-600 dark:text-amber-300">
           {status}
         </p>
       )}

@@ -85,7 +85,7 @@ export async function getUserStats(db: Db, userId: string): Promise<UserStats> {
   };
 }
 
-/** Skills radar (spec §103) — educational indicators, not assessments. */
+/** Skills radar (spec §103) - educational indicators, not assessments. */
 export interface SkillsProfile {
   label: string;
   value: number; // 0-100

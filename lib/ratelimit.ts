@@ -7,7 +7,7 @@ import { isRateLimitBypassActive } from "./env";
  * Test-only escape hatch: AQ_DISABLE_RATE_LIMIT=1 (set by the Playwright
  * webServer process) makes limiting a no-op so E2E runs are deterministic.
  * It can never weaken a real deployment: when Supabase (production backend)
- * is configured the bypass is ignored — see lib/env.ts.
+ * is configured the bypass is ignored - see lib/env.ts.
  */
 
 interface Bucket {

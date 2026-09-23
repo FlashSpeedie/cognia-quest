@@ -7,6 +7,6 @@ export async function recordSimFeedback(simId: string, result: Record<string, un
       body: JSON.stringify({ simId, result }),
     });
   } catch {
-    // offline-safe: silently drop — the UI told the user nothing persisted
+    // offline-safe: silently drop - the UI told the user nothing persisted
   }
 }

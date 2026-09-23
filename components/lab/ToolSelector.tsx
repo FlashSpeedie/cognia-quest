@@ -71,7 +71,7 @@ export function ToolSelector() {
               let cls = "border-void-700 text-ink hover:border-pulse-400/50";
               if (feedback) {
                 if (i === s.correct) cls = "border-mint-400/60 bg-mint-400/10 text-mint-200";
-                else if (picked === i) cls = "border-rose-400/60 bg-rose-400/10 text-rose-300";
+                else if (picked === i) cls = "border-rose-400/60 bg-rose-400/10 text-rose-700 dark:text-rose-300";
                 else cls = "border-void-700 text-ink-faint";
               }
               return (
@@ -89,9 +89,9 @@ export function ToolSelector() {
           </div>
           {feedback && (
             <div className="mt-5 space-y-2 rounded-xl border border-void-700 bg-void-900/60 p-4 text-sm">
-              <p className="text-ink"><span className="font-bold text-mint-300">Why it fits:</span> {feedback.why}</p>
-              <p className="text-ink"><span className="font-bold text-amber-300">Watch out:</span> {feedback.risks}</p>
-              <p className="text-ink"><span className="font-bold text-pulse-300">Verify:</span> {feedback.verify}</p>
+              <p className="text-ink"><span className="font-bold text-mint-700 dark:text-mint-300">Why it fits:</span> {feedback.why}</p>
+              <p className="text-ink"><span className="font-bold text-amber-600 dark:text-amber-300">Watch out:</span> {feedback.risks}</p>
+              <p className="text-ink"><span className="font-bold text-pulse-700 dark:text-pulse-300">Verify:</span> {feedback.verify}</p>
               <Button className="mt-2" size="sm" onClick={next}>Next scenario</Button>
             </div>
           )}

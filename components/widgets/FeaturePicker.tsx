@@ -5,10 +5,10 @@ import { Button } from "@/components/ui/Button";
 import { GlassCard } from "@/components/ui/Card";
 
 const COLUMNS = [
-  { id: "hours", label: "Study hours / week", verdict: "useful", note: "Direct learning signal — legitimate feature." },
+  { id: "hours", label: "Study hours / week", verdict: "useful", note: "Direct learning signal - legitimate feature." },
   { id: "sleep", label: "Sleep hours / night", verdict: "useful", note: "Correlates with outcomes; fine to include." },
   { id: "past", label: "Past quiz scores", verdict: "useful", note: "Strongest signal available." },
-  { id: "zip", label: "ZIP code", verdict: "risky", note: "Proxies for income and ethnicity — a fairness trap." },
+  { id: "zip", label: "ZIP code", verdict: "risky", note: "Proxies for income and ethnicity - a fairness trap." },
   { id: "name", label: "Student name", verdict: "harmless-useless", note: "Identifiers carry no pattern; they just memorize rows (and leak privacy)." },
   { id: "dist", label: "Distance from school", verdict: "risky", note: "Like ZIP: often a proxy for neighborhood wealth." },
 ];
@@ -31,7 +31,7 @@ export function FeaturePicker({ onComplete }: { onComplete?: () => void }) {
                 <div>
                   <p className="text-sm font-semibold text-ink">{c.label}</p>
                   {checked && (
-                    <p className={`mt-1 text-xs ${c.verdict === "risky" ? "text-amber-300" : c.verdict === "useful" ? "text-mint-300" : "text-ink-faint"}`}>
+                    <p className={`mt-1 text-xs ${c.verdict === "risky" ? "text-amber-600 dark:text-amber-300" : c.verdict === "useful" ? "text-mint-700 dark:text-mint-300" : "text-ink-faint"}`}>
                       {c.note}
                     </p>
                   )}
@@ -63,7 +63,7 @@ export function FeaturePicker({ onComplete }: { onComplete?: () => void }) {
           <p className="text-sm text-ink">
             {trapPicked
               ? "⚠ You included a proxy feature (ZIP or distance). Legal to collect? Maybe. Fair to use? That's the unit's whole point."
-              : "Clean choices — signals without the proxy traps."}
+              : "Clean choices - signals without the proxy traps."}
           </p>
         )}
       </div>

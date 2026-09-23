@@ -26,12 +26,12 @@ export default async function CourtPage() {
       <nav aria-label="Breadcrumb" className="mb-5 flex items-center gap-1.5 text-xs text-ink-faint">
         <Link href="/ethics" className="hover:text-ink focus-ring rounded">Ethics Center</Link>
         <span aria-hidden>/</span>
-        <span className="text-pulse-300">Ethics Court</span>
+        <span className="text-pulse-700 dark:text-pulse-300">Ethics Court</span>
       </nav>
       <SectionHeading
         kicker="Court is in session"
         title="AI Ethics Court"
-        description="Each case: a real-world-style proposal. Your verdict isn't allow/ban — it's the set of questions you'd demand answered. Coverage is scored; ideology is not."
+        description="Each case: a real-world-style proposal. Your verdict isn't allow/ban - it's the set of questions you'd demand answered. Coverage is scored; ideology is not."
       />
       <div className="mt-8 grid gap-4 md:grid-cols-2">
         {ETHICS_CASES.map((c) => {

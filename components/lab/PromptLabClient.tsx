@@ -70,7 +70,7 @@ export function PromptLabClient({ taskId, task }: { taskId: string; task?: strin
       for (const b of data.badges ?? []) push({ kind: "badge", title: `Badge unlocked: ${b}` });
       router.refresh();
     } catch {
-      setError("Network error — your prompt is still in the editor.");
+      setError("Network error - your prompt is still in the editor.");
     } finally {
       setLoading(false);
     }
@@ -95,7 +95,7 @@ export function PromptLabClient({ taskId, task }: { taskId: string; task?: strin
         setCoach({ text: data.feedback });
       }
     } catch {
-      setCoach({ unavailable: "Network error — check your connection." });
+      setCoach({ unavailable: "Network error - check your connection." });
     } finally {
       setCoachLoading(false);
     }
@@ -106,7 +106,7 @@ export function PromptLabClient({ taskId, task }: { taskId: string; task?: strin
       <div className="space-y-4">
         {task && (
           <Card className="border-amber-400/30 p-4">
-            <p className="font-mono text-[10px] uppercase tracking-widest text-amber-300">Task</p>
+            <p className="font-mono text-[10px] uppercase tracking-widest text-amber-600 dark:text-amber-300">Task</p>
             <p className="mt-1 font-display font-bold text-ink">{task}</p>
           </Card>
         )}
@@ -119,7 +119,7 @@ export function PromptLabClient({ taskId, task }: { taskId: string; task?: strin
             value={prompt}
             onChange={(e) => setPrompt(e.target.value.slice(0, 4000))}
             rows={9}
-            placeholder="Ask for anything — then make it impossible to misunderstand. (Drafts are auto-saved on this device.)"
+            placeholder="Ask for anything - then make it impossible to misunderstand. (Drafts are auto-saved on this device.)"
             className="mt-2 w-full rounded-xl border border-void-700 bg-void-900 p-3 font-mono text-sm leading-relaxed text-ink placeholder:text-ink-faint focus-ring"
           />
           <div className="mt-2 flex items-center justify-between text-xs text-ink-faint">
@@ -140,7 +140,7 @@ export function PromptLabClient({ taskId, task }: { taskId: string; task?: strin
           {error && <p role="alert" className="mt-3 text-sm text-rose-400">{error}</p>}
           {coach && (
             <div className="mt-3 rounded-xl border border-volt-400/30 bg-volt-400/5 p-4" role="status">
-              <p className="font-mono text-[10px] uppercase tracking-widest text-volt-300">AI coach (advisory — the rubric is the score)</p>
+              <p className="font-mono text-[10px] uppercase tracking-widest text-volt-700 dark:text-volt-300">AI coach (advisory - the rubric is the score)</p>
               <p className="mt-1.5 whitespace-pre-wrap text-sm leading-relaxed text-ink">
                 {"text" in coach ? coach.text : coach.unavailable}
               </p>
@@ -171,11 +171,11 @@ export function PromptLabClient({ taskId, task }: { taskId: string; task?: strin
               </li>
             ))}
           </ul>
-          <p className="mt-4 border-t border-void-700/60 pt-3 text-sm text-pulse-300">
+          <p className="mt-4 border-t border-void-700/60 pt-3 text-sm text-pulse-700 dark:text-pulse-300">
             <Icon name="spark" size={14} className="mr-1 inline" /> {display.improvedVs ?? "Write something to analyze."}
           </p>
           {display.total >= 80 && submitted && (
-            <p className="mt-3 rounded-xl border border-mint-400/30 bg-mint-400/10 p-3 text-sm font-semibold text-mint-300">
+            <p className="mt-3 rounded-xl border border-mint-400/30 bg-mint-400/10 p-3 text-sm font-semibold text-mint-700 dark:text-mint-300">
               80+ club. Mission objective satisfied if you&apos;re on Mission 04.
             </p>
           )}

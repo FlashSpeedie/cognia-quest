@@ -86,7 +86,7 @@ async function registerSupabase(data: { email: string; displayName: string; pass
       : error.message;
     return { ok: false, error: msg };
   }
-  if (!r.user) return { ok: false, error: "Registration failed — please try again" };
+  if (!r.user) return { ok: false, error: "Registration failed - please try again" };
 
   const db = await getDb();
   // When email confirmation is ON there's no session yet; the profile is
@@ -97,7 +97,7 @@ async function registerSupabase(data: { email: string; displayName: string; pass
       await audit(db, user.id, "user.register", user.id);
       return { ok: true, user };
     }
-    return { ok: false, error: "Account created but profile setup failed — try logging in" };
+    return { ok: false, error: "Account created but profile setup failed - try logging in" };
   }
   // Placeholder-shaped user just so the route can respond; no session set.
   return {
@@ -146,7 +146,7 @@ async function loginSupabase(data: { email: string; password: string }): Promise
     const msg = /invalid login credentials/i.test(error.message)
       ? "Invalid email or password"
       : /email not confirmed/i.test(error.message)
-        ? "Please confirm your email first — check your inbox"
+        ? "Please confirm your email first - check your inbox"
         : error.message;
     return { ok: false, error: msg };
   }
@@ -154,11 +154,11 @@ async function loginSupabase(data: { email: string; password: string }): Promise
   const {
     data: { user: authUser },
   } = await supabase.auth.getUser();
-  if (!authUser) return { ok: false, error: "Login failed — please try again" };
+  if (!authUser) return { ok: false, error: "Login failed - please try again" };
   const user =
     (await db.table("users").get(authUser.id)) ??
     (await provisionProfile(db, authUser.id, data.email, authUser.user_metadata?.display_name));
-  if (!user) return { ok: false, error: "Profile setup failed — contact support" };
+  if (!user) return { ok: false, error: "Profile setup failed - contact support" };
   await audit(db, user.id, "user.login", user.id);
   return { ok: true, user };
 }
@@ -174,7 +174,7 @@ export async function requestPasswordReset(emailRaw: string): Promise<{ ok: true
   const email = z.string().email().max(120).safeParse(emailRaw);
   if (!email.success) return { ok: false, error: "Enter a valid email address" };
   if (!isSupabaseConfigured()) {
-    // Local dev mode has no mailer — the limitation is documented, and the
+    // Local dev mode has no mailer - the limitation is documented, and the
     // route pretends success to avoid leaking which emails exist.
     return { ok: true };
   }
@@ -183,7 +183,7 @@ export async function requestPasswordReset(emailRaw: string): Promise<{ ok: true
   const { error } = await supabase.auth.resetPasswordForEmail(email.data.toLowerCase().trim(), {
     redirectTo: `${appUrl || "http://localhost:3000"}/auth/callback?next=/reset-password`,
   });
-  if (error) return { ok: false, error: "Could not send the reset email — try again shortly" };
+  if (error) return { ok: false, error: "Could not send the reset email - try again shortly" };
   return { ok: true };
 }
 
@@ -194,6 +194,6 @@ export async function updatePassword(newPassword: string): Promise<{ ok: true } 
   if (!isSupabaseConfigured()) return { ok: false, error: "Password reset is unavailable in local mode" };
   const supabase = await authClientForCookies({ writable: true });
   const { error } = await supabase.auth.updateUser({ password: p.data });
-  if (error) return { ok: false, error: "Could not update the password — open the reset link again" };
+  if (error) return { ok: false, error: "Could not update the password - open the reset link again" };
   return { ok: true };
 }

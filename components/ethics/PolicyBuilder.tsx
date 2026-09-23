@@ -8,9 +8,9 @@ import { useToast } from "@/components/ui/Toast";
 import { Icon } from "@/components/ui/Icon";
 
 const STANCES = [
-  { id: "allowed", label: "Allowed freely", tone: "border-mint-400/50 text-mint-300" },
-  { id: "disclose", label: "Allowed with disclosure", tone: "border-pulse-400/50 text-pulse-300" },
-  { id: "ask-first", label: "Ask the teacher first", tone: "border-amber-400/50 text-amber-300" },
+  { id: "allowed", label: "Allowed freely", tone: "border-mint-400/50 text-mint-700 dark:text-mint-300" },
+  { id: "disclose", label: "Allowed with disclosure", tone: "border-pulse-400/50 text-pulse-700 dark:text-pulse-300" },
+  { id: "ask-first", label: "Ask the teacher first", tone: "border-amber-400/50 text-amber-600 dark:text-amber-300" },
   { id: "not-allowed", label: "Not allowed", tone: "border-rose-400/50 text-rose-400" },
 ] as const;
 
@@ -58,7 +58,7 @@ export function PolicyBuilder() {
     <div className="max-w-3xl">
       <GlassCard className="p-5">
         <p className="text-sm leading-relaxed text-ink-dim">
-          Real institutions don&apos;t ban or bless AI wholesale — they write <em>context-specific rules</em>.
+          Real institutions don&apos;t ban or bless AI wholesale - they write <em>context-specific rules</em>.
           Choose a stance per scenario. There are no trick answers here; the exercise is thinking in shades.
         </p>
       </GlassCard>
@@ -97,7 +97,7 @@ export function PolicyBuilder() {
             {SCENARIOS.filter((s) => rules[s.id]).map((s) => (
               <li key={s.id} className="flex justify-between gap-3">
                 <span>{s.label}</span>
-                <span className="font-mono text-xs uppercase text-pulse-300">
+                <span className="font-mono text-xs uppercase text-pulse-700 dark:text-pulse-300">
                   {STANCES.find((x) => x.id === rules[s.id])?.label}
                 </span>
               </li>

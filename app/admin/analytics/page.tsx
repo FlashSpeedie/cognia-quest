@@ -4,7 +4,7 @@ import { getAdminOverview } from "@/server/services/admin";
 import { SectionHeading, Card } from "@/components/ui/Card";
 import { Chip } from "@/components/ui/Chip";
 
-export const metadata: Metadata = { title: "Admin — Analytics" };
+export const metadata: Metadata = { title: "Admin - Analytics" };
 export const dynamic = "force-dynamic";
 
 export default async function AdminAnalytics() {
@@ -17,7 +17,7 @@ export default async function AdminAnalytics() {
       <SectionHeading kicker="Telemetry" title="Learning Analytics" />
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
         <Card className="p-6">
-          <h2 className="font-display text-lg font-bold text-ink">Activity — last 14 days</h2>
+          <h2 className="font-display text-lg font-bold text-ink">Activity - last 14 days</h2>
           <div className="mt-4 flex h-36 items-end gap-1.5" role="img" aria-label={`Daily activity chart, peak ${maxDay} actions`}>
             {o.activitySeries.map((d) => (
               <div key={d.day} className="group relative flex-1" title={`${d.day}: ${d.count} actions`}>
@@ -56,8 +56,8 @@ export default async function AdminAnalytics() {
               <li key={q.id} className="flex items-center justify-between gap-2 text-sm">
                 <span className="min-w-0 flex-1 truncate text-ink-dim">{q.title}</span>
                 <span className="font-mono text-xs text-ink-faint">{q.attempts} tries</span>
-                <span className={`font-mono text-xs font-bold ${q.accuracy == null ? "text-ink-faint" : q.accuracy >= 80 ? "text-mint-300" : q.accuracy >= 60 ? "text-amber-300" : "text-rose-400"}`}>
-                  {q.accuracy == null ? "—" : `${q.accuracy}%`}
+                <span className={`font-mono text-xs font-bold ${q.accuracy == null ? "text-ink-faint" : q.accuracy >= 80 ? "text-mint-700 dark:text-mint-300" : q.accuracy >= 60 ? "text-amber-600 dark:text-amber-300" : "text-rose-400"}`}>
+                  {q.accuracy == null ? "-" : `${q.accuracy}%`}
                 </span>
               </li>
             ))}
@@ -71,8 +71,8 @@ export default async function AdminAnalytics() {
               <li key={c.id} className="flex items-center justify-between gap-2 text-sm">
                 <span className="min-w-0 flex-1 truncate text-ink-dim">{c.title}</span>
                 <span className="font-mono text-xs text-ink-faint">{c.attempts} tries</span>
-                <span className={`font-mono text-xs font-bold ${c.solveRate == null ? "text-ink-faint" : c.solveRate >= 80 ? "text-mint-300" : c.solveRate >= 50 ? "text-amber-300" : "text-rose-400"}`}>
-                  {c.solveRate == null ? "—" : `${c.solveRate}% solved`}
+                <span className={`font-mono text-xs font-bold ${c.solveRate == null ? "text-ink-faint" : c.solveRate >= 80 ? "text-mint-700 dark:text-mint-300" : c.solveRate >= 50 ? "text-amber-600 dark:text-amber-300" : "text-rose-400"}`}>
+                  {c.solveRate == null ? "-" : `${c.solveRate}% solved`}
                 </span>
               </li>
             ))}

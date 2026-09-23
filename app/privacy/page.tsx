@@ -3,11 +3,13 @@ import { PublicNav } from "@/components/public/PublicNav";
 import { PublicFooter } from "@/app/page";
 import { SectionHeading, GlassCard } from "@/components/ui/Card";
 import { isDemoEnabled } from "@/lib/env";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Privacy",
-  description: "How AI Quest handles student data: minimally, transparently, and without tracking.",
-};
+  description: "How Cognia Quest handles student data: minimally, transparently, and without advertising or tracking.",
+  path: "/privacy",
+});
 
 export default function PrivacyPage() {
   const demo = isDemoEnabled();
@@ -38,7 +40,7 @@ export default function PrivacyPage() {
             },
             {
               t: "For schools",
-              b: "AI Quest practices what it teaches: data minimization and purpose limitation. Only what's needed to run the learning experience is stored.",
+              b: "Cognia Quest practices what it teaches: data minimization and purpose limitation. Only what's needed to run the learning experience is stored.",
             },
           ].map((c) => (
             <GlassCard key={c.t} className="p-6">

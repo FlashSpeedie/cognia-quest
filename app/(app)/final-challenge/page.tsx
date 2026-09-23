@@ -28,7 +28,7 @@ export default async function FinalChallengePage() {
       {existing ? (
         <div>
           <GlassCard className="mx-auto mb-6 max-w-2xl border-mint-400/30 bg-mint-400/5 p-5 text-center">
-            <p className="text-sm text-mint-300">Already completed — score {existing.totalScore}%. Here&apos;s your report card.</p>
+            <p className="text-sm text-mint-700 dark:text-mint-300">Already completed - score {existing.totalScore}%. Here&apos;s your report card.</p>
           </GlassCard>
           <FinalChallenge previousTotal={existing.totalScore} />
         </div>

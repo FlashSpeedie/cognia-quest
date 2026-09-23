@@ -38,7 +38,7 @@ export default async function ProgressPage() {
       <SectionHeading
         kicker="Analytics"
         title="Your progress"
-        description="Everything below is a learning indicator for reflection — not a grade, and not a judgment."
+        description="Everything below is a learning indicator for reflection - not a grade, and not a judgment."
       />
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -46,7 +46,7 @@ export default async function ProgressPage() {
           { label: "Total XP", value: user.xpTotal.toLocaleString(), sub: `Level ${level.current.level}` },
           { label: "Lessons", value: `${stats.lessonsCompleted}/${totalLessons}`, sub: "completed" },
           { label: "Missions", value: `${stats.missionsCompleted}/10`, sub: "completed" },
-          { label: "Quiz accuracy", value: stats.quizzesTaken ? `${stats.quizAccuracy}%` : "—", sub: `${stats.quizzesTaken} attempts` },
+          { label: "Quiz accuracy", value: stats.quizzesTaken ? `${stats.quizAccuracy}%` : "-", sub: `${stats.quizzesTaken} attempts` },
         ].map((s) => (
           <Card key={s.label} className="p-5">
             <p className="font-mono text-[11px] uppercase tracking-widest text-ink-faint">{s.label}</p>
@@ -60,7 +60,7 @@ export default async function ProgressPage() {
         <Card className="p-6 lg:col-span-3">
           <h2 className="font-display text-lg font-bold text-ink">XP history</h2>
           <p className="mt-1 text-xs text-ink-faint">
-            Streak: {streak?.current ?? 0} days (best {streak?.longest ?? 0}) — one meaningful activity per day keeps it alive. No endless-guilt mechanics.
+            Streak: {streak?.current ?? 0} days (best {streak?.longest ?? 0}) - one meaningful activity per day keeps it alive. No endless-guilt mechanics.
           </p>
           <div className="mt-4">
             <XPSpark points={xpSeries} />
@@ -90,7 +90,7 @@ export default async function ProgressPage() {
                 <Link key={m.id} href={`/academy/${m.slug}`} className="block focus-ring rounded-xl">
                   <div className="flex items-center justify-between">
                     <span className="flex items-center gap-2 text-sm font-semibold text-ink">
-                      <Icon name={m.icon as never} size={16} className="text-pulse-300" />
+                      <Icon name={m.icon as never} size={16} className="text-pulse-700 dark:text-pulse-300" />
                       {m.title}
                     </span>
                     {pct === 100 && <Chip tone="mint">complete</Chip>}
@@ -115,7 +115,7 @@ async function MiniActivity({ userId }: { userId: string }) {
   const items = (await db.table("activity").find({ userId }))
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
     .slice(0, 20);
-  if (items.length === 0) return <p className="mt-4 text-sm text-ink-faint">Nothing yet — complete a lesson to start the log.</p>;
+  if (items.length === 0) return <p className="mt-4 text-sm text-ink-faint">Nothing yet - complete a lesson to start the log.</p>;
   return (
     <ul className="mt-4 space-y-2.5">
       {items.map((a) => (

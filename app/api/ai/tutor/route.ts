@@ -4,7 +4,7 @@ import { json, parseBody, requireUser, throttle } from "@/server/http";
 
 /**
  * AI Tutor (spec §112): answers questions about the CURRENT lesson topic.
- * Context is server-derived from the lesson id — clients can't inject
+ * Context is server-derived from the lesson id - clients can't inject
  * arbitrary system prompts. Gemini only teaches; it never scores or grants.
  */
 const schema = z.object({
@@ -13,7 +13,7 @@ const schema = z.object({
 });
 
 const SYSTEM = [
-  "You are the AI Quest tutor for high-school students learning AI literacy.",
+  "You are the Cognia Quest tutor for high-school students learning AI literacy.",
   "Answer briefly (under 150 words), accurately and encouragingly.",
   "If the question is off-topic for AI literacy, say so and redirect.",
   "Never do homework for the student; explain concepts instead.",
@@ -33,7 +33,7 @@ export async function POST(req: Request) {
   const r = await callGemini(SYSTEM, `${context}Student question: ${parsed.data.question}`);
   if (!r.ok) {
     const status = r.reason === "unconfigured" ? 503 : r.reason === "timeout" ? 504 : 502;
-    return json({ error: "The tutor is unavailable right now — try again in a moment.", reason: r.reason }, status);
+    return json({ error: "The tutor is unavailable right now - try again in a moment.", reason: r.reason }, status);
   }
   return json({ ok: true, answer: r.text });
 }

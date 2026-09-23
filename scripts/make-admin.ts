@@ -5,7 +5,7 @@
  *     npx tsx scripts/make-admin.ts teacher@school.org
  *
  * The account must already exist (the teacher registers normally first).
- * This promotes their profile to role=admin via the secret key — there is
+ * This promotes their profile to role=admin via the secret key - there is
  * deliberately no "create admin account" UI or API anywhere in the app.
  * Run only from an operator machine; never expose the secret key.
  */

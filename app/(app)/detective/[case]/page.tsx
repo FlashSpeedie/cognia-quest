@@ -28,7 +28,7 @@ export default async function DetectiveCasePage({ params }: { params: Promise<{ 
       <nav aria-label="Breadcrumb" className="mb-5 flex items-center gap-1.5 text-xs text-ink-faint">
         <Link href="/detective" className="hover:text-ink focus-ring rounded">AI Detective</Link>
         <span aria-hidden>/</span>
-        <span className="text-pulse-300">Case #{c.caseNo}</span>
+        <span className="text-pulse-700 dark:text-pulse-300">Case #{c.caseNo}</span>
       </nav>
       <CaseInvestigation caseFile={c} alreadySolved={solved} />
     </div>

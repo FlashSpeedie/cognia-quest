@@ -39,7 +39,7 @@ test.describe("student journey (spec §78)", () => {
     await page.getByRole("button", { name: "Continue" }).click();
     await page.getByRole("button", { name: /Learn machine learning/ }).click();
     await page.getByRole("button", { name: /See your roadmap/i }).click();
-    await page.getByRole("button", { name: /Enter AI Quest/i }).click();
+    await page.getByRole("button", { name: /Enter Cognia Quest/i }).click();
     await expect(page).toHaveURL(/\/dashboard/);
     await expect(page.getByText(/Welcome back, E2E/i)).toBeVisible();
 

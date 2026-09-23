@@ -15,9 +15,9 @@
   --bg-glass: rgba(255, 255, 255, 0.9);
   --border-subtle: rgba(16, 24, 40, 0.1);
 
-  --ink: #101828;        /* charcoal navy — primary text */
-  --ink-dim: #475467;    /* slate — secondary text */
-  --ink-faint: #667085;  /* gray — tertiary text */
+  --ink: #101828;        /* charcoal navy - primary text */
+  --ink-dim: #475467;    /* slate - secondary text */
+  --ink-faint: #667085;  /* gray - tertiary text */
 
   /* Neutral surface scale (legacy name kept so components stay unchanged) */
   --void-950: #f1f5f9;

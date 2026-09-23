@@ -13,7 +13,7 @@ import { useToast } from "@/components/ui/Toast";
 import { Term } from "@/components/ui/Tooltip";
 import { TutorPanel } from "@/components/ai/TutorPanel";
 
-// Widget registry — interactive components referenced by content
+// Widget registry - interactive components referenced by content
 import { AIOrNot } from "@/components/widgets/AIOrNot";
 import { WhatIsModel } from "@/components/widgets/WhatIsModel";
 import { AITypesMatch } from "@/components/widgets/AITypesMatch";
@@ -50,10 +50,10 @@ function RichText({ body }: { body: string }) {
   // lightweight glossary linking for a few core terms
   const terms: Record<string, string> = {
     "machine learning": "Systems that infer patterns from examples instead of following hand-written rules.",
-    "model": "The learned pattern produced by training — what actually makes predictions.",
+    "model": "The learned pattern produced by training - what actually makes predictions.",
     "hallucination": "Confident output that is factually wrong or invented.",
     "overfitting": "Memorizing training data so well that new data breaks the model.",
-    "token": "A chunk of text a model reads or writes — often part of a word.",
+    "token": "A chunk of text a model reads or writes - often part of a word.",
     "context window": "How much text a model can see at once.",
   };
   let parts: (string | React.JSX.Element)[] = [body];
@@ -112,7 +112,7 @@ export function LessonView({
       });
       if (!res.ok) throw new Error();
     } catch {
-      push({ kind: "error", title: "Couldn't save progress", body: "Kept locally for now — try again in a moment." });
+      push({ kind: "error", title: "Couldn't save progress", body: "Kept locally for now - try again in a moment." });
     }
   }
 
@@ -144,7 +144,7 @@ export function LessonView({
                     onClick={() => goTo(i)}
                     aria-current={isCurrent ? "step" : undefined}
                     className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-xs transition-colors focus-ring ${
-                      isCurrent ? "bg-pulse-400/10 text-pulse-300" : isDone ? "text-mint-300/90" : "text-ink-faint hover:text-ink-dim"
+                      isCurrent ? "bg-pulse-400/10 text-pulse-700 dark:text-pulse-300" : isDone ? "text-mint-700 dark:text-mint-300/90" : "text-ink-faint hover:text-ink-dim"
                     }`}
                   >
                     <span aria-hidden="true">
@@ -170,7 +170,7 @@ export function LessonView({
           <span aria-hidden>/</span>
           <a href={`/academy/${moduleSlug}`} className="hover:text-ink focus-ring rounded">{moduleTitle}</a>
           <span aria-hidden>/</span>
-          <span className="text-pulse-300">{lesson.title}</span>
+          <span className="text-pulse-700 dark:text-pulse-300">{lesson.title}</span>
         </nav>
 
         <header className="mb-6">
@@ -216,7 +216,7 @@ export function LessonView({
                 setActiveStep(activeStep + 1);
               }}
             >
-              {current && !done.has(current.id) ? "Got it — next" : "Next"} <Icon name="arrow-right" size={16} />
+              {current && !done.has(current.id) ? "Got it - next" : "Next"} <Icon name="arrow-right" size={16} />
             </Button>
           ) : completedAll ? (
             nextHref ? (
@@ -236,7 +236,7 @@ export function LessonView({
         {completedAll && (
           <GlassCard glow className="mt-6 flex flex-wrap items-center justify-between gap-4 p-5">
             <div>
-              <p className="font-display text-lg font-bold text-ink">Lesson complete — +{lesson.xp} XP banked.</p>
+              <p className="font-display text-lg font-bold text-ink">Lesson complete - +{lesson.xp} XP banked.</p>
               <p className="text-sm text-ink-dim">
                 {doneLesson ? "You already earned this one; replays don't double-dip XP." : "Saved to your permanent record."}
               </p>

@@ -138,7 +138,7 @@ export const PRIVACY_SCENARIOS: PrivacyScenario[] = [
       { id: "d4", label: "Your religious beliefs", needed: false, reason: "Sensitive data, not needed for club matching." },
       { id: "d5", label: "Continuous clipboard access", needed: false, reason: "Clipboard snooping is a known privacy abuse." },
     ],
-    principle: "Sensitive traits require exceptional justification — which hobby-matching doesn't have.",
+    principle: "Sensitive traits require exceptional justification - which hobby-matching doesn't have.",
   },
 ];
 

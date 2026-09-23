@@ -25,7 +25,7 @@ export function recommendations(s: UserStats): Recommendation[] {
     recs.push({
       id: "train-machine",
       title: "Train the Machine",
-      reason: "You know the theory — now see a model actually learn.",
+      reason: "You know the theory - now see a model actually learn.",
       href: "/lab/train-the-machine",
       priority: 2,
     });
@@ -42,7 +42,7 @@ export function recommendations(s: UserStats): Recommendation[] {
     recs.push({
       id: "promptlab",
       title: "Try the Prompt Lab",
-      reason: "You know how generative AI works — practice driving it.",
+      reason: "You know how generative AI works - practice driving it.",
       href: "/lab/prompt-lab",
       priority: 3,
     });
@@ -69,7 +69,7 @@ export function recommendations(s: UserStats): Recommendation[] {
     recs.push({
       id: "final",
       title: "The Final AI Challenge",
-      reason: "You've built the skills — bring them together.",
+      reason: "You've built the skills - bring them together.",
       href: "/final-challenge",
       priority: 1,
     });

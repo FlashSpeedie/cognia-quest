@@ -7,7 +7,7 @@ export const PROMPT_TASKS: PromptTask[] = [
     category: "Study guide",
     task: "Create a study guide for a biology exam on cell structure.",
     weakExample: "Help me study cells.",
-    hints: ["Who is the audience?", "What format helps studying — outline, table, flashcards?", "How long should it be?"],
+    hints: ["Who is the audience?", "What format helps studying - outline, table, flashcards?", "How long should it be?"],
     expectations: ["audience/level", "format (outline/table/flashcards)", "scope: which organelles/topics", "length cap", "active-recall element (questions)"],
   },
   {
@@ -15,7 +15,7 @@ export const PROMPT_TASKS: PromptTask[] = [
     category: "Summarization",
     task: "Summarize a long history article for tomorrow's class discussion.",
     weakExample: "Summarize this.",
-    hints: ["How long should the summary be?", "What should it preserve — dates, arguments, quotes?", "Plain language or academic tone?"],
+    hints: ["How long should the summary be?", "What should it preserve - dates, arguments, quotes?", "Plain language or academic tone?"],
     expectations: ["length limit", "audience", "what to preserve", "tone", "structure"],
   },
   {
@@ -29,7 +29,7 @@ export const PROMPT_TASKS: PromptTask[] = [
   {
     id: "pb-tutor",
     category: "Tutoring",
-    task: "Get help understanding quadratic functions — without just getting answers.",
+    task: "Get help understanding quadratic functions - without just getting answers.",
     weakExample: "Explain quadratics and do my homework problems.",
     hints: ["Ask for Socratic guidance instead of answers?", "What do you already know?", "How would you like practice checked?"],
     expectations: ["no direct answers / guided approach", "prior knowledge", "examples", "check-understanding step"],
@@ -92,7 +92,7 @@ export const TOOL_SCENARIOS: ToolScenario[] = [
     options: ["Conversational AI", "Image generator", "Calculator", "Spreadsheet"],
     correct: 0,
     why: "Ideation and refinement through dialogue is exactly what conversational AI does well.",
-    risks: "It may suggest infeasible or unsafe experiments — sanity-check materials and safety.",
+    risks: "It may suggest infeasible or unsafe experiments - sanity-check materials and safety.",
     verify: "Confirm your idea is allowed by the fair's rules and feasible with available materials.",
   },
   {
@@ -127,7 +127,7 @@ export const TOOL_SCENARIOS: ToolScenario[] = [
     scenario: "You must compute the exact hypotenuse of 7 and 24 for geometry homework.",
     options: ["Calculator", "Conversational AI", "Image generator", "Autocomplete"],
     correct: 0,
-    why: "Exact arithmetic is deterministic — calculators don't approximate or hallucinate.",
+    why: "Exact arithmetic is deterministic - calculators don't approximate or hallucinate.",
     risks: "AI chat might produce a confident wrong number.",
     verify: "With AI answers, recompute; with calculators, sanity-check magnitude (7-24-25 triangle).",
   },

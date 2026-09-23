@@ -5,7 +5,7 @@ import type { Db, Table } from "./db";
 
 /**
  * Supabase implementation of the Db abstraction.
- * Uses the SECRET KEY (service role equivalent) — this module must only be
+ * Uses the SECRET KEY (service role equivalent) - this module must only be
  * imported on the server (all data access happens in route handlers /
  * server services). RLS stays enabled as defense-in-depth; see
  * supabase/migrations.

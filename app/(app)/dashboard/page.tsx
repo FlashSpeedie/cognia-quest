@@ -10,6 +10,7 @@ import { ProgressBar, ProgressRing } from "@/components/ui/ProgressBar";
 import { Chip } from "@/components/ui/Chip";
 import { Icon } from "@/components/ui/Icon";
 import { XPSpark, SkillsRadar, BarRow } from "@/components/charts/Charts";
+import { ActivityCalendar } from "@/components/app/ActivityCalendar";
 import { redirect } from "next/navigation";
 
 export const metadata: Metadata = { title: "Dashboard" };
@@ -36,7 +37,7 @@ export default async function DashboardPage() {
               Welcome back, {firstName}
             </p>
             <h1 className="mt-2 font-display text-3xl font-black text-ink sm:text-4xl">
-              Level {d.level.current.level} — {d.level.current.title}
+              Level {d.level.current.level} - {d.level.current.title}
             </h1>
             <div className="mt-4 max-w-md">
               <ProgressBar
@@ -71,7 +72,7 @@ export default async function DashboardPage() {
           {d.continueTarget ? (
             <Card className="flex flex-wrap items-center justify-between gap-4 p-5">
               <div>
-                <p className="font-mono text-[11px] uppercase tracking-widest text-mint-300">Continue learning</p>
+                <p className="font-mono text-[11px] uppercase tracking-widest text-mint-700 dark:text-mint-300">Continue learning</p>
                 <p className="mt-1 font-display text-lg font-bold text-ink">
                   {d.continueTarget.detail}: {d.continueTarget.label}
                 </p>
@@ -82,7 +83,7 @@ export default async function DashboardPage() {
             </Card>
           ) : (
             <Card className="p-5">
-              <p className="font-display text-lg font-bold text-ink">Path complete — incredible.</p>
+              <p className="font-display text-lg font-bold text-ink">Path complete - incredible.</p>
               <p className="text-sm text-ink-dim">Every lesson finished. The Final Challenge awaits if you haven&apos;t claimed it.</p>
             </Card>
           )}
@@ -109,14 +110,14 @@ export default async function DashboardPage() {
           <Card className="p-5">
             <div className="flex items-center justify-between">
               <h2 className="font-display font-bold text-ink">Active missions</h2>
-              <Link href="/missions" className="text-xs font-semibold text-pulse-300 hover:underline focus-ring rounded">View all</Link>
+              <Link href="/missions" className="text-xs font-semibold text-pulse-700 dark:text-pulse-300 hover:underline focus-ring rounded">View all</Link>
             </div>
             <ul className="mt-3 space-y-2.5">
               {d.missions.map((m) => (
                 <li key={m.mission.id}>
                   <Link href={`/missions/${m.mission.id}`} className="flex items-center gap-3 rounded-xl border border-void-700/70 p-3 transition hover:border-pulse-400/40 focus-ring">
                     <span className={`flex h-8 w-8 items-center justify-center rounded-lg font-mono text-[11px] font-bold ${
-                      m.status === "completed" ? "bg-mint-400/15 text-mint-300" : m.status === "locked" ? "bg-void-700 text-ink-faint" : "bg-pulse-400/15 text-pulse-300"
+                      m.status === "completed" ? "bg-mint-400/15 text-mint-700 dark:text-mint-300" : m.status === "locked" ? "bg-void-700 text-ink-faint" : "bg-pulse-400/15 text-pulse-700 dark:text-pulse-300"
                     }`}>
                       {m.status === "completed" ? <Icon name="check" size={15} /> : m.status === "locked" ? <Icon name="lock" size={14} /> : String(m.mission.order).padStart(2, "0")}
                     </span>
@@ -146,6 +147,8 @@ export default async function DashboardPage() {
 
         {/* ── Right column ── */}
         <div className="min-w-0 space-y-6">
+          <ActivityCalendar activityByDay={d.activityByDay} />
+
           <Card className="p-5">
             <h2 className="font-display font-bold text-ink">XP this fortnight</h2>
             <div className="mt-3">
@@ -155,7 +158,7 @@ export default async function DashboardPage() {
 
           <Card className="p-5">
             <h2 className="font-display font-bold text-ink">Skills profile</h2>
-            <p className="mt-1 text-[11px] text-ink-faint">Learning indicators — not formal assessments</p>
+            <p className="mt-1 text-[11px] text-ink-faint">Learning indicators - not formal assessments</p>
             <div className="mt-3">
               <SkillsRadar skills={d.skills.map((s) => ({ label: s.label, value: s.value }))} />
             </div>
@@ -164,10 +167,10 @@ export default async function DashboardPage() {
           <Card className="p-5">
             <div className="flex items-center justify-between">
               <h2 className="font-display font-bold text-ink">Recent badges</h2>
-              <Link href="/achievements" className="text-xs font-semibold text-pulse-300 hover:underline focus-ring rounded">All</Link>
+              <Link href="/achievements" className="text-xs font-semibold text-pulse-600 hover:underline focus-ring rounded dark:text-pulse-700 dark:text-pulse-300">All</Link>
             </div>
             {d.recentBadges.length === 0 ? (
-              <p className="mt-3 text-sm text-ink-faint">None yet — your first badge is one lesson away.</p>
+              <p className="mt-3 text-sm text-ink-faint">None yet - your first badge is one lesson away.</p>
             ) : (
               <ul className="mt-3 space-y-2.5">
                 {d.recentBadges.map(({ state, def }) => (

@@ -64,7 +64,7 @@ export function NextToken({ onComplete }: { onComplete?: () => void }) {
         <p className="font-display text-xl font-bold text-ink">You played the model: {score}/{ROUNDS.length}</p>
         <p className="mt-2 text-sm text-ink-dim">
           Notice what you just did: you predicted the most <em>likely</em> word, not the <em>truest</em> one.
-          That&apos;s all a language model does — billions of times, parameter by parameter. Plausibility, not truth.
+          That&apos;s all a language model does - billions of times, parameter by parameter. Plausibility, not truth.
         </p>
       </GlassCard>
     );
@@ -73,7 +73,7 @@ export function NextToken({ onComplete }: { onComplete?: () => void }) {
   return (
     <div>
       <GlassCard className="p-4">
-        <p className="font-mono text-[10px] uppercase tracking-widest text-ink-faint">Round {round + 1}/{ROUNDS.length} — predict the most likely next token</p>
+        <p className="font-mono text-[10px] uppercase tracking-widest text-ink-faint">Round {round + 1}/{ROUNDS.length} - predict the most likely next token</p>
         <p className="mt-2 font-mono text-sm text-ink">
           {r.prefix}
           <span className="ml-1 inline-block h-4 w-2 animate-pulse-soft bg-pulse-400 align-middle" aria-hidden="true" />
@@ -91,10 +91,10 @@ export function NextToken({ onComplete }: { onComplete?: () => void }) {
                     ? "border-void-700 text-ink hover:border-pulse-400/50"
                     : picked === i
                       ? o.correct
-                        ? "border-mint-400 bg-mint-400/15 text-mint-300"
+                        ? "border-mint-400 bg-mint-400/15 text-mint-700 dark:text-mint-300"
                         : "border-rose-400 bg-rose-400/15 text-rose-400"
                       : o.correct
-                        ? "border-mint-400/40 text-mint-300"
+                        ? "border-mint-400/40 text-mint-700 dark:text-mint-300"
                         : "border-void-700 text-ink-faint"
                 }`}
               >
@@ -107,7 +107,7 @@ export function NextToken({ onComplete }: { onComplete?: () => void }) {
         {picked !== null && (
           <div className="mt-3 flex items-center justify-between">
             <p className="text-xs text-ink-dim">
-              {r.options[picked]!.correct ? "Most likely — that's how it would continue." : "Possible, but unlikely. Models sample from likely tokens, which is why they stay plausible."}
+              {r.options[picked]!.correct ? "Most likely - that's how it would continue." : "Possible, but unlikely. Models sample from likely tokens, which is why they stay plausible."}
             </p>
             <Button size="sm" onClick={next}>Next</Button>
           </div>
@@ -142,7 +142,7 @@ function tokenizeApprox(text: string): string[] {
 }
 
 export function TokenVisualizer({ onComplete }: { onComplete?: () => void }) {
-  const [text, setText] = useState("AI models don't read words — they read tokens.");
+  const [text, setText] = useState("AI models don't read words - they read tokens.");
   const tokens = useMemo(() => tokenizeApprox(text), [text]);
   const nonSpace = tokens.filter((t) => t !== "␣");
 
@@ -174,7 +174,7 @@ export function TokenVisualizer({ onComplete }: { onComplete?: () => void }) {
         </div>
         <p className="mt-3 text-xs text-ink-dim">
           ~{nonSpace.length} tokens{nonSpace.length > 0 ? ` · about ${Math.round((nonSpace.length / Math.max(1, text.split(/\s+/).filter(Boolean).length)) * 10) / 10} tokens per word` : ""}.
-          The context window counts these — not words.
+          The context window counts these - not words.
         </p>
       </GlassCard>
     </div>

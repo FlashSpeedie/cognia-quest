@@ -69,7 +69,7 @@ export function isRateLimitBypassActive(): boolean {
   if (process.env.AQ_DISABLE_RATE_LIMIT !== "1") return false;
   if (isSupabaseConfigured()) {
     console.error(
-      "[ai-quest] AQ_DISABLE_RATE_LIMIT is set but Supabase is configured — ignoring the bypass so production limits stay on.",
+      "[ai-quest] AQ_DISABLE_RATE_LIMIT is set but Supabase is configured - ignoring the bypass so production limits stay on.",
     );
     return false;
   }

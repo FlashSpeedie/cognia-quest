@@ -25,7 +25,7 @@ export async function middleware(req: NextRequest) {
       },
     },
   });
-  // Triggers a refresh when needed; result deliberately unused here —
+  // Triggers a refresh when needed; result deliberately unused here -
   // authorization decisions are made by layouts/route handlers.
   await supabase.auth.getUser();
   return response;

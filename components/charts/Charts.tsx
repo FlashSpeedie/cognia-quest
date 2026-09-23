@@ -30,7 +30,7 @@ export function XPSpark({ points, label = "XP earned per day" }: { points: { day
             ))}
           </>
         ) : (
-          <text x="50%" y="50%" textAnchor="middle" fill="#5d6a86" fontSize="13">No activity yet — your first lesson will draw this line.</text>
+          <text x="50%" y="50%" textAnchor="middle" fill="#5d6a86" fontSize="13">No activity yet - your first lesson will draw this line.</text>
         )}
       </svg>
       <figcaption className="sr-only">
@@ -75,7 +75,7 @@ export function SkillsRadar({ skills }: { skills: { label: string; value: number
           );
         })}
       </svg>
-      <figcaption className="sr-only">Skills radar — learning indicators, not formal assessments.</figcaption>
+      <figcaption className="sr-only">Skills radar - learning indicators, not formal assessments.</figcaption>
     </figure>
   );
 }

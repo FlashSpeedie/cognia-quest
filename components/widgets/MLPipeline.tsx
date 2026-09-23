@@ -8,9 +8,9 @@ const STAGES = [
   { id: "data", label: "DATA", icon: "chart" as const, body: "Collect examples. Quality beats quantity: representative, consenting, documented. Whoever picks the data is already shaping the model." },
   { id: "clean", label: "CLEAN", icon: "shield" as const, body: "Fix errors, remove duplicates, handle missing values. Real datasets are messy; this stage often takes more time than training itself." },
   { id: "train", label: "TRAIN", icon: "cpu" as const, body: "The model adjusts its internal numbers to fit the training examples. This is where 'learning' happens." },
-  { id: "validate", label: "VALIDATE", icon: "search" as const, body: "Tune choices (like model complexity) against a held-out validation set — rehearsal for the final exam." },
+  { id: "validate", label: "VALIDATE", icon: "search" as const, body: "Tune choices (like model complexity) against a held-out validation set - rehearsal for the final exam." },
   { id: "test", label: "TEST", icon: "check" as const, body: "One honest measurement on data the model never saw during training or tuning. This is the number you report." },
-  { id: "predict", label: "PREDICT", icon: "spark" as const, body: "Deployment: the model does its job on new inputs — with monitoring, because the world drifts." },
+  { id: "predict", label: "PREDICT", icon: "spark" as const, body: "Deployment: the model does its job on new inputs - with monitoring, because the world drifts." },
 ];
 
 export function MLPipeline({ onComplete }: { onComplete?: () => void }) {
@@ -35,9 +35,9 @@ export function MLPipeline({ onComplete }: { onComplete?: () => void }) {
               onClick={() => visit(i)}
               className={`rounded-lg border px-3 py-2 font-mono text-xs font-bold tracking-widest transition-colors focus-ring ${
                 i === active
-                  ? "border-pulse-400 bg-pulse-400/15 text-pulse-300"
+                  ? "border-pulse-400 bg-pulse-400/15 text-pulse-700 dark:text-pulse-300"
                   : visited.has(s.id)
-                    ? "border-mint-400/40 text-mint-300"
+                    ? "border-mint-400/40 text-mint-700 dark:text-mint-300"
                     : "border-void-700 text-ink-dim hover:text-ink"
               }`}
             >
@@ -49,7 +49,7 @@ export function MLPipeline({ onComplete }: { onComplete?: () => void }) {
       </div>
       <GlassCard className="mt-4 p-5">
         <div className="flex items-center gap-3">
-          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-pulse-400/10 text-pulse-300">
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-pulse-400/10 text-pulse-700 dark:text-pulse-300">
             <Icon name={stage.icon} size={20} />
           </span>
           <h4 className="font-display text-lg font-bold text-ink">{stage.label}</h4>

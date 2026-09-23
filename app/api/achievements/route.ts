@@ -3,7 +3,7 @@ import { getDb } from "@/server/db/db";
 import { checkBadges } from "@/server/services/badges";
 import { BADGES } from "@/content/badges";
 
-/** GET /api/achievements — badge catalog with caller's state. */
+/** GET /api/achievements - badge catalog with caller's state. */
 export async function GET() {
   const auth = await requireUser();
   if ("response" in auth) return auth.response;

@@ -7,7 +7,7 @@ export const DETECTIVE_CASES: DetectiveCase[] = [
     caseNo: 1,
     title: "The 18th Inning Fact",
     response:
-      "The Great Wall of China is so large that it is visible from the Moon with the naked eye — astronauts have confirmed this many times.",
+      "The Great Wall of China is so large that it is visible from the Moon with the naked eye - astronauts have confirmed this many times.",
     evidence: {
       claim: "Visible from the Moon with the naked eye.",
       source: "No source cited. The claim is a famous space myth repeated online.",
@@ -16,7 +16,7 @@ export const DETECTIVE_CASES: DetectiveCase[] = [
     },
     correctIssue: "hallucination",
     explanation:
-      "The claim is false: the Wall is not visible from the Moon with the naked eye. The model repeated a popular myth with confident, specific framing — a classic hallucination pattern.",
+      "The claim is false: the Wall is not visible from the Moon with the naked eye. The model repeated a popular myth with confident, specific framing - a classic hallucination pattern.",
     teachingPoint: "Confident, vivid details are not evidence. Famous-sounding 'facts' still need a check.",
     difficulty: "Easy",
   },
@@ -29,7 +29,7 @@ export const DETECTIVE_CASES: DetectiveCase[] = [
     evidence: {
       claim: "A specific 2023 study with an exact 43% figure.",
       source: "No citation link provided; no such study can be located.",
-      context: "Real research reports ranges, methods, and limitations — rarely a single exact number.",
+      context: "Real research reports ranges, methods, and limitations - rarely a single exact number.",
       logic: "Suspiciously precise statistic + named institutions + no verifiable source.",
     },
     correctIssue: "hallucination",
@@ -53,7 +53,7 @@ export const DETECTIVE_CASES: DetectiveCase[] = [
     correctIssue: "hallucination",
     explanation:
       "Mixed-accuracy output: true facts (Olympics, largest city) wrapped around a false one (capital). The confident blend makes the error easy to miss.",
-    teachingPoint: "Check each claim separately — true neighbors don't make a false claim true.",
+    teachingPoint: "Check each claim separately - true neighbors don't make a false claim true.",
     difficulty: "Easy",
   },
   {
@@ -71,7 +71,7 @@ export const DETECTIVE_CASES: DetectiveCase[] = [
     correctIssue: "outdated",
     explanation:
       "The model answered with stale framing as if it were current. Models have training cutoffs and don't know what changed yesterday.",
-    teachingPoint: "Ask 'as of when?' — date-stamp any statistic you reuse.",
+    teachingPoint: "Ask 'as of when?' - date-stamp any statistic you reuse.",
     difficulty: "Medium",
   },
   {
@@ -102,7 +102,7 @@ export const DETECTIVE_CASES: DetectiveCase[] = [
       claim: "Personal details are needed to help with math.",
       source: "N/A",
       context: "Math help requires zero personal identifiers.",
-      logic: "Data requested far exceeds the task — a data-minimization red flag.",
+      logic: "Data requested far exceeds the task - a data-minimization red flag.",
     },
     correctIssue: "privacy",
     explanation:
@@ -115,7 +115,7 @@ export const DETECTIVE_CASES: DetectiveCase[] = [
     caseNo: 7,
     title: "The Overpromising Doctor",
     response:
-      "Based on your description, you definitely have strep throat. There's no need to see a doctor — gargle salt water and you'll be fine.",
+      "Based on your description, you definitely have strep throat. There's no need to see a doctor - gargle salt water and you'll be fine.",
     evidence: {
       claim: "A definite diagnosis plus 'no need to see a doctor'.",
       source: "None; no examination possible.",
@@ -125,7 +125,7 @@ export const DETECTIVE_CASES: DetectiveCase[] = [
     correctIssue: "overconfidence",
     explanation:
       "The model states a definitive medical conclusion it cannot support and discourages professional care. High-stakes topics demand calibrated uncertainty.",
-    teachingPoint: "For health, legal, or safety topics, AI can inform — never decide.",
+    teachingPoint: "For health, legal, or safety topics, AI can inform - never decide.",
     difficulty: "Easy",
   },
   {
@@ -138,11 +138,11 @@ export const DETECTIVE_CASES: DetectiveCase[] = [
       claim: "'Studies link homework to harm' + Finland example.",
       source: "Unspecified 'studies'.",
       context: "The research is genuinely mixed; effects vary with age, amount, and design. Also missing: how Finland's system differs broadly.",
-      logic: "Only one side presented, with vague sourcing — persuasion, not information.",
+      logic: "Only one side presented, with vague sourcing - persuasion, not information.",
     },
     correctIssue: "missing-context",
     explanation:
-      "Not false — incomplete. The answer cherry-picks one side and a decontextualized comparison, leaving you less informed than a balanced answer would.",
+      "Not false - incomplete. The answer cherry-picks one side and a decontextualized comparison, leaving you less informed than a balanced answer would.",
     teachingPoint: "Ask 'what would the other side say?' when an answer only argues one way.",
     difficulty: "Medium",
   },
@@ -154,7 +154,7 @@ export const DETECTIVE_CASES: DetectiveCase[] = [
       "Our app's AI improved student grades by 50%! Sign up today.",
     evidence: {
       claim: "'Improved grades by 50%'.",
-      source: "Vendor marketing copy — self-reported.",
+      source: "Vendor marketing copy - self-reported.",
       context: "50% could mean 2→3 students passing, or a 0.1-point GPA step. No baseline, no sample size, no method.",
       logic: "Relative percentages without a base are classic misleading framing.",
     },
@@ -179,7 +179,7 @@ export const DETECTIVE_CASES: DetectiveCase[] = [
     correctIssue: "none",
     explanation:
       "This one checks out: accurate description and a correctly balanced equation. Good detective work includes clearing the innocent.",
-    teachingPoint: "Verification can confirm as well as catch — that's the point of checking.",
+    teachingPoint: "Verification can confirm as well as catch - that's the point of checking.",
     difficulty: "Easy",
   },
   {
@@ -209,7 +209,7 @@ export const DETECTIVE_CASES: DetectiveCase[] = [
     evidence: {
       claim: "The war ended 'on the same calendar day' it began.",
       source: "Unsourced.",
-      context: "It began 28 July 1914 and ended 11 November 1918 — roughly four years, but not the same day.",
+      context: "It began 28 July 1914 and ended 11 November 1918 - roughly four years, but not the same day.",
       logic: "An elegant-sounding symmetry invented by pattern-matching.",
     },
     correctIssue: "hallucination",
@@ -232,7 +232,7 @@ export const DETECTIVE_CASES: DetectiveCase[] = [
     },
     correctIssue: "unsupported",
     explanation:
-      "'All credible research' without a single citation is an unsupported generalization — and it's false about the state of the evidence, which is mixed.",
+      "'All credible research' without a single citation is an unsupported generalization - and it's false about the state of the evidence, which is mixed.",
     teachingPoint: "Words like 'all', 'proven', 'no debate' in unsourced text should trip your alarm.",
     difficulty: "Medium",
   },
@@ -241,7 +241,7 @@ export const DETECTIVE_CASES: DetectiveCase[] = [
     caseNo: 14,
     title: "The Helpful Cheat Sheet",
     response:
-      "Here are tomorrow's exact chemistry test answers — I accessed your school's grading system: 1.B 2.C 3.A 4.D...",
+      "Here are tomorrow's exact chemistry test answers - I accessed your school's grading system: 1.B 2.C 3.A 4.D...",
     evidence: {
       claim: "Access to a school's private grading system and real future test answers.",
       source: "Impossible claim; models have no such access.",
@@ -268,7 +268,7 @@ export const DETECTIVE_CASES: DetectiveCase[] = [
     },
     correctIssue: "unsupported",
     explanation:
-      "The summary asserts an extreme, convenient claim without support. Summaries can distort by omission or exaggeration — compare against the original.",
+      "The summary asserts an extreme, convenient claim without support. Summaries can distort by omission or exaggeration - compare against the original.",
     teachingPoint: "For summaries that drive decisions, spot-check against the source document.",
     difficulty: "Hard",
   },

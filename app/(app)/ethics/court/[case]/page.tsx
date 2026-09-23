@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ case: string }> }): Promise<Metadata> {
   const c = ethicsCaseById((await params).case);
-  return { title: c ? `${c.title} — Ethics Court` : "Ethics Court" };
+  return { title: c ? `${c.title} - Ethics Court` : "Ethics Court" };
 }
 
 export default async function CourtCasePage({ params }: { params: Promise<{ case: string }> }) {
@@ -24,7 +24,7 @@ export default async function CourtCasePage({ params }: { params: Promise<{ case
         <span aria-hidden>/</span>
         <Link href="/ethics/court" className="hover:text-ink focus-ring rounded">Ethics Court</Link>
         <span aria-hidden>/</span>
-        <span className="text-pulse-300">{c.title}</span>
+        <span className="text-pulse-700 dark:text-pulse-300">{c.title}</span>
       </nav>
       <EthicsCourt caseData={c} />
     </div>

@@ -2,18 +2,18 @@ import type { GlossaryTerm } from "@/lib/content";
 
 /** Glossary (spec §66). */
 export const GLOSSARY: GlossaryTerm[] = [
-  { term: "algorithm", definition: "A precise set of steps to solve a problem — like a recipe. Algorithms power AI, but 'algorithm' just means a procedure.", example: "A sorting algorithm arranges names alphabetically.", related: ["model", "training"] },
+  { term: "algorithm", definition: "A precise set of steps to solve a problem - like a recipe. Algorithms power AI, but 'algorithm' just means a procedure.", example: "A sorting algorithm arranges names alphabetically.", related: ["model", "training"] },
   { term: "model", definition: "The pattern a machine learning system learns from data; what actually makes predictions.", example: "A spam filter's model decides if an email is spam.", related: ["training", "inference"] },
   { term: "training", definition: "The phase where a model adjusts itself to fit examples in a dataset.", example: "Showing 10,000 labeled photos so a model learns 'cat'.", related: ["dataset", "model"] },
   { term: "inference", definition: "Using a trained model on new inputs to get predictions.", example: "Uploading a new photo and getting 'cat: 92%'.", related: ["model", "training"] },
   { term: "dataset", definition: "A collection of examples used to train or evaluate a model.", example: "50,000 labeled images of street signs.", related: ["feature", "label"] },
-  { term: "feature", definition: "An input variable a model uses — one measured property of an example.", example: "For house prices: square footage, bedrooms, school district.", related: ["label", "dataset"] },
+  { term: "feature", definition: "An input variable a model uses - one measured property of an example.", example: "For house prices: square footage, bedrooms, school district.", related: ["label", "dataset"] },
   { term: "label", definition: "The answer attached to a training example; what the model learns to predict.", example: "'Spam' or 'not spam' on each training email.", related: ["feature", "classification"] },
   { term: "classification", definition: "Predicting a category.", example: "Hot dog or not hot dog.", related: ["regression", "label"] },
   { term: "regression", definition: "Predicting a number.", example: "Estimating a house's price.", related: ["classification"] },
   { term: "neural network", definition: "A family of models built from layers of simple units that transform inputs step by step; the engine behind most modern AI.", related: ["model", "training"] },
-  { term: "prompt", definition: "The input you give a generative model — instructions, context, questions.", example: "'Explain osmosis to a 10-year-old in 100 words.'", related: ["token", "hallucination"] },
-  { term: "token", definition: "A chunk of text a language model reads or writes — often part of a word.", example: "'unbelievable' might be 3 tokens: un · believ · able.", related: ["prompt"] },
+  { term: "prompt", definition: "The input you give a generative model - instructions, context, questions.", example: "'Explain osmosis to a 10-year-old in 100 words.'", related: ["token", "hallucination"] },
+  { term: "token", definition: "A chunk of text a language model reads or writes - often part of a word.", example: "'unbelievable' might be 3 tokens: un · believ · able.", related: ["prompt"] },
   { term: "hallucination", definition: "Confident AI output that is false or invented.", example: "A citation to a research paper that doesn't exist.", related: ["prompt", "bias"] },
   { term: "bias", definition: "Systematic skew in data or model behavior that disadvantages some groups or answers.", example: "A hiring model trained on past hires may repeat past discrimination.", related: ["dataset", "overfitting"] },
   { term: "privacy", definition: "Control over how personal data is collected, used, and shared.", related: ["dataset"] },

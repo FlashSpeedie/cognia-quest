@@ -33,7 +33,7 @@ export default async function MissionDetailPage({ params }: { params: Promise<{ 
       <nav aria-label="Breadcrumb" className="mb-5 flex items-center gap-1.5 text-xs text-ink-faint">
         <Link href="/missions" className="hover:text-ink focus-ring rounded">Missions</Link>
         <span aria-hidden>/</span>
-        <span className="text-pulse-300">MISSION {String(mission.order).padStart(2, "0")}</span>
+        <span className="text-pulse-700 dark:text-pulse-300">MISSION {String(mission.order).padStart(2, "0")}</span>
       </nav>
 
       <GlassCard glow className="p-7">
@@ -55,7 +55,7 @@ export default async function MissionDetailPage({ params }: { params: Promise<{ 
             const done = state.objectivesDone.includes(o.id);
             return (
               <li key={o.id} className={`flex items-center gap-3 rounded-xl border p-3.5 text-sm ${done ? "border-mint-400/40 bg-mint-400/5" : "border-void-700"}`}>
-                <span className={`flex h-6 w-6 items-center justify-center rounded-full ${done ? "bg-mint-400/20 text-mint-300" : "bg-void-700 text-ink-faint"}`} aria-hidden="true">
+                <span className={`flex h-6 w-6 items-center justify-center rounded-full ${done ? "bg-mint-400/20 text-mint-700 dark:text-mint-300" : "bg-void-700 text-ink-faint"}`} aria-hidden="true">
                   {done ? <Icon name="check" size={13} /> : "○"}
                 </span>
                 <span className={done ? "text-mint-200" : "text-ink"}>{o.label}</span>
@@ -66,11 +66,11 @@ export default async function MissionDetailPage({ params }: { params: Promise<{ 
 
         {state.status === "locked" ? (
           <p className="mt-5 rounded-xl border border-void-700 bg-void-900/60 p-4 text-sm text-ink-faint">
-            Finish the previous mission to unlock this one. The campaign is sequential — foundations first.
+            Finish the previous mission to unlock this one. The campaign is sequential - foundations first.
           </p>
         ) : state.status === "completed" ? (
           <div className="mt-5 rounded-xl border border-mint-400/30 bg-mint-400/10 p-4">
-            <p className="font-semibold text-mint-300">Mission complete. Reward banked: +{mission.xp} XP.</p>
+            <p className="font-semibold text-mint-700 dark:text-mint-300">Mission complete. Reward banked: +{mission.xp} XP.</p>
             <LinkButton variant="ghost" size="sm" href="/missions" className="mt-2">Back to campaigns</LinkButton>
           </div>
         ) : (

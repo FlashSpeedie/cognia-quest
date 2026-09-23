@@ -11,7 +11,7 @@ export const MODULES: ModuleDef[] = [
     slug: "ai-fundamentals",
     order: 1,
     title: "AI Fundamentals",
-    tagline: "What AI actually is — and what it isn't.",
+    tagline: "What AI actually is - and what it isn't.",
     description:
       "Separate the hype from reality. Learn the difference between AI, machine learning, and everyday programs, and why AI sometimes gets things wrong.",
     icon: "brain",
@@ -34,7 +34,7 @@ export const MODULES: ModuleDef[] = [
             kind: "concept",
             heading: "A working definition",
             body: [
-              "Artificial intelligence is software that performs tasks we usually associate with human thinking — recognizing faces, understanding speech, translating languages, recommending videos.",
+              "Artificial intelligence is software that performs tasks we usually associate with human thinking - recognizing faces, understanding speech, translating languages, recommending videos.",
               "Almost all AI today is narrow AI: it is good at one specific job. A chess engine can't drive a car. A chatbot can't recognize your dog. There is no science-fiction 'general' AI doing everything.",
             ],
           },
@@ -42,7 +42,7 @@ export const MODULES: ModuleDef[] = [
             id: "not-magic",
             kind: "callout",
             variant: "info",
-            title: "AI is not magic — or a mind",
+            title: "AI is not magic - or a mind",
             body: "AI systems find patterns in data. They don't have beliefs, feelings, or an understanding of truth. That matters: a system that sounds confident can still be completely wrong.",
           },
           {
@@ -77,7 +77,7 @@ export const MODULES: ModuleDef[] = [
             heading: "Two ways to build software",
             body: [
               "Classic programs: a human writes explicit rules. 'IF an email contains the word FREE in all caps, flag it as spam.'",
-              "Machine learning: instead of writing the rules, you show the computer thousands of examples — spam and not-spam — and it infers the pattern itself. The learned pattern is called a model.",
+              "Machine learning: instead of writing the rules, you show the computer thousands of examples - spam and not-spam - and it infers the pattern itself. The learned pattern is called a model.",
               "Training is the learning phase: adjusting the model on examples. Inference is using the trained model on new, unseen inputs.",
             ],
           },
@@ -86,7 +86,7 @@ export const MODULES: ModuleDef[] = [
             kind: "interactive",
             widget: "what-is-model",
             heading: "See it: examples become a model",
-            body: "Change the examples. Watch the model — and its predictions — change.",
+            body: "Change the examples. Watch the model - and its predictions - change.",
           },
           {
             id: "check",
@@ -114,7 +114,7 @@ export const MODULES: ModuleDef[] = [
               "Computer vision interprets images: face unlock, tumor screening, self-driving perception.",
               "Natural language processing (NLP) works with text and speech: translation, voice assistants, chatbots.",
               "Recommender systems predict what you'll click next: video feeds, music playlists, shopping suggestions.",
-              "Generative AI creates new content — text, images, audio, code — based on patterns learned from training data.",
+              "Generative AI creates new content - text, images, audio, code - based on patterns learned from training data.",
             ],
           },
           {
@@ -147,7 +147,7 @@ export const MODULES: ModuleDef[] = [
             heading: "You met AI before breakfast",
             body: [
               "Alarm dismissed. The phone's face unlock used computer vision. The news feed you scrolled was ranked by a recommender. Autocorrect fixed your texts using a language model. Your music app queued a playlist generated from your history.",
-              "None of that felt like science fiction — because AI, done well, disappears into features. The skill you're building here is noticing it, understanding the mechanism, and knowing when to trust it.",
+              "None of that felt like science fiction - because AI, done well, disappears into features. The skill you're building here is noticing it, understanding the mechanism, and knowing when to trust it.",
             ],
           },
           {
@@ -177,7 +177,7 @@ export const MODULES: ModuleDef[] = [
             heading: "Wrong is a feature of the design space, not a bug list",
             body: [
               "AI can be wrong because the training data was incomplete, biased, or outdated. Because the task was ambiguous. Because the model finds plausible-sounding patterns, not verified facts. Or because the world simply changed.",
-              "A calculator follows exact rules, so it's always right about arithmetic. AI models trade certainty for flexibility — they can handle messy inputs, but their outputs always carry some uncertainty.",
+              "A calculator follows exact rules, so it's always right about arithmetic. AI models trade certainty for flexibility - they can handle messy inputs, but their outputs always carry some uncertainty.",
             ],
           },
           {
@@ -203,7 +203,7 @@ export const MODULES: ModuleDef[] = [
     title: "Machine Learning",
     tagline: "How machines learn from data.",
     description:
-      "Datasets, features, labels, training, overfitting, and evaluation — the core vocabulary of machine learning, with an interactive pipeline.",
+      "Datasets, features, labels, training, overfitting, and evaluation - the core vocabulary of machine learning, with an interactive pipeline.",
     icon: "cpu",
     color: "volt",
     lessons: [
@@ -223,8 +223,8 @@ export const MODULES: ModuleDef[] = [
             kind: "concept",
             heading: "The raw ingredients",
             body: [
-              "A dataset is a collection of examples. Each example has features — the inputs you measure — and often a label: the answer you want to predict.",
-              "Predicting whether a student passes a class? Features might be study hours and sleep. The label is pass/fail. Choosing what to measure — and what to leave out — is a human decision with real consequences.",
+              "A dataset is a collection of examples. Each example has features - the inputs you measure - and often a label: the answer you want to predict.",
+              "Predicting whether a student passes a class? Features might be study hours and sleep. The label is pass/fail. Choosing what to measure - and what to leave out - is a human decision with real consequences.",
             ],
           },
           {
@@ -254,7 +254,7 @@ export const MODULES: ModuleDef[] = [
             heading: "From raw data to predictions",
             body: [
               "Real ML projects follow a pipeline: collect data → clean it → train → validate → test → predict. Each stage can introduce or fix problems.",
-              "You never judge a model on the data it trained on — that's like grading a student with the answer key open. A held-out test set measures how the model handles genuinely new cases.",
+              "You never judge a model on the data it trained on - that's like grading a student with the answer key open. A held-out test set measures how the model handles genuinely new cases.",
             ],
           },
           {
@@ -284,7 +284,7 @@ export const MODULES: ModuleDef[] = [
             heading: "Memorizing ≠ understanding",
             body: [
               "A model that simply memorizes its training examples can score 100% in training and still fail in the real world. That's overfitting: the model learned the noise, not the signal.",
-              "There's a sweet spot: too simple misses the pattern; too complex memorizes it. Generalization — doing well on new data — is the actual goal.",
+              "There's a sweet spot: too simple misses the pattern; too complex memorizes it. Generalization - doing well on new data - is the actual goal.",
             ],
           },
           {
@@ -343,7 +343,7 @@ export const MODULES: ModuleDef[] = [
             kind: "concept",
             heading: "Accuracy isn't the whole story",
             body: [
-              "If 95% of emails are not spam, a 'model' that labels everything not-spam is 95% accurate — and completely useless.",
+              "If 95% of emails are not spam, a 'model' that labels everything not-spam is 95% accurate - and completely useless.",
               "A confusion matrix breaks predictions into four boxes: true positives, false positives, true negatives, false negatives. Two companion ideas: precision (of the things I flagged, how many were real?) and recall (of all the real cases, how many did I find?).",
             ],
           },
@@ -386,7 +386,7 @@ export const MODULES: ModuleDef[] = [
             heading: "From recognizing to creating",
             body: [
               "Most classic AI classifies: spam or not, cat or dog. Generative AI produces: paragraphs, pictures, melodies, code.",
-              "A large language model (LLM) is trained to predict the next token — roughly, the next chunk of text — given everything so far. Stack that simple move billions of times and you get essays, summaries, and conversations.",
+              "A large language model (LLM) is trained to predict the next token - roughly, the next chunk of text - given everything so far. Stack that simple move billions of times and you get essays, summaries, and conversations.",
             ],
           },
           {
@@ -394,7 +394,7 @@ export const MODULES: ModuleDef[] = [
             kind: "interactive",
             widget: "next-token",
             heading: "Try it: be the language model",
-            body: "Pick the most likely next word. Feel how prediction — not understanding — drives the output.",
+            body: "Pick the most likely next word. Feel how prediction - not understanding - drives the output.",
           },
           { id: "check", kind: "quiz", quizId: "quiz-gen-1" },
         ],
@@ -415,7 +415,7 @@ export const MODULES: ModuleDef[] = [
             kind: "concept",
             heading: "Text in, chunks processed",
             body: [
-              "Models don't read words — they read tokens: fragments like 'un', 'believ', 'able'. An English word is often 1–2 tokens.",
+              "Models don't read words - they read tokens: fragments like 'un', 'believ', 'able'. An English word is often 1–2 tokens.",
               "The context window is how much the model can 'see' at once: your prompt plus the conversation. Fall outside the window and earlier details are literally invisible to the model.",
             ],
           },
@@ -444,7 +444,7 @@ export const MODULES: ModuleDef[] = [
             kind: "concept",
             heading: "Beyond text",
             body: [
-              "Image generators learn the statistics of pictures: which pixel patterns follow prompts like 'sunset over mountains'. They compose pixels the way language models compose tokens — plausible first, truthful never guaranteed. A hand might have six fingers because plausibility doesn't count.",
+              "Image generators learn the statistics of pictures: which pixel patterns follow prompts like 'sunset over mountains'. They compose pixels the way language models compose tokens - plausible first, truthful never guaranteed. A hand might have six fingers because plausibility doesn't count.",
               "Multimodal models combine channels: text + images + audio in one system. Captioning a photo, transcribing speech, reading a chart. More senses → more uses → more ways to be confidently wrong: mis-read charts, mis-heard names, doctored-looking photos.",
             ],
           },
@@ -474,7 +474,7 @@ export const MODULES: ModuleDef[] = [
             kind: "concept",
             heading: "Fluent is not the same as true",
             body: [
-              "A hallucination is output that sounds plausible but is factually wrong or invented — fake citations, wrong dates, imagined features.",
+              "A hallucination is output that sounds plausible but is factually wrong or invented - fake citations, wrong dates, imagined features.",
               "Language models generate what sounds right, not what is verified. Polished grammar carries zero guarantee. The fix is a habit, not a setting: check important claims against reliable sources.",
             ],
           },
@@ -483,7 +483,7 @@ export const MODULES: ModuleDef[] = [
             kind: "interactive",
             widget: "confidence-lab",
             heading: "See it: confidence vs. correctness",
-            body: "Watch an answer generate — with style that says 'certain' even when the facts say otherwise.",
+            body: "Watch an answer generate - with style that says 'certain' even when the facts say otherwise.",
           },
           {
             id: "try-claims",
@@ -523,7 +523,7 @@ export const MODULES: ModuleDef[] = [
             kind: "concept",
             heading: "Vague in, vague out",
             body: [
-              "'Explain photosynthesis' could produce a textbook chapter or a single sentence — the model guesses. Strong prompts remove the guessing: task, audience, format, length, constraints, and how to handle uncertainty.",
+              "'Explain photosynthesis' could produce a textbook chapter or a single sentence - the model guesses. Strong prompts remove the guessing: task, audience, format, length, constraints, and how to handle uncertainty.",
               "You're not tricking the model; you're specifying the job.",
             ],
           },
@@ -545,7 +545,7 @@ export const MODULES: ModuleDef[] = [
         xp: 60,
         outcomes: [
           "Use follow-up prompts to improve output",
-          "Ask models to show reasoning or cite sources — and still verify",
+          "Ask models to show reasoning or cite sources - and still verify",
         ],
         sections: [
           {
@@ -554,7 +554,7 @@ export const MODULES: ModuleDef[] = [
             heading: "Prompting is a loop, not a spell",
             body: [
               "First drafts from AI are starting points. Professionals iterate: 'shorter', 'add a counter-argument', 'make it readable for a 9th grader'.",
-              "You can ask a model to list sources or show its reasoning — helpful, but not proof. Sources can be invented. Verification means checking the actual source yourself.",
+              "You can ask a model to list sources or show its reasoning - helpful, but not proof. Sources can be invented. Verification means checking the actual source yourself.",
             ],
           },
           { id: "check", kind: "quiz", quizId: "quiz-prompt-2" },
@@ -632,7 +632,7 @@ export const MODULES: ModuleDef[] = [
             heading: "Four questions to ask about any AI system",
             body: [
               "Fairness: does it work equally well for everyone affected? Privacy: what data does it collect, and is that necessary? Transparency: do people know AI is being used, and can anyone explain its decisions? Accountability: when it's wrong, who is responsible?",
-              "None of these have automatic answers. Responsible AI is mostly humans asking these questions before deployment — not after the news story.",
+              "None of these have automatic answers. Responsible AI is mostly humans asking these questions before deployment - not after the news story.",
             ],
           },
           { id: "check", kind: "quiz", quizId: "quiz-eth-1" },
@@ -655,7 +655,7 @@ export const MODULES: ModuleDef[] = [
             heading: "A powerful tutor or an expensive shortcut?",
             body: [
               "AI can explain a concept five different ways, quiz you, and help plan your studying. It can also write the essay you were assigned to write. One use builds skill; the other borrows the appearance of skill.",
-              "Rules differ by class and teacher. The safe defaults: check the assignment's policy, disclose AI use when asked, never submit fabricated sources, and make sure you can explain — in your own words — anything you submit.",
+              "Rules differ by class and teacher. The safe defaults: check the assignment's policy, disclose AI use when asked, never submit fabricated sources, and make sure you can explain - in your own words - anything you submit.",
             ],
           },
           {
@@ -676,7 +676,7 @@ export const MODULES: ModuleDef[] = [
     title: "Final AI Mission",
     tagline: "Everything, combined.",
     description:
-      "The capstone: evaluate a real proposal for a school AI system — data choices, model behavior, bias, prompting, and a deployment call.",
+      "The capstone: evaluate a real proposal for a school AI system - data choices, model behavior, bias, prompting, and a deployment call.",
     icon: "trophy",
     color: "volt",
     lessons: [
@@ -694,7 +694,7 @@ export const MODULES: ModuleDef[] = [
             heading: "Scenario: the support-prediction system",
             body: [
               "A fictional school wants an AI system to flag students who might need academic support. You'll choose the data, examine the model's behavior, question its fairness, draft the prompt it uses for explanations, and make a recommendation.",
-              "There is no single 'right' answer — there are well-reasoned and poorly-reasoned ones.",
+              "There is no single 'right' answer - there are well-reasoned and poorly-reasoned ones.",
             ],
           },
           {

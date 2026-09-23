@@ -9,7 +9,7 @@
  *   2. user A cannot read user B's profile;
  *   3. neither can read ANY row from reward-bearing tables they don't own;
  *   4. a student cannot INSERT an xp event for themselves (no direct
- *      writes to reward tables — those go through server services only);
+ *      writes to reward tables - those go through server services only);
  *   5. a student cannot UPDATE their own role (users table is insert/read
  *      only for clients);
  *   6. anonymous access is denied everywhere.
@@ -96,7 +96,7 @@ await seed("xp_events", { id: `rls-${stamp}`, userId: a.id, amount: 10, sourceTy
   const r = await rest(jwtA, `users?select=data&data->>id=eq.${a.id}`);
   check("A reads own profile", r.status === 200 && Array.isArray(r.body) && r.body.length === 1);
 }
-// 2. A tries reading B's profile — must get zero rows
+// 2. A tries reading B's profile - must get zero rows
 {
   const r = await rest(jwtA, `users?select=data&data->>id=eq.${b.id}`);
   check("A cannot read B's profile", r.status === 200 && Array.isArray(r.body) && r.body.length === 0);

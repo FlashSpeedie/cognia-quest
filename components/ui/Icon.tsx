@@ -1,7 +1,7 @@
 import type { SVGProps } from "react";
 
 /**
- * One coherent icon set — 1.75px stroke, rounded caps, 24px viewBox.
+ * One coherent icon set - 1.75px stroke, rounded caps, 24px viewBox.
  * Used across navigation, missions, achievements, labs.
  */
 export type IconName =

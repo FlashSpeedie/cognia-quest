@@ -64,7 +64,7 @@ export function ConfusionMatrix({ onComplete }: { onComplete?: () => void }) {
 
       {active && (
         <GlassCard className="mt-4 border-pulse-400/30 p-4 animate-fade-up">
-          <p className="font-mono text-xs font-bold text-pulse-300">{active.label}</p>
+          <p className="font-mono text-xs font-bold text-pulse-700 dark:text-pulse-300">{active.label}</p>
           <p className="mt-1.5 text-sm text-ink">{active.plain}</p>
           <p className="mt-1 text-xs italic text-ink-dim">e.g. {active.example}</p>
         </GlassCard>
@@ -74,10 +74,10 @@ export function ConfusionMatrix({ onComplete }: { onComplete?: () => void }) {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="text-sm">
             <p className="text-ink">
-              Precision <span className="font-mono text-pulse-300">{precision}%</span> — of the {tp + fp} emails flagged, {tp} were really spam.
+              Precision <span className="font-mono text-pulse-700 dark:text-pulse-300">{precision}%</span> - of the {tp + fp} emails flagged, {tp} were really spam.
             </p>
             <p className="mt-1 text-ink">
-              Recall <span className="font-mono text-volt-300">{recall}%</span> — of all {tp + fn} real spam emails, {tp} were caught.
+              Recall <span className="font-mono text-volt-700 dark:text-volt-300">{recall}%</span> - of all {tp + fn} real spam emails, {tp} were caught.
             </p>
           </div>
           <Button variant="secondary" size="sm" onClick={() => { CELLS.forEach((c) => { seen.add(c.id); }); setSeen(new Set(CELLS.map(c => c.id))); onComplete?.(); }}>

@@ -4,18 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button, LinkButton } from "@/components/ui/Button";
-
-export function Logo({ size = "md" }: { size?: "sm" | "md" }) {
-  const s = size === "sm" ? "h-8 w-8 text-sm" : "h-9 w-9 text-base";
-  return (
-    <span className="flex items-center gap-2.5">
-      <span className={`flex ${s} items-center justify-center rounded-lg bg-pulse-600 font-display font-bold text-white`}>
-        Q
-      </span>
-      <span className="font-display text-lg font-bold tracking-tight text-ink">AI&nbsp;QUEST</span>
-    </span>
-  );
-}
+import { BrandLogo } from "@/components/public/BrandLogo";
 
 export function PublicNav({ demoEnabled = false }: { demoEnabled?: boolean }) {
   const [scrolled, setScrolled] = useState(false);
@@ -48,8 +37,8 @@ export function PublicNav({ demoEnabled = false }: { demoEnabled?: boolean }) {
       }`}
     >
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6" aria-label="Public">
-        <Link href="/" aria-label="AI Quest home" className="focus-ring rounded-lg">
-          <Logo />
+        <Link href="/" aria-label="Cognia Quest home" className="focus-ring rounded-lg">
+          <BrandLogo />
         </Link>
         <div className="hidden items-center gap-8 text-sm font-medium text-ink-dim md:flex">
           <Link href="/about" className="transition-colors hover:text-ink focus-ring rounded px-1 py-2">

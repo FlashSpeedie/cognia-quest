@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ module: string }> }): Promise<Metadata> {
   const m = moduleBySlug((await params).module);
-  return { title: m ? `${m.title} — Academy` : "Module" };
+  return { title: m ? `${m.title} - Academy` : "Module" };
 }
 
 export default async function ModulePage({ params }: { params: Promise<{ module: string }> }) {
@@ -34,7 +34,7 @@ export default async function ModulePage({ params }: { params: Promise<{ module:
       <nav aria-label="Breadcrumb" className="mb-5 flex items-center gap-1.5 text-xs text-ink-faint">
         <Link href="/academy" className="hover:text-ink focus-ring rounded">Academy</Link>
         <span aria-hidden>/</span>
-        <span className="text-pulse-300">{m.title}</span>
+        <span className="text-pulse-700 dark:text-pulse-300">{m.title}</span>
       </nav>
 
       <GlassCard glow className="p-7">
@@ -57,9 +57,9 @@ export default async function ModulePage({ params }: { params: Promise<{ module:
                   <span
                     className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl font-mono text-sm font-bold ${
                       status === "completed"
-                        ? "bg-mint-400/15 text-mint-300"
+                        ? "bg-mint-400/15 text-mint-700 dark:text-mint-300"
                         : status === "in_progress"
-                          ? "bg-pulse-400/15 text-pulse-300"
+                          ? "bg-pulse-400/15 text-pulse-700 dark:text-pulse-300"
                           : "bg-void-700 text-ink-faint"
                     }`}
                     aria-hidden="true"

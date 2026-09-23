@@ -58,6 +58,13 @@ export async function getDashboard(db: Db, user: User) {
 
   const recentActivity = [...activity].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 8);
 
+  // Real persisted activity, grouped per calendar day for the heat grid.
+  const activityByDay = new Map<string, number>();
+  for (const a of activity) {
+    const day = a.createdAt.slice(0, 10);
+    activityByDay.set(day, (activityByDay.get(day) ?? 0) + 1);
+  }
+
   return {
     user: {
       displayName: user.displayName,
@@ -76,5 +83,6 @@ export async function getDashboard(db: Db, user: User) {
     recentActivity,
     unreadNotifications: notifications.filter((n) => !n.read).length,
     recommendations: recommendations(stats),
+    activityByDay: [...activityByDay.entries()],
   };
 }

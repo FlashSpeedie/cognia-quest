@@ -23,7 +23,7 @@ export default async function CertificatePage() {
         <span className="text-4xl" aria-hidden="true">📜</span>
         <h1 className="mt-4 font-display text-2xl font-bold text-ink">The certificate awaits your capstone</h1>
         <p className="mt-2 text-sm text-ink-dim">
-          Complete the Final AI Challenge to unlock your AI Quest certificate of learning.
+          Complete the Final AI Challenge to unlock your Cognia Quest certificate of learning.
         </p>
         <LinkButton href="/final-challenge" className="mt-6">Take the Final Challenge</LinkButton>
       </GlassCard>
@@ -38,7 +38,7 @@ export default async function CertificatePage() {
       </div>
 
       <div className="print-page mx-auto max-w-3xl rounded-3xl border-2 border-volt-400/50 bg-gradient-to-b from-void-850 to-void-900 p-10 shadow-glow sm:p-14 print:border-black print:bg-white">
-        <div className="text-center font-mono text-xs uppercase tracking-[0.4em] text-pulse-300 print:text-black">AI QUEST</div>
+        <div className="text-center font-mono text-xs uppercase tracking-[0.4em] text-pulse-700 dark:text-pulse-300 print:text-black">Cognia Quest</div>
         <h1 className="mt-4 text-center font-display text-3xl font-black text-ink print:text-black">
           CERTIFICATE OF COMPLETION
         </h1>
@@ -46,9 +46,9 @@ export default async function CertificatePage() {
         <p className="mt-8 text-center text-sm text-ink-dim print:text-gray-700">This certifies that</p>
         <p className="mt-2 text-center font-display text-4xl font-black text-ink print:text-black">{user.displayName}</p>
         <p className="mt-4 text-center text-sm text-ink-dim print:text-gray-700">
-          completed the AI Quest learning pathway — a hands-on curriculum in artificial intelligence literacy.
+          completed the Cognia Quest learning pathway - a hands-on curriculum in artificial intelligence literacy.
         </p>
-        <p className="mt-6 text-center font-mono text-xs uppercase tracking-widest text-pulse-300 print:text-black">
+        <p className="mt-6 text-center font-mono text-xs uppercase tracking-widest text-pulse-700 dark:text-pulse-300 print:text-black">
           Title earned: {level.current.title} · Final challenge score: {final.totalScore}%
         </p>
         <ul className="mx-auto mt-8 grid max-w-md grid-cols-2 gap-1.5 text-xs text-ink-dim print:text-gray-700">
@@ -57,16 +57,16 @@ export default async function CertificatePage() {
             "AI Ethics", "Critical Evaluation",
           ].map((t) => (
             <li key={t} className="flex items-center gap-1.5">
-              <span aria-hidden className="text-mint-300 print:text-black">✓</span> {t}
+              <span aria-hidden className="text-mint-700 dark:text-mint-300 print:text-black">✓</span> {t}
             </li>
           ))}
         </ul>
         <div className="mt-10 flex items-end justify-between text-[10px] font-mono uppercase tracking-widest text-ink-faint print:text-gray-500">
-          <span>AI Quest Learning Achievement</span>
+          <span>Cognia Quest Learning Achievement</span>
           <span>{new Date(final.completedAt).toLocaleDateString()}</span>
         </div>
         <p className="mt-4 text-center text-[10px] text-ink-faint print:text-gray-500">
-          AI Quest Learning Achievement — a record of completed interactive coursework, not an accredited certification.
+          Cognia Quest Learning Achievement - a record of completed interactive coursework, not an accredited certification.
         </p>
       </div>
     </div>

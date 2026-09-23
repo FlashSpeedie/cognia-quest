@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
 
 /**
- * Unit tests for the Gemini provider. Network is fully mocked — these run
+ * Unit tests for the Gemini provider. Network is fully mocked - these run
  * offline and never touch the real API.
  */
 

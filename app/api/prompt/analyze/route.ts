@@ -28,7 +28,7 @@ export async function POST(req: Request) {
   });
 }
 
-/** Stateless instant preview (no XP stored) — used for live drafting. */
+/** Stateless instant preview (no XP stored) - used for live drafting. */
 export async function PUT(req: Request) {
   const limited = throttle(req, "prompt-preview", 120);
   if (limited) return limited;

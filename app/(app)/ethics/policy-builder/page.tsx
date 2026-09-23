@@ -5,7 +5,7 @@ import { getSessionUser } from "@/server/auth/session";
 import { SectionHeading } from "@/components/ui/Card";
 import { PolicyBuilder } from "@/components/ethics/PolicyBuilder";
 
-export const metadata: Metadata = { title: "Policy Builder — Ethics" };
+export const metadata: Metadata = { title: "Policy Builder - Ethics" };
 export const dynamic = "force-dynamic";
 
 export default async function PolicyBuilderPage() {
@@ -16,7 +16,7 @@ export default async function PolicyBuilderPage() {
       <nav aria-label="Breadcrumb" className="mb-5 flex items-center gap-1.5 text-xs text-ink-faint">
         <Link href="/ethics" className="hover:text-ink focus-ring rounded">Ethics Center</Link>
         <span aria-hidden>/</span>
-        <span className="text-pulse-300">Policy Builder</span>
+        <span className="text-pulse-700 dark:text-pulse-300">Policy Builder</span>
       </nav>
       <SectionHeading
         kicker="Mission 09"

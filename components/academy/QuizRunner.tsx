@@ -77,7 +77,7 @@ export function QuizRunner({ quiz, lessonId }: { quiz: Quiz; lessonId?: string }
       }
       router.refresh();
     } catch {
-      setError("Network hiccup. Your answers weren't saved — try again.");
+      setError("Network hiccup. Your answers weren't saved - try again.");
     } finally {
       setSubmitting(false);
     }
@@ -102,7 +102,7 @@ export function QuizRunner({ quiz, lessonId }: { quiz: Quiz; lessonId?: string }
                 if (result) {
                   const isCorrect = exp?.correct.includes(ci);
                   if (isCorrect) cls = "border-mint-400/60 bg-mint-400/10 text-mint-200";
-                  else if (selected && !isCorrect) cls = "border-rose-400/60 bg-rose-400/10 text-rose-300";
+                  else if (selected && !isCorrect) cls = "border-rose-400/60 bg-rose-400/10 text-rose-700 dark:text-rose-300";
                   else cls = "border-void-700/60 text-ink-faint";
                 }
                 return (
@@ -123,7 +123,7 @@ export function QuizRunner({ quiz, lessonId }: { quiz: Quiz; lessonId?: string }
             </div>
             {exp && (
               <div className={`mt-3 rounded-lg border p-3 text-xs leading-relaxed ${exp.right ? "border-mint-400/30 bg-mint-400/5 text-ink-dim" : "border-amber-400/30 bg-amber-400/5 text-ink-dim"}`}>
-                <span className={`font-bold ${exp.right ? "text-mint-300" : "text-amber-300"}`}>
+                <span className={`font-bold ${exp.right ? "text-mint-700 dark:text-mint-300" : "text-amber-600 dark:text-amber-300"}`}>
                   {exp.right ? "✓ Exactly." : "Not quite."}
                 </span>{" "}
                 {exp.explanation}
@@ -133,7 +133,7 @@ export function QuizRunner({ quiz, lessonId }: { quiz: Quiz; lessonId?: string }
         );
       })}
       {error && (
-        <p role="alert" className="mb-3 rounded-lg border border-rose-500/40 bg-rose-500/10 px-4 py-3 text-sm text-rose-300">
+        <p role="alert" className="mb-3 rounded-lg border border-rose-500/40 bg-rose-500/10 px-4 py-3 text-sm text-rose-700 dark:text-rose-300">
           {error} <button onClick={() => setError(null)} className="underline">dismiss</button>
         </p>
       )}
@@ -146,11 +146,11 @@ export function QuizRunner({ quiz, lessonId }: { quiz: Quiz; lessonId?: string }
           <Icon name="trophy" size={26} className="text-amber-400" />
           <div>
             <p className="font-display font-bold text-ink">
-              {result.score}/{result.total} correct — {result.score === result.total ? "flawless." : result.score >= result.total / 2 ? "passed." : "retry whenever you're ready."}
+              {result.score}/{result.total} correct - {result.score === result.total ? "flawless." : result.score >= result.total / 2 ? "passed." : "retry whenever you're ready."}
             </p>
             {!result.score || result.score < result.total ? (
               <button
-                className="mt-1 text-xs font-semibold text-pulse-300 underline-offset-2 hover:underline focus-ring rounded"
+                className="mt-1 text-xs font-semibold text-pulse-700 dark:text-pulse-300 underline-offset-2 hover:underline focus-ring rounded"
                 onClick={() => { setResult(null); setAnswers({}); }}
               >
                 Try again

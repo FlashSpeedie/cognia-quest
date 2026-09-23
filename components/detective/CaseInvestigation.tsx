@@ -58,7 +58,7 @@ export function CaseInvestigation({ caseFile, alreadySolved }: { caseFile: Detec
       for (const b of d.badges ?? []) push({ kind: "badge", title: `Badge unlocked: ${b}` });
       router.refresh();
     } catch {
-      setSubmitError("Network error — your verdict wasn't recorded.");
+      setSubmitError("Network error - your verdict wasn't recorded.");
     } finally {
       setSubmitting(false);
     }
@@ -71,12 +71,12 @@ export function CaseInvestigation({ caseFile, alreadySolved }: { caseFile: Detec
         <GlassCard glow className="border-void-700 p-0 overflow-hidden">
           <div className="flex items-center justify-between border-b border-void-700 px-5 py-3">
             <span className="font-mono text-[11px] tracking-[0.25em] text-ink-faint">
-              CASE #{String(caseFile.caseNo).padStart(4, "0")} — {caseFile.title.toUpperCase()}
+              CASE #{String(caseFile.caseNo).padStart(4, "0")} - {caseFile.title.toUpperCase()}
             </span>
             <Chip tone={alreadySolved ? "mint" : "amber"}>{alreadySolved ? "closed" : "active"}</Chip>
           </div>
           <div className="p-5">
-            <p className="font-mono text-[10px] uppercase tracking-widest text-volt-300">AI generated response</p>
+            <p className="font-mono text-[10px] uppercase tracking-widest text-volt-700 dark:text-volt-300">AI generated response</p>
             <blockquote className="mt-3 rounded-xl border border-volt-400/25 bg-volt-400/5 p-5 text-lg leading-relaxed text-ink">
               “{caseFile.response}”
             </blockquote>
@@ -93,7 +93,7 @@ export function CaseInvestigation({ caseFile, alreadySolved }: { caseFile: Detec
                 aria-selected={tab === t.id}
                 onClick={() => setTab(t.id)}
                 className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold focus-ring ${
-                  tab === t.id ? "border-pulse-400 bg-pulse-400/15 text-pulse-300" : "border-void-700 text-ink-dim hover:text-ink"
+                  tab === t.id ? "border-pulse-400 bg-pulse-400/15 text-pulse-700 dark:text-pulse-300" : "border-void-700 text-ink-dim hover:text-ink"
                 }`}
               >
                 <Icon name={t.icon} size={13} /> {t.label}
@@ -137,8 +137,8 @@ export function CaseInvestigation({ caseFile, alreadySolved }: { caseFile: Detec
           )}
           {result && (
             <div className={`mt-4 rounded-xl border p-4 ${result.correct ? "border-mint-400/40 bg-mint-400/10" : "border-rose-400/40 bg-rose-400/10"}`} aria-live="polite">
-              <p className={`font-display font-bold ${result.correct ? "text-mint-300" : "text-rose-300"}`}>
-                {result.correct ? "Case closed — nice catch!" : "Not quite. Keep digging."}
+              <p className={`font-display font-bold ${result.correct ? "text-mint-700 dark:text-mint-300" : "text-rose-700 dark:text-rose-300"}`}>
+                {result.correct ? "Case closed - nice catch!" : "Not quite. Keep digging."}
               </p>
               {!result.correct && (
                 <p className="mt-1 text-xs text-ink-dim">Find more evidence, then submit another verdict.</p>
@@ -147,7 +147,7 @@ export function CaseInvestigation({ caseFile, alreadySolved }: { caseFile: Detec
                 <>
                   <p className="mt-2 text-sm text-ink">{result.explanation}</p>
                   <p className="mt-2 border-l-2 border-pulse-400/40 pl-3 text-xs text-ink-dim">
-                    <span className="font-semibold text-pulse-300">Field note:</span> {result.teachingPoint}
+                    <span className="font-semibold text-pulse-700 dark:text-pulse-300">Field note:</span> {result.teachingPoint}
                   </p>
                   <Chip tone="neutral" className="mt-3 font-mono text-[10px]">
                     actual issue: {ISSUE_LABELS[result.actualIssue]}

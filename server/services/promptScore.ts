@@ -1,5 +1,5 @@
 /**
- * Prompt scoring rubric (spec §15). Deterministic educational heuristic —
+ * Prompt scoring rubric (spec §15). Deterministic educational heuristic -
  * NOT a scientific measurement. Each dimension scores 0–5; total 0–100.
  */
 
@@ -124,7 +124,7 @@ export function scorePrompt(prompt: string): PromptScore {
   const missing = dims.filter((d) => !d.passed);
   const improvedVs =
     missing.length === 0
-      ? "Excellent — this prompt covers all eight rubric dimensions."
+      ? "Excellent - this prompt covers all eight rubric dimensions."
       : `Next improvement: add ${missing
           .slice(0, 2)
           .map((d) => d.label.toLowerCase())

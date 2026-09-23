@@ -43,7 +43,7 @@ export async function createLocalDb(dbPath?: string): Promise<Db> {
 
   let data: StoreShape | null = null;
   let queue: Promise<unknown> = Promise.resolve();
-  /** >0 while executing inside tx() — inner ops run directly (re-entrant). */
+  /** >0 while executing inside tx() - inner ops run directly (re-entrant). */
   let depth = 0;
   let tmpCounter = 0;
 

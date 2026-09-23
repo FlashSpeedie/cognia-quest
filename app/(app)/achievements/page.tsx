@@ -58,7 +58,7 @@ export default async function AchievementsPage() {
               <h3 className={`mt-4 font-display text-lg font-bold ${unlocked ? "text-ink" : "text-ink-dim"}`}>{def.title}</h3>
               <p className="mt-1 min-h-[2.5rem] text-sm text-ink-dim">{def.description}</p>
               {unlocked ? (
-                <p className="mt-3 font-mono text-[11px] text-mint-300">
+                <p className="mt-3 font-mono text-[11px] text-mint-700 dark:text-mint-300">
                   UNLOCKED {new Date(s.unlockedAt!).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }).toUpperCase()}
                 </p>
               ) : (

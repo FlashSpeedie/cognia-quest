@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getSessionUser } from "@/server/auth/session";
-import { Logo } from "@/components/public/PublicNav";
+import { BrandLogo } from "@/components/public/BrandLogo";
 import { audit } from "@/server/services/audit";
 import { getDb } from "@/server/db/db";
 
@@ -26,8 +26,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <header className="border-b border-void-700/70 bg-void-950/85 backdrop-blur-md">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
           <div className="flex items-center gap-3">
-            <Logo size="sm" />
-            <span className="rounded-md border border-amber-400/40 bg-amber-400/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest text-amber-300">
+            <BrandLogo size="sm" />
+            <span className="rounded-md border border-amber-400/40 bg-amber-400/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest text-amber-600 dark:text-amber-300">
               Admin
             </span>
           </div>

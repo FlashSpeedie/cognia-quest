@@ -27,14 +27,14 @@ export default async function LeaderboardPage() {
       <SectionHeading
         kicker="Opt-in only"
         title="Leaderboard"
-        description="Friendly, voluntary, minimal: display names and XP only. No ranks are worth your wellbeing — learning is, and stays, personal."
+        description="Friendly, voluntary, minimal: display names and XP only. No ranks are worth your wellbeing - learning is, and stays, personal."
       />
       {entries.length === 0 ? (
         <div className="mt-8">
           <EmptyState
             icon="⚡"
             title="The board is quiet"
-            description="Nobody has opted in yet. Flip the leaderboard switch in Settings if you'd like to appear — it's entirely optional."
+            description="Nobody has opted in yet. Flip the leaderboard switch in Settings if you'd like to appear - it's entirely optional."
             action={<LinkButton href="/settings" variant="secondary">Open settings</LinkButton>}
           />
         </div>
@@ -48,7 +48,7 @@ export default async function LeaderboardPage() {
                 </span>
                 <span className="flex-1 font-semibold text-ink">{e.name} {e.me && <Chip tone="pulse">you</Chip>}</span>
                 <span className="font-mono text-xs text-ink-faint">{e.title}</span>
-                <span className="font-mono text-sm font-bold text-amber-300">{e.xp.toLocaleString()} XP</span>
+                <span className="font-mono text-sm font-bold text-amber-600 dark:text-amber-300">{e.xp.toLocaleString()} XP</span>
               </li>
             ))}
           </ol>

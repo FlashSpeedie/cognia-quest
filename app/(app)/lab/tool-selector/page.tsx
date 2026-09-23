@@ -5,7 +5,7 @@ import { getSessionUser } from "@/server/auth/session";
 import { SectionHeading } from "@/components/ui/Card";
 import { ToolSelector } from "@/components/lab/ToolSelector";
 
-export const metadata: Metadata = { title: "AI Tool Selector — AI Lab" };
+export const metadata: Metadata = { title: "AI Tool Selector - AI Lab" };
 export const dynamic = "force-dynamic";
 
 export default async function ToolSelectorPage() {
@@ -16,7 +16,7 @@ export default async function ToolSelectorPage() {
       <nav aria-label="Breadcrumb" className="mb-5 flex items-center gap-1.5 text-xs text-ink-faint">
         <Link href="/lab" className="hover:text-ink focus-ring rounded">AI Lab</Link>
         <span aria-hidden>/</span>
-        <span className="text-pulse-300">Tool Selector</span>
+        <span className="text-pulse-700 dark:text-pulse-300">Tool Selector</span>
       </nav>
       <SectionHeading
         kicker="Judgment drill"

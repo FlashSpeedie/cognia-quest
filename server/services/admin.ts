@@ -7,7 +7,7 @@ import { DETECTIVE_CASES } from "@/content/detective";
 import { levelFor } from "@/lib/levels";
 import { todayKey } from "@/server/db/db";
 
-/** Admin analytics — aggregate, privacy-lean (spec §49). */
+/** Admin analytics - aggregate, privacy-lean (spec §49). */
 export async function getAdminOverview(db: Db) {
   const [users, xpEvents, lessons, missions, badges, quizzes, challenges, sims, activity] = await Promise.all([
     db.table("users").all(),

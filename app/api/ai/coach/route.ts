@@ -43,7 +43,7 @@ export async function POST(req: Request) {
   const r = await callGemini(SYSTEM, userMsg);
   if (!r.ok) {
     const status = r.reason === "unconfigured" ? 503 : r.reason === "timeout" ? 504 : 502;
-    return json({ error: "The coach is unavailable right now — the rubric score still counts.", reason: r.reason }, status);
+    return json({ error: "The coach is unavailable right now - the rubric score still counts.", reason: r.reason }, status);
   }
   return json({ ok: true, feedback: r.text, score: rubric.total });
 }

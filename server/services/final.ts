@@ -88,7 +88,7 @@ export async function submitFinal(
 
   const xp = await awardXP(db, user, { sourceType: "final", sourceId: "final-challenge", note: `Final Challenge: ${totalScore}%` });
   await logActivity(db, user.id, "final_completed", `Completed the Final AI Challenge (${totalScore}%)`);
-  await notify(db, user.id, "achievement", "🏆 Final Challenge complete", `Score ${totalScore}% — title unlocked: AI Architect`);
+  await notify(db, user.id, "achievement", "🏆 Final Challenge complete", `Score ${totalScore}% - title unlocked: AI Architect`);
   await touchStreak(db, user.id);
   await recordMissionEvent(db, user, { type: "final", id: "final:completed" });
   await checkBadges(db, user.id);

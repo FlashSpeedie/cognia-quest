@@ -2,7 +2,7 @@ import { json, requireUser } from "@/server/http";
 import { MODULES } from "@/content/modules";
 import { getDb } from "@/server/db/db";
 
-/** GET /api/modules — module catalog + caller's completion state. */
+/** GET /api/modules - module catalog + caller's completion state. */
 export async function GET() {
   const auth = await requireUser();
   if ("response" in auth) return auth.response;

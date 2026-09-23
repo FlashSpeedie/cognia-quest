@@ -37,7 +37,7 @@ export default async function QuestMapPage() {
     <div>
       <SectionHeading
         kicker="Campaign map"
-        title="AI Quest Map"
+        title="Cognia Quest Map"
         description="Your route through the curriculum. Nodes unlock as modules complete. The summit is the Final AI Challenge."
       />
 
@@ -48,7 +48,7 @@ export default async function QuestMapPage() {
             finalDone ? "border-amber-400/50 bg-amber-400/10 shadow-[0_0_40px_rgba(251,191,36,0.15)]" : "border-volt-400/40 bg-volt-400/10"
           }`}>
             <span className="text-4xl" aria-hidden="true">🏆</span>
-            <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.3em] text-amber-300">Final Mission</p>
+            <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.3em] text-amber-600 dark:text-amber-300">Final Mission</p>
             <p className="font-display text-xl font-black text-ink">{finalDone ? "CONQUERED" : "FINAL AI MISSION"}</p>
             <p className="mt-1 text-xs text-ink-faint">{missionsDone}/10 missions · {finalDone ? "certificate unlocked" : "requires missions 1–9"}</p>
           </div>
@@ -77,7 +77,7 @@ export default async function QuestMapPage() {
                   }`}
                 >
                   <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${
-                    state === "complete" ? "bg-mint-400/15 text-mint-300" : state === "in_progress" ? "bg-pulse-400/20 text-pulse-300" : "bg-void-700 text-ink-faint"
+                    state === "complete" ? "bg-mint-400/15 text-mint-700 dark:text-mint-300" : state === "in_progress" ? "bg-pulse-400/20 text-pulse-700 dark:text-pulse-300" : "bg-void-700 text-ink-faint"
                   }`}>
                     <Icon name={(state === "complete" ? "check" : state === "locked" ? "lock" : m.icon) as IconName} size={22} />
                   </span>

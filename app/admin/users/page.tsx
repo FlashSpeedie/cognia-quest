@@ -4,7 +4,7 @@ import { getUsers } from "@/server/services/admin";
 import { SectionHeading, Card } from "@/components/ui/Card";
 import { Chip } from "@/components/ui/Chip";
 
-export const metadata: Metadata = { title: "Admin — Users" };
+export const metadata: Metadata = { title: "Admin - Users" };
 export const dynamic = "force-dynamic";
 
 export default async function AdminUsers() {
@@ -13,7 +13,7 @@ export default async function AdminUsers() {
 
   return (
     <div>
-      <SectionHeading kicker="Roster" title="Users" description="All registered accounts. Read-only — role changes require the database, deliberately." />
+      <SectionHeading kicker="Roster" title="Users" description="All registered accounts. Read-only - role changes require the database, deliberately." />
       <Card className="mt-8 overflow-x-auto p-0">
         <table className="w-full min-w-[640px] text-sm">
           <thead>
@@ -35,7 +35,7 @@ export default async function AdminUsers() {
                 </td>
                 <td className="px-4 py-3 font-mono text-xs">{u.level.title}</td>
                 <td className="px-4 py-3 font-mono">{u.xp.toLocaleString()}</td>
-                <td className="px-4 py-3 font-mono text-xs">{u.finalScore != null ? `${u.finalScore}%` : "—"}</td>
+                <td className="px-4 py-3 font-mono text-xs">{u.finalScore != null ? `${u.finalScore}%` : "-"}</td>
                 <td className="px-4 py-3">
                   <Chip tone={u.role === "admin" ? "amber" : u.isDemo ? "volt" : "neutral"}>
                     {u.role === "admin" ? "admin" : u.isDemo ? "demo" : "student"}

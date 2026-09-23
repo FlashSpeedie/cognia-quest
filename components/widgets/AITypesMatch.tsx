@@ -37,7 +37,7 @@ export function AITypesMatch({ onComplete }: { onComplete?: () => void }) {
                     disabled={checked}
                     onClick={() => setPicked((p) => ({ ...p, [i]: t }))}
                     className={`rounded-lg border px-2.5 py-1 text-xs font-medium transition-colors focus-ring ${
-                      picked[i] === t ? "border-pulse-400 bg-pulse-400/15 text-pulse-300" : "border-void-700 text-ink-dim hover:text-ink"
+                      picked[i] === t ? "border-pulse-400 bg-pulse-400/15 text-pulse-700 dark:text-pulse-300" : "border-void-700 text-ink-dim hover:text-ink"
                     }`}
                   >
                     {t}

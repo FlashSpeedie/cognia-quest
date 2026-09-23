@@ -6,7 +6,7 @@ import { BarRow } from "@/components/charts/Charts";
 
 /**
  * Overfitting demo (spec §60): complexity slider drives deterministic
- * accuracy curves — training climbs to 100%, test accuracy arcs and falls.
+ * accuracy curves - training climbs to 100%, test accuracy arcs and falls.
  */
 const CURVE = [
   { c: 1, train: 62, test: 60 },
@@ -27,9 +27,9 @@ export function OverfittingLab({ onComplete }: { onComplete?: () => void }) {
   const row = CURVE[c - 1]!;
 
   const verdict = useMemo(() => {
-    if (c <= 2) return { t: "Too simple — the model misses the pattern (underfit).", tone: "text-amber-300" };
-    if (c <= 5) return { t: "Sweet spot — it learns the signal and it generalizes.", tone: "text-mint-300" };
-    return { t: "Overfit — memorize the training set, flunk the real world.", tone: "text-rose-400" };
+    if (c <= 2) return { t: "Too simple - the model misses the pattern (underfit).", tone: "text-amber-600 dark:text-amber-300" };
+    if (c <= 5) return { t: "Sweet spot - it learns the signal and it generalizes.", tone: "text-mint-700 dark:text-mint-300" };
+    return { t: "Overfit - memorize the training set, flunk the real world.", tone: "text-rose-400" };
   }, [c]);
 
   return (
@@ -37,7 +37,7 @@ export function OverfittingLab({ onComplete }: { onComplete?: () => void }) {
       <GlassCard className="p-5">
         <div className="flex items-center justify-between">
           <p className="font-mono text-xs uppercase tracking-widest text-ink-faint">Model complexity</p>
-          <span className="font-mono text-lg font-bold text-pulse-300">{c}/10</span>
+          <span className="font-mono text-lg font-bold text-pulse-700 dark:text-pulse-300">{c}/10</span>
         </div>
         <div className="mt-3 flex h-4 items-end gap-1" aria-hidden="true">
           {Array.from({ length: 10 }, (_, i) => (
@@ -61,11 +61,11 @@ export function OverfittingLab({ onComplete }: { onComplete?: () => void }) {
         {c >= 8 && (
           <div className="mt-3 rounded-xl border border-rose-400/30 bg-rose-400/10 p-3 text-sm text-ink">
             Training accuracy <span className="font-mono">{row.train}%</span> but test accuracy{" "}
-            <span className="font-mono">{row.test}%</span> — a {row.train - row.test}-point gap. The model memorized the noise.
+            <span className="font-mono">{row.test}%</span> - a {row.train - row.test}-point gap. The model memorized the noise.
           </div>
         )}
       </GlassCard>
-      <p className="mt-2 text-xs italic text-ink-faint">Educational simulation — the curves model the classic pattern, not a specific dataset.</p>
+      <p className="mt-2 text-xs italic text-ink-faint">Educational simulation - the curves model the classic pattern, not a specific dataset.</p>
     </div>
   );
 }

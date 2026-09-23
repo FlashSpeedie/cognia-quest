@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
 
 /**
- * "What is a model?" — examples → pattern → prediction.
+ * "What is a model?" - examples → pattern → prediction.
  * Click points onto the chart; least-squares line = the model. Deterministic.
  */
 export function WhatIsModel({ onComplete }: { onComplete?: () => void }) {
@@ -72,13 +72,13 @@ export function WhatIsModel({ onComplete }: { onComplete?: () => void }) {
         <div className="flex flex-col gap-3 rounded-xl border border-void-700 bg-void-900 p-4 sm:w-48">
           <p className="font-mono text-[10px] uppercase tracking-widest text-ink-faint">The model</p>
           <p className="text-sm text-ink">
-            score ≈ <span className="font-mono text-volt-300">{slope.toFixed(1)}</span> × hours{" "}
-            {intercept >= 0 ? "+" : "−"} <span className="font-mono text-volt-300">{Math.abs(intercept).toFixed(1)}</span>
+            score ≈ <span className="font-mono text-volt-700 dark:text-volt-300">{slope.toFixed(1)}</span> × hours{" "}
+            {intercept >= 0 ? "+" : "−"} <span className="font-mono text-volt-700 dark:text-volt-300">{Math.abs(intercept).toFixed(1)}</span>
           </p>
           {points.length >= 2 && (
             <p className="text-sm text-ink">
-              At <span className="font-mono text-mint-300">{queryX}h</span> → predicts{" "}
-              <span className="font-mono text-mint-300">{Math.round(prediction)}</span>
+              At <span className="font-mono text-mint-700 dark:text-mint-300">{queryX}h</span> → predicts{" "}
+              <span className="font-mono text-mint-700 dark:text-mint-300">{Math.round(prediction)}</span>
             </p>
           )}
           <label className="text-xs text-ink-dim">
@@ -91,7 +91,7 @@ export function WhatIsModel({ onComplete }: { onComplete?: () => void }) {
             />
           </label>
           <p className="text-[11px] leading-relaxed text-ink-faint">
-            Click the chart to add examples. Add a wild outlier (0h → 48 points?) and watch the line bend — the model only knows the examples you showed it.
+            Click the chart to add examples. Add a wild outlier (0h → 48 points?) and watch the line bend - the model only knows the examples you showed it.
           </p>
           <Button variant="ghost" size="sm" onClick={() => setPoints([[1, 5], [2, 10], [3, 14], [4, 20], [5, 24]])}>
             Reset data

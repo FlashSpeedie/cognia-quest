@@ -2,16 +2,18 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { PublicNav } from "@/components/public/PublicNav";
 import { HeroNetwork } from "@/components/public/HeroNetwork";
+import { BrandLogo } from "@/components/public/BrandLogo";
 import { GlassCard, SectionHeading } from "@/components/ui/Card";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import { Chip } from "@/components/ui/Chip";
 import { LinkButton } from "@/components/ui/Button";
 import { isDemoEnabled } from "@/lib/env";
+import { JsonLd } from "@/components/seo/JsonLd";
 
 export const metadata: Metadata = {
-  title: "AI Quest — Learn AI. Challenge AI. Use AI Responsibly.",
+  title: "Cognia Quest | Interactive AI Learning for High School Students",
   description:
-    "Become an AI Apprentice: interactive lessons, real simulations, AI Detective cases, and ethics missions for grades 9–12.",
+    "An interactive AI learning platform for high school students: understand how AI works, practice with interactive challenges, investigate AI mistakes, and learn responsible usage.",
 };
 
 const PILLARS: { icon: IconName; kicker: string; title: string; desc: string; tone: string }[] = [
@@ -19,21 +21,21 @@ const PILLARS: { icon: IconName; kicker: string; title: string; desc: string; to
     icon: "brain",
     kicker: "LEARN",
     title: "AI Academy",
-    desc: "Interactive lessons across 7 modules — from 'what is AI' to how language models predict tokens. Short, visual, never walls of text.",
-    tone: "text-pulse-300 border-pulse-400/30",
+    desc: "Interactive lessons across 7 modules - from 'what is AI' to how language models predict tokens. Short, visual, never walls of text.",
+    tone: "text-pulse-700 dark:text-pulse-300 border-pulse-400/30",
   },
   {
     icon: "lab",
     kicker: "EXPERIMENT",
     title: "AI Lab",
     desc: "Train your own model on real-ish data. Push it until it breaks. Discover why more data isn't automatically better.",
-    tone: "text-volt-300 border-volt-400/30",
+    tone: "text-volt-700 dark:text-volt-300 border-volt-400/30",
   },
   {
     icon: "detective",
     kicker: "QUESTION",
     title: "AI Detective",
-    desc: "Investigate AI-generated responses. Expose hallucinations, bias, fake citations, and overconfidence — with evidence.",
+    desc: "Investigate AI-generated responses. Expose hallucinations, bias, fake citations, and overconfidence - with evidence.",
     tone: "text-rose-400 border-rose-400/30",
   },
   {
@@ -41,7 +43,7 @@ const PILLARS: { icon: IconName; kicker: string; title: string; desc: string; to
     kicker: "DECIDE",
     title: "Ethics Court",
     desc: "Judge real deployment scenarios: AI grading, surveillance cameras, prediction systems. Your reasoning is the score.",
-    tone: "text-mint-300 border-mint-400/30",
+    tone: "text-mint-700 dark:text-mint-300 border-mint-400/30",
   },
 ];
 
@@ -50,7 +52,7 @@ const STEPS = [
   { n: "2", title: "EXPERIMENT", body: "Train simulations and run real AI labs." },
   { n: "3", title: "QUESTION", body: "Spot hallucinations, bias, and questionable outputs." },
   { n: "4", title: "BUILD", body: "Solve practical missions and prompt challenges." },
-  { n: "5", title: "MASTER", body: "Earn XP, badges, levels — and your AI Architect certificate." },
+  { n: "5", title: "MASTER", body: "Earn XP, badges, levels - and your AI Architect certificate." },
 ];
 
 const BADGES_PREVIEW = [
@@ -62,35 +64,58 @@ const BADGES_PREVIEW = [
 
 export default function LandingPage() {
   const demo = isDemoEnabled();
+  const base = (process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000").replace(/\/$/, "");
   return (
     <div className="app-backdrop min-h-screen">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "Cognia Quest",
+          url: `${base}/`,
+          description:
+            "Interactive AI learning platform for high school students: lessons, simulations, prompt engineering practice, and ethics scenarios.",
+        }}
+      />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "Cognia Quest",
+          url: `${base}/`,
+          description: "Learn AI. Question AI. Use AI Responsibly.",
+        }}
+      />
       <PublicNav demoEnabled={demo} />
       <main id="main">
         {/* ── HERO ─────────────────────────────────────────────── */}
         <section className="mx-auto grid max-w-6xl items-center gap-10 px-4 pb-20 pt-32 lg:min-h-[80vh] lg:grid-cols-2 lg:pt-24">
           <div>
             <Chip tone="pulse" className="mb-5 uppercase tracking-[0.14em]">
-              Learn · Experiment · Question · Build · Master
+              For high school students
             </Chip>
-            <h1 className="font-display text-4xl font-bold leading-[1.08] tracking-tight text-ink sm:text-5xl">
-              Become an AI <span className="text-gradient">Apprentice</span>
+            <h1 className="font-display text-4xl font-bold leading-[1.12] tracking-tight text-ink sm:text-5xl">
+              Learn AI.<br />
+              Question AI.<br />
+              <span className="text-gradient">Use AI Responsibly.</span>
             </h1>
-            <p className="mt-4 max-w-lg text-lg leading-relaxed text-ink-dim">
-              Learn AI by doing, questioning, and experimenting. Understand how it works,
-              practice with interactive challenges, and learn to use it responsibly.
+            <p className="mt-5 max-w-lg text-lg leading-relaxed text-ink-dim">
+              An interactive learning platform for high school students to understand artificial
+              intelligence, practice practical AI techniques, investigate AI limitations, and make
+              responsible decisions.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <LinkButton href="/register" size="lg">
                 Start learning
               </LinkButton>
               <LinkButton href="/preview" variant="secondary" size="lg">
-                Explore AI
+                Explore the learning path
               </LinkButton>
             </div>
             {demo && (
               <p className="mt-6 flex items-center gap-2 text-sm text-ink-faint">
                 <Icon name="shield" size={16} />
-                No paywall for judges — hit &quot;Try demo&quot; up top and explore instantly.
+                No paywall for judges - hit &quot;Try demo&quot; up top and explore instantly.
               </p>
             )}
           </div>
@@ -143,13 +168,60 @@ export default function LandingPage() {
           </ol>
         </section>
 
+        {/* ── MISSION MAP ──────────────────────────────────────── */}
+        <section className="mx-auto max-w-6xl px-4 py-16">
+          <SectionHeading
+            kicker="Your route"
+            title="The mission map"
+            description="A guided sequence from AI fundamentals to the capstone challenge. Finish a stage to unlock the next - every step is earned."
+          />
+          <ol
+            aria-label="Mission roadmap"
+            className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-7"
+          >
+            {([
+              { icon: "book", label: "AI Fundamentals" },
+              { icon: "lab", label: "Machine Learning" },
+              { icon: "spark", label: "Generative AI" },
+              { icon: "terminal", label: "Prompt Engineering" },
+              { icon: "scale", label: "AI Ethics" },
+              { icon: "detective", label: "AI Detective" },
+              { icon: "trophy", label: "Final Challenge" },
+            ] as const).map((m, i, arr) => (
+              <li key={m.label} className="relative">
+                <div className="flex items-center gap-3 rounded-xl border border-void-700/70 bg-void-900 p-3.5 shadow-card lg:flex-col lg:items-center lg:gap-2.5 lg:p-5 lg:text-center">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-pulse-600/40 bg-pulse-50 text-pulse-600 dark:bg-pulse-950/50 dark:text-pulse-700 dark:text-pulse-300">
+                    <Icon name={m.icon} size={17} />
+                  </span>
+                  <span className="text-sm font-semibold leading-snug text-ink">{m.label}</span>
+                </div>
+                {i < arr.length - 1 && (
+                  <div aria-hidden="true" className="absolute -right-2 top-1/2 hidden h-px w-4 -translate-y-1/2 bg-void-700 lg:block" />
+                )}
+              </li>
+            ))}
+          </ol>
+          <dl className="mt-8 grid grid-cols-3 gap-3 sm:gap-5">
+            {[
+              { n: "7", label: "Modules" },
+              { n: "10", label: "Missions" },
+              { n: "12", label: "Badges" },
+            ].map((s) => (
+              <div key={s.label} className="rounded-xl border border-void-700/70 bg-void-900 p-4 text-center shadow-card sm:p-6">
+                <dt className="order-2 mt-1 text-sm font-medium text-ink-dim">{s.label}</dt>
+                <dd className="order-1 font-display text-2xl font-bold text-pulse-600 sm:text-3xl">{s.n}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+
         {/* ── GAMIFICATION STRIP ───────────────────────────────── */}
         <section className="mx-auto max-w-6xl px-4 py-16">
           <div className="glass-panel grid gap-8 rounded-2xl p-8 md:grid-cols-2 lg:p-10">
             <div>
               <SectionHeading
                 kicker="Progress you can feel"
-                title="XP, levels, badges — earned, never given"
+                title="XP, levels, badges - earned, never given"
                 description="Ten ranks from AI Rookie to AI Master. XP is validated server-side: every point ties to something you actually did."
               />
               <div className="mt-6 space-y-3">
@@ -181,7 +253,7 @@ export default function LandingPage() {
                 ))}
               </div>
               <p className="mt-4 text-center text-xs text-ink-faint">
-                12 badges across detection, ethics, prompting, and labs — each with a story of how you earned it.
+                12 badges across detection, ethics, prompting, and labs - each with a story of how you earned it.
               </p>
             </div>
           </div>
@@ -192,8 +264,8 @@ export default function LandingPage() {
           <Icon name="shield" className="mx-auto text-mint-600" size={32} />
           <h2 className="mt-4 font-display text-2xl font-bold text-ink sm:text-3xl">Understand it. Question it. Own it.</h2>
           <p className="mx-auto mt-4 max-w-2xl leading-relaxed text-ink-dim">
-            AI Quest never pretends AI is magic or infallible. Every simulation is labeled as educational.
-            Capability is taught side-by-side with limits: models can be wrong, biased, or overconfident —
+            Cognia Quest never pretends AI is magic or infallible. Every simulation is labeled as educational.
+            Capability is taught side-by-side with limits: models can be wrong, biased, or overconfident -
             and you&apos;ll learn exactly when to check.
           </p>
         </section>
@@ -228,15 +300,20 @@ export default function LandingPage() {
 export function PublicFooter() {
   return (
     <footer className="border-t border-void-700/60 py-10">
-      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 text-sm text-ink-faint sm:flex-row">
-        <p>AI QUEST — an educational platform concept for TSA Webmasters.</p>
-        <nav className="flex gap-5" aria-label="Footer">
-          <Link className="hover:text-ink focus-ring rounded" href="/about">About</Link>
-          <Link className="hover:text-ink focus-ring rounded" href="/preview">Preview</Link>
-          <Link className="hover:text-ink focus-ring rounded" href="/privacy">Privacy</Link>
-          <Link className="hover:text-ink focus-ring rounded" href="/login">Log in</Link>
+      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-5 px-4 sm:flex-row">
+        <Link href="/" aria-label="Cognia Quest home" className="focus-ring rounded-lg">
+          <BrandLogo size="sm" />
+        </Link>
+        <nav className="flex gap-5 text-sm" aria-label="Footer">
+          <Link className="font-medium text-ink-dim hover:text-ink focus-ring rounded" href="/about">About the platform</Link>
+          <Link className="font-medium text-ink-dim hover:text-ink focus-ring rounded" href="/preview">Preview lessons</Link>
+          <Link className="font-medium text-ink-dim hover:text-ink focus-ring rounded" href="/privacy">Privacy</Link>
+          <Link className="font-medium text-ink-dim hover:text-ink focus-ring rounded" href="/login">Log in</Link>
         </nav>
       </div>
+      <p className="mx-auto mt-6 max-w-6xl px-4 text-xs text-ink-faint">
+        Cognia Quest is an interactive learning project built for the TSA Webmaster competition.
+      </p>
     </footer>
   );
 }

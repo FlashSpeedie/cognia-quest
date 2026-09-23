@@ -32,7 +32,7 @@ export function throttle(req: Request, key: string, limit: number, windowMs?: nu
   sweepBuckets();
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "local";
   const r = rateLimit(`${key}:${ip}`, limit, windowMs);
-  if (!r.ok) return error("Too many requests — slow down a moment.", 429);
+  if (!r.ok) return error("Too many requests - slow down a moment.", 429);
   return null;
 }
 

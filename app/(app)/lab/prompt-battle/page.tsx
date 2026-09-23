@@ -8,7 +8,7 @@ import { SectionHeading, GlassCard } from "@/components/ui/Card";
 import { Chip } from "@/components/ui/Chip";
 import { Icon } from "@/components/ui/Icon";
 
-export const metadata: Metadata = { title: "Prompt Battle — AI Lab" };
+export const metadata: Metadata = { title: "Prompt Battle - AI Lab" };
 export const dynamic = "force-dynamic";
 
 export default async function PromptBattlePage() {
@@ -26,12 +26,12 @@ export default async function PromptBattlePage() {
       <nav aria-label="Breadcrumb" className="mb-5 flex items-center gap-1.5 text-xs text-ink-faint">
         <Link href="/lab" className="hover:text-ink focus-ring rounded">AI Lab</Link>
         <span aria-hidden>/</span>
-        <span className="text-pulse-300">Prompt Battle</span>
+        <span className="text-pulse-700 dark:text-pulse-300">Prompt Battle</span>
       </nav>
       <SectionHeading
         kicker="10 arenas"
         title="Prompt Battle"
-        description="One task, one prompt each. Scores are from the rubric — beat 80 to clear a stage. Replays welcome; XP is earned once per tier per task."
+        description="One task, one prompt each. Scores are from the rubric - beat 80 to clear a stage. Replays welcome; XP is earned once per tier per task."
       />
       <div className="mt-8 grid gap-4 sm:grid-cols-2">
         {PROMPT_TASKS.map((t) => {

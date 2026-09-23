@@ -2,7 +2,7 @@
  * Bias simulation data (spec §20). Fictional scholarship applicants.
  * Story: historically, applicants living close to the school were favored
  * (a proxy for an advantaged neighborhood), so a model trained on history
- * reproduces that pattern — even when "location" seems harmless.
+ * reproduces that pattern - even when "location" seems harmless.
  */
 
 export interface BiasApplicant {

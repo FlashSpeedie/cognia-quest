@@ -15,7 +15,7 @@ export default async function CareersPage() {
       <SectionHeading
         kicker="Horizons"
         title="AI Career Explorer"
-        description="Where these skills lead. No pressure to pick one — just a map of what exists. Every path here started with exactly what you're doing now."
+        description="Where these skills lead. No pressure to pick one - just a map of what exists. Every path here started with exactly what you're doing now."
       />
       <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         {CAREERS.map((c) => (

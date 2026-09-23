@@ -13,13 +13,13 @@ const BLOCKS: { href: string; icon: IconName; title: string; desc: string }[] = 
     href: "/ethics/court",
     icon: "scale",
     title: "AI Ethics Court",
-    desc: "Ten deployment cases — grading bots, hallway cameras, support predictors. You decide which questions must be answered first.",
+    desc: "Ten deployment cases - grading bots, hallway cameras, support predictors. You decide which questions must be answered first.",
   },
   {
     href: "/ethics/privacy",
     icon: "lock",
     title: "Privacy Challenge",
-    desc: "Ten apps want your data. Decide what they'd genuinely need — and watch for overreach.",
+    desc: "Ten apps want your data. Decide what they'd genuinely need - and watch for overreach.",
   },
   {
     href: "/ethics/policy-builder",
@@ -43,13 +43,13 @@ export default async function EthicsHub() {
       <SectionHeading
         kicker="Judgment wing"
         title="AI Ethics Center"
-        description="AI ethics isn't a set of answers — it's a set of questions asked in advance. Practice asking them."
+        description="AI ethics isn't a set of answers - it's a set of questions asked in advance. Practice asking them."
       />
       <div className="mt-8 grid gap-5 md:grid-cols-2">
         {BLOCKS.map((b) => (
           <Link key={b.href} href={b.href} className="focus-ring rounded-2xl">
             <GlassCard className="h-full p-6 transition-all hover:-translate-y-1 hover:shadow-glow-volt">
-              <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-volt-400/30 bg-void-800/60 text-volt-300">
+              <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-volt-400/30 bg-void-800/60 text-volt-700 dark:text-volt-300">
                 <Icon name={b.icon} size={22} />
               </span>
               <h3 className="mt-4 font-display text-xl font-bold text-ink">{b.title}</h3>

@@ -1,5 +1,5 @@
 /**
- * Seed script — creates demo + admin + sample accounts and drives the demo
+ * Seed script - creates demo + admin + sample accounts and drives the demo
  * student through realistic activity USING the real services, so the state
  * is always consistent with business logic (spec §87/§119).
  *
@@ -25,7 +25,7 @@ import type { User } from "../lib/types";
 const dbPath = process.env.LOCAL_DB_PATH ?? "data/dev-db.json";
 
 // The seed script drives REAL services against the LOCAL datastore only.
-// .env.local may set Supabase keys (that's the production path) — they must
+// .env.local may set Supabase keys (that's the production path) - they must
 // not be visible here or registerUser() would try to use Supabase Auth.
 // Production must never get demo accounts; there is deliberately no
 // supabase path in this file at all.
@@ -39,7 +39,7 @@ async function main() {
   await fs.rm(path.resolve(dbPath), { force: true });
   const db = await createLocalDb(dbPath);
 
-  console.log("Seeding AI Quest →", dbPath);
+  console.log("Seeding Cognia Quest →", dbPath);
 
   // ── Admin (documented fake dev credentials) ──────────────────────────
   const adminReg = await registerUser(db, {

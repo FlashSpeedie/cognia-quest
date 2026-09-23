@@ -43,7 +43,7 @@ export function PrivacyChallenge() {
       setDoneScenarios((n) => n + 1);
       router.refresh();
     } catch {
-      push({ kind: "error", title: "Couldn't submit", body: "Network issue — selection kept, try again." });
+      push({ kind: "error", title: "Couldn't submit", body: "Network issue - selection kept, try again." });
     }
   }
 
@@ -108,7 +108,7 @@ export function PrivacyChallenge() {
                   <span className="text-sm text-ink">{d.label}</span>
                   {showVerdict && (
                     <span className="mt-1 block text-xs text-ink-dim">
-                      <span className={`mr-1 font-bold ${d.needed ? "text-mint-300" : "text-rose-400"}`}>
+                      <span className={`mr-1 font-bold ${d.needed ? "text-mint-700 dark:text-mint-300" : "text-rose-400"}`}>
                         {d.needed ? "needed." : "not needed."}
                       </span>
                       {result.reasons.find((x) => x.label === d.label)?.reason}
@@ -125,7 +125,7 @@ export function PrivacyChallenge() {
           ) : (
             <>
               <Chip tone={result.perfect ? "mint" : result.correct ? "amber" : "rose"}>
-                {result.perfect ? "perfect minimization" : result.correct ? "close — some gaps" : "review the reasons"}
+                {result.perfect ? "perfect minimization" : result.correct ? "close - some gaps" : "review the reasons"}
               </Chip>
               <Button variant="secondary" onClick={next}>Next scenario</Button>
             </>

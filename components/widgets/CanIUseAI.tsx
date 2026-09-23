@@ -20,7 +20,7 @@ const SCENARIOS = [
   },
   {
     id: "outline",
-    text: "Ask AI to help outline your essay — the assignment says 'AI allowed for brainstorming only'.",
+    text: "Ask AI to help outline your essay - the assignment says 'AI allowed for brainstorming only'.",
     verdict: "depends",
     note: "An outline may be brainstorming or may be structure+drafting. Check: does the policy mean ideas-only, or structure too? When unsure, ask the teacher.",
   },
@@ -50,7 +50,7 @@ const SCENARIOS = [
   },
   {
     id: "group-summary",
-    text: "Have AI summarize a colleague's report your group will present as joint work — and disclose that you did.",
+    text: "Have AI summarize a colleague's report your group will present as joint work - and disclose that you did.",
     verdict: "depends",
     note: "Disclosure helps, but verify the summary against the original and confirm your teacher's policy on AI summaries.",
   },
@@ -86,7 +86,7 @@ export function CanIUseAI({ onComplete }: { onComplete?: () => void }) {
                     disabled={checked}
                     onClick={() => setAnswers((a) => ({ ...a, [s.id]: v }))}
                     className={`rounded-lg border px-2.5 py-1 text-xs font-semibold focus-ring ${
-                      mine === v ? "border-pulse-400 bg-pulse-400/15 text-pulse-300" : "border-void-700 text-ink-faint hover:text-ink"
+                      mine === v ? "border-pulse-400 bg-pulse-400/15 text-pulse-700 dark:text-pulse-300" : "border-void-700 text-ink-faint hover:text-ink"
                     }`}
                   >
                     {VERDICT_TONE[v].label}

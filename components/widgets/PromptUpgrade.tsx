@@ -20,7 +20,7 @@ export function PromptUpgrade({ onComplete }: { onComplete?: () => void }) {
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <div>
           <label htmlFor="upgrade-prompt" className="text-sm font-medium text-ink">
-            Your prompt — edit it live
+            Your prompt - edit it live
           </label>
           <textarea
             id="upgrade-prompt"
@@ -57,7 +57,7 @@ export function PromptUpgrade({ onComplete }: { onComplete?: () => void }) {
           </GlassCard>
           {(score.total >= 80 || showStrong) && (
             <p className="mt-3 rounded-xl border border-mint-400/30 bg-mint-400/10 p-3 text-sm text-mint-200">
-              That&apos;s the whole trick: audience + format + length + specifics + verification. You did it by hand — now do it by instinct.
+              That&apos;s the whole trick: audience + format + length + specifics + verification. You did it by hand - now do it by instinct.
             </p>
           )}
           {score.total >= 80 && <MarkDone onDone={onComplete} />}
@@ -76,7 +76,7 @@ function MarkDone({ onDone }: { onDone?: () => void }) {
       onClick={() => { setClicked(true); onDone?.(); }}
       disabled={clicked}
     >
-      {clicked ? "Recorded ✓" : "I got it to 80+ — mark this step"}
+      {clicked ? "Recorded ✓" : "I got it to 80+ - mark this step"}
     </Button>
   );
 }

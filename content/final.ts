@@ -1,4 +1,4 @@
-/** Final AI Challenge — capstone stages (spec §26). Server-validated rubric. */
+/** Final AI Challenge - capstone stages (spec §26). Server-validated rubric. */
 
 export type FinalStage =
   | {
@@ -44,7 +44,7 @@ export const FINAL_STAGES: FinalStage[] = [
   {
     id: "choose-data",
     kind: "multi-select",
-    title: "Stage 1 — Choose the Data",
+    title: "Stage 1 - Choose the Data",
     briefing:
       "A fictional school wants an AI to flag students who may need academic support. Which inputs are appropriate to use? Select all that are reasonable.",
     minGood: 4,
@@ -52,9 +52,9 @@ export const FINAL_STAGES: FinalStage[] = [
       { id: "grades", label: "Recent grades & trends", good: true, why: "Directly related to academic standing." },
       { id: "assignments", label: "Assignment completion rate", good: true, why: "Behavioral signal about engagement." },
       { id: "attendance", label: "Attendance rate", good: true, why: "Strong, relevant, routinely collected signal." },
-      { id: "advisor", label: "Advisor/counselor notes flagged for follow-up", good: true, why: "Human judgment as one input — with oversight." },
+      { id: "advisor", label: "Advisor/counselor notes flagged for follow-up", good: true, why: "Human judgment as one input - with oversight." },
       { id: "address", label: "Home address", good: false, why: "Sensitive location data; proxies for income & ethnicity." },
-      { id: "lunch", label: "Free/reduced lunch status", good: false, why: "Socioeconomic proxy — penalizes poverty, not need for support." },
+      { id: "lunch", label: "Free/reduced lunch status", good: false, why: "Socioeconomic proxy - penalizes poverty, not need for support." },
       { id: "surname", label: "Student surname", good: false, why: "Pure identifier; proxies ethnicity. Irrelevant and risky." },
       { id: "browser", label: "Library computer browsing history", good: false, why: "Privacy-invasive and unrelated to support needs." },
     ],
@@ -62,26 +62,26 @@ export const FINAL_STAGES: FinalStage[] = [
   {
     id: "spot-problem",
     kind: "mcq",
-    title: "Stage 2 — Inspect the Dataset",
+    title: "Stage 2 - Inspect the Dataset",
     briefing:
       "The training data: 800 records from the school's honors program last year and 120 from all other programs combined. What is the most serious problem?",
     options: [
       "The dataset is too old to trust",
-      "It's heavily imbalanced — mostly honors students, so the model learns 'honors = fine' and may ignore everyone else",
+      "It's heavily imbalanced - mostly honors students, so the model learns 'honors = fine' and may ignore everyone else",
       "There aren't enough columns",
       "It needs more decimal places",
     ],
     correct: 1,
-    why: "Representation problems in data become blind spots in models. The fix is balanced, representative data — not more of the same.",
+    why: "Representation problems in data become blind spots in models. The fix is balanced, representative data - not more of the same.",
   },
   {
     id: "train-config",
     kind: "mcq",
-    title: "Stage 3 — Configure the Training",
+    title: "Stage 3 - Configure the Training",
     briefing:
       "You have a balanced dataset of 6,000 student records. Which training setup gives an honest picture of how the model will perform on next year's students?",
     options: [
-      "Train on ALL 6,000 records, then report accuracy on the same data — maximum data for learning",
+      "Train on ALL 6,000 records, then report accuracy on the same data - maximum data for learning",
       "Hold out 25% for testing, tune on the rest, and audit accuracy separately by student group",
       "Train on this year's data and test on the same students next week, since they're the same people",
     ],
@@ -91,12 +91,12 @@ export const FINAL_STAGES: FinalStage[] = [
   {
     id: "read-results",
     kind: "mcq",
-    title: "Stage 4 — Read the Results",
+    title: "Stage 4 - Read the Results",
     briefing:
       "After retraining on balanced data: overall accuracy 89%, but among students with intermittent attendance the model misses 3 out of 5 who later needed help. What does this mean?",
     options: [
-      "The model is fine — 89% is high",
-      "Overall accuracy hides a weak spot: high misses (false negatives) for one group — the very students the system exists to catch",
+      "The model is fine - 89% is high",
+      "Overall accuracy hides a weak spot: high misses (false negatives) for one group - the very students the system exists to catch",
       "The 89% figure must be a hallucination",
       "Accuracy doesn't matter at all",
     ],
@@ -106,7 +106,7 @@ export const FINAL_STAGES: FinalStage[] = [
   {
     id: "prompt-write",
     kind: "prompt",
-    title: "Stage 5 — Write the Explanation Prompt",
+    title: "Stage 5 - Write the Explanation Prompt",
     briefing:
       "The system will show teachers AI-generated explanations of why a student was flagged. Write the prompt that generates those explanations. Make it specific: audience (busy teachers), format, tone (supportive, not labeling), what to avoid (blame), what to include (concrete next steps, uncertainty note).",
     passScore: 70,
@@ -114,14 +114,14 @@ export const FINAL_STAGES: FinalStage[] = [
   {
     id: "detect-issue",
     kind: "mcq",
-    title: "Stage 6 — Review the AI Output",
+    title: "Stage 6 - Review the AI Output",
     briefing:
       "The system tells a teacher: 'Student #4471 will fail math this quarter (certainty: 99.2%). This is final and requires no further review.' What's the biggest issue?",
     options: [
       "The student ID should be longer",
       "The fine print is hard to read",
-      "Overconfident prediction presented as final, explicitly discouraging human review — predictions inform, they don't decide",
-      "Nothing — 99.2% is very accurate",
+      "Overconfident prediction presented as final, explicitly discouraging human review - predictions inform, they don't decide",
+      "Nothing - 99.2% is very accurate",
     ],
     correct: 2,
     why: "99.2% 'certainty' that forbids review is both statistically dubious and an accountability red flag.",
@@ -129,7 +129,7 @@ export const FINAL_STAGES: FinalStage[] = [
   {
     id: "checklist",
     kind: "checklist",
-    title: "Stage 7 — The Deployment Checklist",
+    title: "Stage 7 - The Deployment Checklist",
     briefing: "Which conditions must be true before this system goes live? Select all that apply.",
     items: [
       { id: "c1", label: "Students & families are told the system exists", important: true },
@@ -145,7 +145,7 @@ export const FINAL_STAGES: FinalStage[] = [
   {
     id: "verdict",
     kind: "verdict",
-    title: "Stage 8 — Your Recommendation",
+    title: "Stage 8 - Your Recommendation",
     briefing: "You've seen the data, the model's strengths and blind spots, and the deployment risks. What should the school do?",
     options: [
       { label: "Deploy immediately, exactly as proposed", defensible: false, why: "The proposal lacks transparency, review, contestability, and bias auditing." },

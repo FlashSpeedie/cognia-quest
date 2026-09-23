@@ -7,10 +7,10 @@ import { GlassCard } from "@/components/ui/Card";
 /** Claim verification triage (spec §61). */
 type Verdict = "supported" | "unsupported" | "contradicted" | "ambiguous";
 const VERDICTS: { id: Verdict; label: string; tone: string }[] = [
-  { id: "supported", label: "Supported", tone: "border-mint-400/50 text-mint-300" },
-  { id: "unsupported", label: "Unsupported", tone: "border-amber-400/50 text-amber-300" },
+  { id: "supported", label: "Supported", tone: "border-mint-400/50 text-mint-700 dark:text-mint-300" },
+  { id: "unsupported", label: "Unsupported", tone: "border-amber-400/50 text-amber-600 dark:text-amber-300" },
   { id: "contradicted", label: "Contradicted", tone: "border-rose-400/50 text-rose-400" },
-  { id: "ambiguous", label: "Ambiguous", tone: "border-volt-400/50 text-volt-300" },
+  { id: "ambiguous", label: "Ambiguous", tone: "border-volt-400/50 text-volt-700 dark:text-volt-300" },
 ];
 
 const ANSWER =
@@ -20,12 +20,12 @@ const CLAIMS: { text: string; correct: Verdict; why: string }[] = [
   {
     text: "The Eiffel Tower was completed in 1889.",
     correct: "supported",
-    why: "Checks out — completed March 1889 for the Exposition Universelle.",
+    why: "Checks out - completed March 1889 for the Exposition Universelle.",
   },
   {
     text: "The Eiffel Tower was originally temporary.",
     correct: "supported",
-    why: "True — it had a 20-year permit and survived because it became useful as a radio antenna.",
+    why: "True - it had a 20-year permit and survived because it became useful as a radio antenna.",
   },
   {
     text: "Tesla 'invented the radio'.",
@@ -35,7 +35,7 @@ const CLAIMS: { text: string; correct: Verdict; why: string }[] = [
   {
     text: "A 1901 station broadcast music across the entire Atlantic.",
     correct: "unsupported",
-    why: "Marconi's 1901 transmission was Morse code (the letter 'S'), not music — and 'entire Atlantic' overstates the reception. No source supports the claim as written.",
+    why: "Marconi's 1901 transmission was Morse code (the letter 'S'), not music - and 'entire Atlantic' overstates the reception. No source supports the claim as written.",
   },
 ];
 
@@ -55,7 +55,7 @@ export function HallucinationClaims({ onComplete }: { onComplete?: () => void })
       <div className="mt-3 space-y-3">
         {CLAIMS.map((c, i) => (
           <GlassCard key={i} className="p-4">
-            <p className="text-sm font-medium text-ink">CLAIM {String.fromCharCode(65 + i)} — {c.text}</p>
+            <p className="text-sm font-medium text-ink">CLAIM {String.fromCharCode(65 + i)} - {c.text}</p>
             <div className="mt-2 flex flex-wrap gap-1.5" role="radiogroup" aria-label={`Verdict for claim ${String.fromCharCode(65 + i)}`}>
               {VERDICTS.map((v) => (
                 <button
@@ -74,8 +74,8 @@ export function HallucinationClaims({ onComplete }: { onComplete?: () => void })
             </div>
             {checked && (
               <p className="mt-2 text-xs text-ink-dim">
-                <span className={answers[i] === c.correct ? "font-bold text-mint-300" : "font-bold text-rose-400"}>
-                  {answers[i] === c.correct ? "✓ " : `✗ — best answer: ${c.correct}. `}
+                <span className={answers[i] === c.correct ? "font-bold text-mint-700 dark:text-mint-300" : "font-bold text-rose-400"}>
+                  {answers[i] === c.correct ? "✓ " : `✗ - best answer: ${c.correct}. `}
                 </span>
                 {c.why}
               </p>
@@ -90,7 +90,7 @@ export function HallucinationClaims({ onComplete }: { onComplete?: () => void })
           </Button>
         ) : (
           <p className="text-sm font-semibold text-ink">
-            {correct}/{CLAIMS.length} — {correct === CLAIMS.length ? "Flawless triage." : "Verification is a skill; the notes above show the tells."}
+            {correct}/{CLAIMS.length} - {correct === CLAIMS.length ? "Flawless triage." : "Verification is a skill; the notes above show the tells."}
           </p>
         )}
       </div>

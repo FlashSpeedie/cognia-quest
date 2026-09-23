@@ -1,10 +1,10 @@
 /**
- * Train the Machine — deterministic educational classifier (spec §13/§32).
+ * Train the Machine - deterministic educational classifier (spec §13/§32).
  *
  * A tiny logistic regression (2 features) trained with fixed-seed gradient
  * descent. Deterministic: same data + same settings ⇒ same result, so the
  * concept being taught is reproducible and testable. Labeled in the UI as
- * an educational simulation — not a production ML system.
+ * an educational simulation - not a production ML system.
  */
 
 export interface DataRow {
@@ -127,7 +127,7 @@ export function trainModel(cfg: TrainConfig, seed = 42): TrainResult {
     (r.sleep - mean[1]!) / sd[1]!,
   ];
 
-  // logistic regression — fixed iterations & learning rate, fully deterministic
+  // logistic regression - fixed iterations & learning rate, fully deterministic
   let w = [0, 0, 0];
   const lr = 0.5;
   for (let iter = 0; iter < 400; iter++) {

@@ -28,7 +28,7 @@ export default async function MissionsPage() {
         description="Ten operations that string the whole curriculum into a campaign. Each unlocks the next. Rewards are verified server-side."
       />
       <div className="mt-6 max-w-sm">
-        <ProgressBar value={completed} max={10} label={`Campaign progress — ${completed}/10`} showValue tone="volt" />
+        <ProgressBar value={completed} max={10} label={`Campaign progress - ${completed}/10`} showValue tone="volt" />
       </div>
       <ol className="mt-8 space-y-3">
         {states.map(({ mission, status, objectivesDone }) => {
@@ -44,7 +44,7 @@ export default async function MissionsPage() {
                   status === "completed" ? "border-mint-400/30 bg-mint-400/5" : status === "locked" ? "border-void-700/50 bg-void-900/40" : "border-void-700 bg-void-800/80 hover:border-pulse-400/40 hover:shadow-glow"
                 }`}>
                   <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl font-display text-lg font-black ${
-                    status === "completed" ? "bg-mint-400/15 text-mint-300" : status === "locked" ? "bg-void-700 text-ink-faint" : "bg-gradient-to-br from-pulse-500 to-volt-500 text-white"
+                    status === "completed" ? "bg-mint-400/15 text-mint-700 dark:text-mint-300" : status === "locked" ? "bg-void-700 text-ink-faint" : "bg-gradient-to-br from-pulse-500 to-volt-500 text-white"
                   }`}>
                     {status === "locked" ? <Icon name="lock" size={18} /> : status === "completed" ? <Icon name="check" size={20} /> : String(mission.order).padStart(2, "0")}
                   </span>

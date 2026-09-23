@@ -18,11 +18,11 @@ export function useToast() {
 }
 
 const kindStyles: Record<ToastKind, { border: string; icon: string; iconBg: string }> = {
-  xp: { border: "border-amber-200", icon: "⚡", iconBg: "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300" },
-  badge: { border: "border-volt-200", icon: "🏅", iconBg: "bg-volt-200 text-volt-700 dark:bg-volt-950 dark:text-volt-300" },
-  success: { border: "border-mint-200", icon: "✓", iconBg: "bg-mint-200 text-mint-700 dark:bg-mint-950 dark:text-mint-300" },
-  error: { border: "border-rose-200", icon: "!", iconBg: "bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300" },
-  info: { border: "border-pulse-200", icon: "ℹ", iconBg: "bg-pulse-100 text-pulse-700 dark:bg-pulse-950 dark:text-pulse-300" },
+  xp: { border: "border-amber-200", icon: "⚡", iconBg: "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-600 dark:text-amber-300" },
+  badge: { border: "border-volt-200", icon: "🏅", iconBg: "bg-volt-200 text-volt-700 dark:bg-volt-950 dark:text-volt-700 dark:text-volt-300" },
+  success: { border: "border-mint-200", icon: "✓", iconBg: "bg-mint-200 text-mint-700 dark:bg-mint-950 dark:text-mint-700 dark:text-mint-300" },
+  error: { border: "border-rose-200", icon: "!", iconBg: "bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-700 dark:text-rose-300" },
+  info: { border: "border-pulse-200", icon: "ℹ", iconBg: "bg-pulse-100 text-pulse-700 dark:bg-pulse-950 dark:text-pulse-700 dark:text-pulse-300" },
 };
 
 let nextId = 1;

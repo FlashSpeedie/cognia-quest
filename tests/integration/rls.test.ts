@@ -7,7 +7,7 @@ import { join } from "path";
  * Live RLS policy tests. Runs whenever a real Supabase project is present.
  * Credentials are read from .env.local directly (never from the test
  * environment) so the suite-wide env isolation in vitest setup can't
- * accidentally neutralize it — live RLS verification is part of the test
+ * accidentally neutralize it - live RLS verification is part of the test
  * suite whenever a real Supabase project is linked.
  */
 

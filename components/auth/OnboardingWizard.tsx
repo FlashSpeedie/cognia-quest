@@ -7,7 +7,7 @@ import { GlassCard } from "@/components/ui/Card";
 import { Icon, type IconName } from "@/components/ui/Icon";
 
 const LEARNER_TYPES = [
-  { id: "beginner", label: "AI Beginner", desc: "New to all of this — start gentle.", icon: "spark" },
+  { id: "beginner", label: "AI Beginner", desc: "New to all of this - start gentle.", icon: "spark" },
   { id: "explorer", label: "Curious Explorer", desc: "Show me how things work.", icon: "search" },
   { id: "coder", label: "Coding Enthusiast", desc: "I like building and debugging.", icon: "terminal" },
   { id: "researcher", label: "Researcher", desc: "Sources, evidence, depth.", icon: "book" },
@@ -17,9 +17,9 @@ const LEARNER_TYPES = [
 
 const GOALS = [
   { id: "understand", label: "Understand AI", desc: "Demystify the tech behind the headlines." },
-  { id: "school", label: "Use AI for school", desc: "Learn to use AI tools well — and honestly." },
+  { id: "school", label: "Use AI for school", desc: "Learn to use AI tools well - and honestly." },
   { id: "prompting", label: "Master prompting", desc: "Get dramatically better outputs." },
-  { id: "ml", label: "Learn machine learning", desc: "Datasets, models, training — the real mechanics." },
+  { id: "ml", label: "Learn machine learning", desc: "Datasets, models, training - the real mechanics." },
   { id: "expert", label: "Become an AI expert", desc: "The full path. All seven levels." },
 ] as const;
 
@@ -52,7 +52,7 @@ export function OnboardingWizard({ name }: { name: string }) {
   }
 
   const steps = [
-    // 1 — Welcome
+    // 1 - Welcome
     <div key="welcome" className="text-center">
       <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-pulse-500 to-volt-500 text-4xl shadow-glow">
         ⚡
@@ -62,7 +62,7 @@ export function OnboardingWizard({ name }: { name: string }) {
         Hi, {name}.
       </h1>
       <p className="mx-auto mt-3 max-w-md text-ink-dim">
-        You are about to learn how AI really works — by training it, challenging it, and occasionally catching it in a lie.
+        You are about to learn how AI really works - by training it, challenging it, and occasionally catching it in a lie.
       </p>
       <Button className="mt-8" size="lg" onClick={() => setStep(1)}>
         Begin setup <Icon name="arrow-right" size={18} />
@@ -74,7 +74,7 @@ export function OnboardingWizard({ name }: { name: string }) {
       </div>
     </div>,
 
-    // 2 — Learner type
+    // 2 - Learner type
     <div key="type">
       <p className="font-mono text-xs uppercase tracking-[0.3em] text-pulse-400">Step 1 of 2</p>
       <h1 className="mt-2 font-display text-3xl font-bold text-ink">Which sounds most like you?</h1>
@@ -91,7 +91,7 @@ export function OnboardingWizard({ name }: { name: string }) {
             }`}
           >
             <div className="flex items-center gap-3">
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-void-700 text-pulse-300">
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-void-700 text-pulse-700 dark:text-pulse-300">
                 <Icon name={t.icon} size={18} />
               </span>
               <span className="font-semibold text-ink">{t.label}</span>
@@ -106,7 +106,7 @@ export function OnboardingWizard({ name }: { name: string }) {
       </div>
     </div>,
 
-    // 3 — Goal
+    // 3 - Goal
     <div key="goal">
       <p className="font-mono text-xs uppercase tracking-[0.3em] text-pulse-400">Step 2 of 2</p>
       <h1 className="mt-2 font-display text-3xl font-bold text-ink">What&apos;s your mission?</h1>
@@ -133,7 +133,7 @@ export function OnboardingWizard({ name }: { name: string }) {
       </div>
     </div>,
 
-    // 4 — Roadmap
+    // 4 - Roadmap
     <div key="roadmap" className="text-center">
       <p className="font-mono text-xs uppercase tracking-[0.3em] text-pulse-400">Your Roadmap</p>
       <h1 className="mt-2 font-display text-3xl font-bold text-ink">Seven levels. One quest.</h1>
@@ -142,7 +142,7 @@ export function OnboardingWizard({ name }: { name: string }) {
           <div key={r.label}>
             <GlassCard className="flex items-center gap-3 px-4 py-3 animate-fade-up">
               <span className="font-mono text-xs text-ink-faint w-8">LV{i + 1}</span>
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-void-700 text-pulse-300">
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-void-700 text-pulse-700 dark:text-pulse-300">
                 <Icon name={r.icon} size={16} />
               </span>
               <span className="font-semibold text-ink text-sm">{r.label}</span>
@@ -152,7 +152,7 @@ export function OnboardingWizard({ name }: { name: string }) {
         ))}
       </div>
       <Button className="mt-8" size="lg" loading={saving} onClick={() => finish(false)}>
-        Enter AI Quest <Icon name="arrow-right" size={18} />
+        Enter Cognia Quest <Icon name="arrow-right" size={18} />
       </Button>
     </div>,
   ];

@@ -17,7 +17,7 @@ const LABS: { href: string; icon: IconName; title: string; desc: string; tag: st
     title: "Train the Machine",
     desc: "Train a real classifier on your own dataset. Then sabotage the data and watch it fall apart.",
     tag: "core simulation",
-    tone: "text-volt-300 border-volt-400/30",
+    tone: "text-volt-700 dark:text-volt-300 border-volt-400/30",
   },
   {
     href: "/lab/prompt-lab",
@@ -25,7 +25,7 @@ const LABS: { href: string; icon: IconName; title: string; desc: string; tag: st
     title: "Prompt Lab",
     desc: "Write prompts, score them against an 8-dimension rubric, and learn the anatomy of great asks.",
     tag: "rubric engine",
-    tone: "text-amber-300 border-amber-400/30",
+    tone: "text-amber-600 dark:text-amber-300 border-amber-400/30",
   },
   {
     href: "/lab/prompt-battle",
@@ -33,7 +33,7 @@ const LABS: { href: string; icon: IconName; title: string; desc: string; tag: st
     title: "Prompt Battle",
     desc: "Ten scenarios. One prompt each. Beat 80 to clear the mission.",
     tag: "game",
-    tone: "text-pulse-300 border-pulse-400/30",
+    tone: "text-pulse-700 dark:text-pulse-300 border-pulse-400/30",
   },
   {
     href: "/lab/bias-simulation",
@@ -41,7 +41,7 @@ const LABS: { href: string; icon: IconName; title: string; desc: string; tag: st
     title: "Bias Simulation",
     desc: "A scholarship recommender is quietly favoring students who live close to school. Find the leak.",
     tag: "investigation",
-    tone: "text-mint-300 border-mint-400/30",
+    tone: "text-mint-700 dark:text-mint-300 border-mint-400/30",
   },
   {
     href: "/lab/data-explorer",
@@ -49,13 +49,13 @@ const LABS: { href: string; icon: IconName; title: string; desc: string; tag: st
     title: "Dataset Explorer",
     desc: "Sort, filter, and hunt down missing values, outliers, duplicates, and imbalance before anyone trains on it.",
     tag: "forensics",
-    tone: "text-mint-300 border-mint-400/30",
+    tone: "text-mint-700 dark:text-mint-300 border-mint-400/30",
   },
   {
     href: "/lab/tool-selector",
     icon: "network",
     title: "AI Tool Selector",
-    desc: "Match the task to the right tool — and learn when AI isn't the tool at all.",
+    desc: "Match the task to the right tool - and learn when AI isn't the tool at all.",
     tag: "judgment drill",
     tone: "text-rose-400 border-rose-400/30",
   },
@@ -65,7 +65,7 @@ const LABS: { href: string; icon: IconName; title: string; desc: string; tag: st
     title: "Overfitting Lab",
     desc: "The complexity slider: watch training accuracy hit 100% while test accuracy craters.",
     tag: "in Academy · ML module",
-    tone: "text-pulse-300 border-pulse-400/30",
+    tone: "text-pulse-700 dark:text-pulse-300 border-pulse-400/30",
   },
 ];
 

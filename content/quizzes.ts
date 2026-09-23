@@ -1,10 +1,10 @@
 import type { Quiz } from "@/lib/content";
 
-/** Quiz bank — 12 quizzes / 34 questions (spec §56: 20+). */
+/** Quiz bank - 12 quizzes / 34 questions (spec §56: 20+). */
 export const QUIZZES: Quiz[] = [
   {
     id: "quiz-fund-1",
-    title: "What Is AI? — Check yourself",
+    title: "What Is AI? - Check yourself",
     questions: [
       {
         id: "q1", kind: "mcq",
@@ -41,7 +41,7 @@ export const QUIZZES: Quiz[] = [
   },
   {
     id: "quiz-fund-2",
-    title: "Learning vs. Rules — Check yourself",
+    title: "Learning vs. Rules - Check yourself",
     questions: [
       {
         id: "q1", kind: "mcq",
@@ -78,7 +78,7 @@ export const QUIZZES: Quiz[] = [
   },
   {
     id: "quiz-fund-3",
-    title: "Types of AI — Check yourself",
+    title: "Types of AI - Check yourself",
     questions: [
       {
         id: "q1", kind: "mcq",
@@ -115,7 +115,7 @@ export const QUIZZES: Quiz[] = [
   },
   {
     id: "quiz-fund-4",
-    title: "Why AI Gets It Wrong — Check yourself",
+    title: "Why AI Gets It Wrong - Check yourself",
     questions: [
       {
         id: "q1", kind: "multi",
@@ -145,7 +145,7 @@ export const QUIZZES: Quiz[] = [
   },
   {
     id: "quiz-ml-1",
-    title: "Data, Features, Labels — Check yourself",
+    title: "Data, Features, Labels - Check yourself",
     questions: [
       {
         id: "q1", kind: "mcq",
@@ -164,20 +164,20 @@ export const QUIZZES: Quiz[] = [
           "Attendance rate",
         ],
         correct: [0],
-        explanation: "An ID is just a label for a person — it carries no generalizable pattern (and raises privacy issues).",
+        explanation: "An ID is just a label for a person - it carries no generalizable pattern (and raises privacy issues).",
       },
       {
         id: "q3", kind: "tf",
         prompt: "Choosing which features to include is a human decision that can affect fairness.",
         choices: ["True", "False"],
         correct: [0],
-        explanation: "Feature selection encodes judgment — and can bake in proxies for sensitive attributes.",
+        explanation: "Feature selection encodes judgment - and can bake in proxies for sensitive attributes.",
       },
     ],
   },
   {
     id: "quiz-ml-2",
-    title: "The ML Pipeline — Check yourself",
+    title: "The ML Pipeline - Check yourself",
     questions: [
       {
         id: "q1", kind: "mcq",
@@ -207,7 +207,7 @@ export const QUIZZES: Quiz[] = [
   },
   {
     id: "quiz-ml-3",
-    title: "Overfitting — Check yourself",
+    title: "Overfitting - Check yourself",
     questions: [
       {
         id: "q1", kind: "mcq",
@@ -232,14 +232,14 @@ export const QUIZZES: Quiz[] = [
   },
   {
     id: "quiz-ml-4",
-    title: "Measuring Models — Check yourself",
+    title: "Measuring Models - Check yourself",
     questions: [
       {
         id: "q1", kind: "mcq",
         prompt: "A spam filter marks a real email as spam. That's a:",
         choices: ["False positive", "True positive", "True negative", "False negative"],
         correct: [0],
-        explanation: "It predicted 'spam' (positive) but was wrong — a false positive.",
+        explanation: "It predicted 'spam' (positive) but was wrong - a false positive.",
       },
       {
         id: "q2", kind: "mcq",
@@ -257,7 +257,7 @@ export const QUIZZES: Quiz[] = [
   },
   {
     id: "quiz-gen-1",
-    title: "Generative AI — Check yourself",
+    title: "Generative AI - Check yourself",
     questions: [
       {
         id: "q1", kind: "mcq",
@@ -269,20 +269,20 @@ export const QUIZZES: Quiz[] = [
           "Copying Wikipedia",
         ],
         correct: [0],
-        explanation: "LLMs are prediction engines over tokens — fluent output emerges from that loop.",
+        explanation: "LLMs are prediction engines over tokens - fluent output emerges from that loop.",
       },
       {
         id: "q2", kind: "multi",
         prompt: "Generative AI can produce: (choose all)",
         choices: ["Text", "Images", "Code", "Guaranteed truth"],
         correct: [0, 1, 2],
-        explanation: "Generation ≠ verification — output needs checking.",
+        explanation: "Generation ≠ verification - output needs checking.",
       },
     ],
   },
   {
     id: "quiz-gen-2",
-    title: "Tokens & Context — Check yourself",
+    title: "Tokens & Context - Check yourself",
     questions: [
       {
         id: "q1", kind: "mcq",
@@ -294,7 +294,7 @@ export const QUIZZES: Quiz[] = [
           "An AI personality",
         ],
         correct: [0],
-        explanation: "Models read and write tokens — fragments like 'un' + 'believ' + 'able'.",
+        explanation: "Models read and write tokens - fragments like 'un' + 'believ' + 'able'.",
       },
       {
         id: "q2", kind: "mcq",
@@ -312,7 +312,7 @@ export const QUIZZES: Quiz[] = [
   },
   {
     id: "quiz-gen-3",
-    title: "Hallucinations — Check yourself",
+    title: "Hallucinations - Check yourself",
     questions: [
       {
         id: "q1", kind: "mcq",
@@ -324,7 +324,7 @@ export const QUIZZES: Quiz[] = [
           "A correct but surprising fact",
         ],
         correct: [0],
-        explanation: "Plausible-sounding but false — like a citation to a paper that doesn't exist.",
+        explanation: "Plausible-sounding but false - like a citation to a paper that doesn't exist.",
       },
       {
         id: "q2", kind: "mcq",
@@ -342,7 +342,7 @@ export const QUIZZES: Quiz[] = [
   },
   {
     id: "quiz-prompt-1",
-    title: "Anatomy of a Prompt — Check yourself",
+    title: "Anatomy of a Prompt - Check yourself",
     questions: [
       {
         id: "q1", kind: "mcq",
@@ -367,7 +367,7 @@ export const QUIZZES: Quiz[] = [
   },
   {
     id: "quiz-prompt-2",
-    title: "Iterate and Verify — Check yourself",
+    title: "Iterate and Verify - Check yourself",
     questions: [
       {
         id: "q1", kind: "tf",
@@ -386,13 +386,13 @@ export const QUIZZES: Quiz[] = [
           "A final exam submission",
         ],
         correct: [0],
-        explanation: "Iteration — shorter, simpler, restructured — is where prompting gets powerful.",
+        explanation: "Iteration - shorter, simpler, restructured - is where prompting gets powerful.",
       },
     ],
   },
   {
     id: "quiz-det-1",
-    title: "Verification Habit — Check yourself",
+    title: "Verification Habit - Check yourself",
     questions: [
       {
         id: "q1", kind: "mcq",
@@ -422,7 +422,7 @@ export const QUIZZES: Quiz[] = [
   },
   {
     id: "quiz-eth-1",
-    title: "Responsible AI — Check yourself",
+    title: "Responsible AI - Check yourself",
     questions: [
       {
         id: "q1", kind: "mcq",
@@ -452,13 +452,13 @@ export const QUIZZES: Quiz[] = [
   },
   {
     id: "quiz-eth-2",
-    title: "AI in School — Check yourself",
+    title: "AI in School - Check yourself",
     questions: [
       {
         id: "q1", kind: "mcq",
         prompt: "Your teacher banned AI on an essay. Using AI to write it anyway is:",
         choices: [
-          "Academic dishonesty — and it skips your own learning",
+          "Academic dishonesty - and it skips your own learning",
           "A clever workaround",
           "Fine if you edit a few words",
           "OK if the AI is paid",
@@ -485,7 +485,7 @@ export const QUIZZES: Quiz[] = [
 const EXTRA_QUIZZES: Quiz[] = [
   {
     id: "quiz-fund-5",
-    title: "AI All Day — Check yourself",
+    title: "AI All Day - Check yourself",
     questions: [
       {
         id: "q1", kind: "multi",
@@ -499,13 +499,13 @@ const EXTRA_QUIZZES: Quiz[] = [
         prompt: "Good AI features usually announce themselves loudly so you notice them.",
         choices: ["True", "False"],
         correct: [1],
-        explanation: "Great AI tends to disappear into the feature — you notice it only when it misbehaves.",
+        explanation: "Great AI tends to disappear into the feature - you notice it only when it misbehaves.",
       },
     ],
   },
   {
     id: "quiz-ml-5",
-    title: "Classification vs Regression — Check yourself",
+    title: "Classification vs Regression - Check yourself",
     questions: [
       {
         id: "q1", kind: "mcq",
@@ -517,7 +517,7 @@ const EXTRA_QUIZZES: Quiz[] = [
       {
         id: "q2", kind: "mcq",
         prompt: "'How much will this house sell for?' is:",
-        choices: ["Regression — the output is a number", "Classification", "Clustering", "A prompt"],
+        choices: ["Regression - the output is a number", "Classification", "Clustering", "A prompt"],
         correct: [0],
         explanation: "Numeric output (a price) → regression.",
       },
@@ -525,7 +525,7 @@ const EXTRA_QUIZZES: Quiz[] = [
   },
   {
     id: "quiz-gen-4",
-    title: "Multimodal AI — Check yourself",
+    title: "Multimodal AI - Check yourself",
     questions: [
       {
         id: "q1", kind: "mcq",

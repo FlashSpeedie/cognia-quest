@@ -13,7 +13,7 @@ import { PRIVACY_SCENARIOS } from "@/content/privacy";
 import { PROMPT_TASKS } from "@/content/prompts";
 import { GLOSSARY } from "@/content/glossary";
 
-export const metadata: Metadata = { title: "Admin — Overview" };
+export const metadata: Metadata = { title: "Admin - Overview" };
 export const dynamic = "force-dynamic";
 
 export default async function AdminHome() {
@@ -25,13 +25,13 @@ export default async function AdminHome() {
     { label: "Active today", value: o.totals.activeToday, sub: `${o.totals.activeWeek} this week` },
     { label: "Lessons completed", value: o.totals.lessonsCompleted, sub: "across all students" },
     { label: "Missions completed", value: o.totals.missionsCompleted, sub: "across all students" },
-    { label: "Badges earned", value: o.totals.badgesEarned, sub: `${o.badgeDistribution[0]?.title ?? "—"} most common` },
+    { label: "Badges earned", value: o.totals.badgesEarned, sub: `${o.badgeDistribution[0]?.title ?? "-"} most common` },
     { label: "XP awarded", value: o.totals.totalXPAwarded.toLocaleString(), sub: "server-validated only" },
   ];
 
   return (
     <div>
-      <SectionHeading kicker="Console" title="Admin Overview" description="Aggregate metrics only — no drill-down into private content, per the platform's privacy posture." />
+      <SectionHeading kicker="Console" title="Admin Overview" description="Aggregate metrics only - no drill-down into private content, per the platform's privacy posture." />
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {cards.map((c) => (
           <Card key={c.label} className="p-5">
@@ -67,7 +67,7 @@ export default async function AdminHome() {
       <Card className="mt-6 p-6">
         <h2 className="font-display text-lg font-bold text-ink">Content inventory</h2>
         <p className="mt-1 text-xs text-ink-dim">
-          Content is data-driven (the <code className="font-mono text-pulse-300">content/</code> directory) — adding modules, lessons, or cases requires no UI changes.
+          Content is data-driven (the <code className="font-mono text-pulse-700 dark:text-pulse-300">content/</code> directory) - adding modules, lessons, or cases requires no UI changes.
         </p>
         <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
           {[

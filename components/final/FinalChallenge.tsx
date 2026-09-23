@@ -62,10 +62,10 @@ export function FinalChallenge({ previousTotal }: { previousTotal?: number }) {
         return;
       }
       setResult(d.result);
-      push({ kind: "xp", title: "+500 XP — FINAL COMPLETE", body: `Score: ${d.result.totalScore}%` });
+      push({ kind: "xp", title: "+500 XP - FINAL COMPLETE", body: `Score: ${d.result.totalScore}%` });
       push({ kind: "badge", title: "🏗 AI Architect unlocked" });
     } catch {
-      setError("Network error — your answers are still here. Try again.");
+      setError("Network error - your answers are still here. Try again.");
     } finally {
       setSubmitting(false);
     }
@@ -76,23 +76,23 @@ export function FinalChallenge({ previousTotal }: { previousTotal?: number }) {
     return (
       <GlassCard glow className="mx-auto max-w-2xl p-8 text-center">
         <span className="text-5xl" aria-hidden="true">🏆</span>
-        <p className="mt-4 font-mono text-xs uppercase tracking-[0.3em] text-amber-300">Final AI Quest complete</p>
+        <p className="mt-4 font-mono text-xs uppercase tracking-[0.3em] text-amber-600 dark:text-amber-300">Final Cognia Quest complete</p>
         <h1 className="mt-3 font-display text-4xl font-black text-ink">{pct}% overall</h1>
         <div className="mx-auto mt-6 max-w-sm space-y-2 text-left">
           {FINAL_STAGES.map((s) => {
             const v = result.stageScores[s.id];
             return (
               <div key={s.id} className="flex items-center justify-between rounded-lg border border-void-700 px-3 py-2 text-sm">
-                <span className="text-ink-dim">{s.title.replace(/^Stage \d+ — /, "")}</span>
-                <span className={`font-mono font-bold ${v === undefined ? "text-ink" : v >= 70 ? "text-mint-300" : v >= 40 ? "text-amber-300" : "text-rose-400"}`}>
-                  {v === undefined ? "—" : `${v}%`}
+                <span className="text-ink-dim">{s.title.replace(/^Stage \d+ - /, "")}</span>
+                <span className={`font-mono font-bold ${v === undefined ? "text-ink" : v >= 70 ? "text-mint-700 dark:text-mint-300" : v >= 40 ? "text-amber-600 dark:text-amber-300" : "text-rose-400"}`}>
+                  {v === undefined ? "-" : `${v}%`}
                 </span>
               </div>
             );
           })}
         </div>
         <p className="mx-auto mt-5 max-w-md text-sm text-ink-dim">
-          These are learning indicators from your choices — not a standardized assessment. What they say: you can pick
+          These are learning indicators from your choices - not a standardized assessment. What they say: you can pick
           data responsibly, read model behavior critically, prompt deliberately, and deploy cautiously.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
@@ -225,14 +225,14 @@ export function FinalChallenge({ previousTotal }: { previousTotal?: number }) {
             </Button>
           )}
         </div>
-        {error && <p role="alert" className="mt-3 rounded-lg border border-rose-400/40 bg-rose-400/10 p-3 text-sm text-rose-300">{error}</p>}
+        {error && <p role="alert" className="mt-3 rounded-lg border border-rose-400/40 bg-rose-400/10 p-3 text-sm text-rose-700 dark:text-rose-300">{error}</p>}
         {stage.kind === "prompt" && a && String(a).trim().length > 0 && String(a).trim().length < 40 && (
-          <p className="mt-2 text-xs text-amber-300">Write a bit more — strong system prompts are rarely one-liners.</p>
+          <p className="mt-2 text-xs text-amber-600 dark:text-amber-300">Write a bit more - strong system prompts are rarely one-liners.</p>
         )}
       </GlassCard>
 
       <p className="mt-4 text-center text-xs text-ink-faint">
-        One submission. Take your time — the point is the reasoning, not the score.
+        One submission. Take your time - the point is the reasoning, not the score.
       </p>
     </div>
   );

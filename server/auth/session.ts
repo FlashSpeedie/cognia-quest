@@ -13,7 +13,7 @@ import { authClientForCookies } from "./supabase";
  * - PRODUCTION (Supabase configured): Supabase Auth owns credentials and
  *   sessions. The browser holds sb-* httpOnly cookies (access + refresh
  *   token). Every request here re-validates the access token against
- *   GoTrue — a forged or expired cookie simply yields null. The app-level
+ *   GoTrue - a forged or expired cookie simply yields null. The app-level
  *   `users` table (server-side only) holds the profile, role and XP.
  *
  * - LOCAL (development/tests only): scrypt password hashes in the JSON
@@ -28,7 +28,7 @@ function localSecret(): string {
   if (!s) {
     if (process.env.NODE_ENV === "production") {
       console.warn(
-        "[ai-quest] AUTH_SECRET is not set — using a built-in development secret. " +
+        "[ai-quest] AUTH_SECRET is not set - using a built-in development secret. " +
           "Local-mode sessions are NOT safe for real deployments.",
       );
     }
@@ -99,7 +99,7 @@ async function getLocalUser(dbOverride?: Db): Promise<User | null> {
 /**
  * PRODUCTION path: verify the Supabase access token server-side, then load
  * (or lazily provision) the app profile. Role/XP/preferences live only in
- * our users table — never in client-readable JWT claims.
+ * our users table - never in client-readable JWT claims.
  */
 async function getSupabaseUser(dbOverride?: Db): Promise<User | null> {
   const env = getSupabaseEnv();
@@ -148,10 +148,10 @@ export async function provisionProfile(
   try {
     return await db.table("users").insert(profile);
   } catch {
-    // Concurrent first requests race the insert — the row that won is fine.
+    // Concurrent first requests race the insert - the row that won is fine.
     return db.table("users").get(authUserId);
   }
 }
 
-/** Demo mode (spec §73): a shared, clearly-flagged account. Local mode only — see lib/env. */
+/** Demo mode (spec §73): a shared, clearly-flagged account. Local mode only - see lib/env. */
 export const DEMO_EMAIL = "demo@aiquest.dev";

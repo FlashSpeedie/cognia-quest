@@ -19,7 +19,7 @@ export const CAREERS: Career[] = [
   {
     title: "Machine Learning Engineer",
     icon: "🧠",
-    what: "Trains, evaluates, and ships models — the people closest to the training loop.",
+    what: "Trains, evaluates, and ships models - the people closest to the training loop.",
     skills: ["Linear algebra", "ML frameworks", "Data pipelines", "Optimization"],
     subjects: ["Computer Science", "Math", "Physics"],
   },
@@ -33,7 +33,7 @@ export const CAREERS: Career[] = [
   {
     title: "AI Product Designer",
     icon: "🎨",
-    what: "Designs how people interact with AI — the interfaces, guardrails, and moments of trust.",
+    what: "Designs how people interact with AI - the interfaces, guardrails, and moments of trust.",
     skills: ["UX research", "Prototyping", "Psychology", "Visual design"],
     subjects: ["Art/Design", "Psychology", "Computer Science"],
   },
@@ -61,7 +61,7 @@ export const CAREERS: Career[] = [
   {
     title: "Computational Linguist",
     icon: "💬",
-    what: "Studies language with computers — how models process it and how to make that fair and accurate.",
+    what: "Studies language with computers - how models process it and how to make that fair and accurate.",
     skills: ["Linguistics", "Programming", "Statistics"],
     subjects: ["English", "World Languages", "Computer Science"],
   },

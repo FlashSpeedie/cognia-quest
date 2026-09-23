@@ -9,7 +9,7 @@ const variantClasses: Record<Variant, string> = {
   primary:
     "border border-pulse-600 bg-pulse-600 text-white shadow-card hover:bg-pulse-700 hover:border-pulse-700 active:translate-y-px",
   secondary:
-    "border border-void-700 bg-white text-ink hover:border-pulse-500/50 hover:text-pulse-700 active:translate-y-px dark:bg-void-800 dark:hover:border-pulse-400/50 dark:hover:text-pulse-300",
+    "border border-void-700 bg-white text-ink hover:border-pulse-500/50 hover:text-pulse-700 active:translate-y-px dark:bg-void-800 dark:hover:border-pulse-400/50 dark:hover:text-pulse-700 dark:text-pulse-300",
   ghost: "text-ink-dim hover:text-ink hover:bg-void-700/50 dark:hover:bg-void-700 active:translate-y-px",
   danger:
     "border border-rose-300 bg-white text-rose-700 hover:border-rose-400 hover:bg-rose-50 active:translate-y-px dark:border-rose-700/60 dark:bg-void-800 dark:text-rose-300 dark:hover:bg-rose-950/40",

@@ -1,4 +1,4 @@
-/** Tiny WebAudio chimes — gated behind the "sound" setting. Never autoplays. */
+/** Tiny WebAudio chimes - gated behind the "sound" setting. Never autoplays. */
 
 export function soundEnabled(): boolean {
   try {
@@ -29,6 +29,6 @@ export function playChime(kind: "levelup" | "badge" | "success" = "success") {
     });
     setTimeout(() => void ctx.close(), 1200);
   } catch {
-    // audio unavailable — ignore
+    // audio unavailable - ignore
   }
 }

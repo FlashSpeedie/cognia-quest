@@ -1,5 +1,5 @@
 /**
- * Shared domain types for AI Quest.
+ * Shared domain types for Cognia Quest.
  * These describe persisted rows (server store / Supabase tables)
  * and are the contract between client, API routes and services.
  */
@@ -40,7 +40,7 @@ export interface User {
   createdAt: string;
   onboarding: OnboardingState;
   preferences: Preferences;
-  /** Cached total XP — always kept consistent with xp_events by awardXP(). */
+  /** Cached total XP - always kept consistent with xp_events by awardXP(). */
   xpTotal: number;
   isDemo: boolean;
 }
@@ -72,7 +72,7 @@ export interface XPEvent {
   sourceType: XPSourceType;
   /** Logical source id e.g. lesson slug / mission id / case id. */
   sourceId: string;
-  /** YYYY-MM-DD (server-local) — powers daily XP + streaks. */
+  /** YYYY-MM-DD (server-local) - powers daily XP + streaks. */
   day: string;
   note?: string;
   createdAt: string;

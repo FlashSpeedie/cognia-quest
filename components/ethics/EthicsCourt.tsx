@@ -66,13 +66,13 @@ export function EthicsCourt({ caseData }: { caseData: EthicsCase }) {
         </GlassCard>
         <div className="grid gap-3">
           <GlassCard className="border-mint-400/25 p-4">
-            <p className="font-mono text-[10px] uppercase tracking-widest text-mint-300">Proposed benefits</p>
+            <p className="font-mono text-[10px] uppercase tracking-widest text-mint-700 dark:text-mint-300">Proposed benefits</p>
             <ul className="mt-2 space-y-1 text-sm text-ink-dim">
               {caseData.benefits.map((b) => <li key={b}>+ {b}</li>)}
             </ul>
           </GlassCard>
           <GlassCard className="border-rose-400/25 p-4">
-            <p className="font-mono text-[10px] uppercase tracking-widest text-rose-300">Known risks</p>
+            <p className="font-mono text-[10px] uppercase tracking-widest text-rose-700 dark:text-rose-300">Known risks</p>
             <ul className="mt-2 space-y-1 text-sm text-ink-dim">
               {caseData.risks.map((r) => <li key={r}>− {r}</li>)}
             </ul>
@@ -86,7 +86,7 @@ export function EthicsCourt({ caseData }: { caseData: EthicsCase }) {
           <p className="font-mono text-[10px] uppercase tracking-widest text-ink-faint">Your job</p>
           <p className="mt-1 text-sm text-ink">
             Before deployment, <strong>which questions must the school answer?</strong> Select every question that genuinely matters.
-            Your score is the coverage of the essentials — grabbing irrelevant ones costs points.
+            Your score is the coverage of the essentials - grabbing irrelevant ones costs points.
           </p>
           <div className="mt-4 space-y-2">
             {caseData.factors.map((f) => {
@@ -131,10 +131,10 @@ export function EthicsCourt({ caseData }: { caseData: EthicsCase }) {
                   <p className="font-display text-lg font-bold text-ink">ETHICS REVIEW COMPLETE</p>
                   <p className="mt-1 text-sm text-ink-dim">
                     {result.coverage >= 75
-                      ? "Strong analysis — you covered the core concerns."
+                      ? "Strong analysis - you covered the core concerns."
                       : result.coverage >= 60
                         ? "Solid pass. See what you missed above."
-                        : "Partial coverage — the pink cards above are questions you should have raised."}
+                        : "Partial coverage - the pink cards above are questions you should have raised."}
                   </p>
                 </div>
               </div>

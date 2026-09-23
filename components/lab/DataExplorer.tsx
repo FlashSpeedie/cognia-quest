@@ -61,9 +61,9 @@ export function DataExplorer() {
   }, [sortKey, onlyMissing]);
 
   const ISSUES = [
-    { id: "missing", label: "Missing values", present: true, note: "Row 8 is missing Sleep — decide: drop, impute, or investigate." },
+    { id: "missing", label: "Missing values", present: true, note: "Row 8 is missing Sleep - decide: drop, impute, or investigate." },
     { id: "outlier", label: "A likely data-entry outlier", present: true, note: "99 study hours in a week (row 11) is beyond real schedules. Outliers can bend models hard." },
-    { id: "imbalance", label: "Class imbalance", present: true, note: "9 pass vs 7 fail is mild here — but you've seen how much worse it can get." },
+    { id: "imbalance", label: "Class imbalance", present: true, note: "9 pass vs 7 fail is mild here - but you've seen how much worse it can get." },
     { id: "duplicates", label: "Duplicate entries", present: true, note: "Rows 12–13 repeat row 2. Duplicates overweight one example." },
   ];
 
@@ -82,14 +82,14 @@ export function DataExplorer() {
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
       <GlassCard className="overflow-hidden p-0">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-void-700 p-3">
-          <p className="font-mono text-[10px] uppercase tracking-widest text-ink-faint">student_study_v3.csv — {DATA.length} rows</p>
+          <p className="font-mono text-[10px] uppercase tracking-widest text-ink-faint">student_study_v3.csv - {DATA.length} rows</p>
           <div className="flex gap-2">
             {(["study", "sleep", "passed"] as SortKey[]).map((k) => (
-              <button key={k} onClick={() => setSortKey(k)} className={`rounded-lg border px-2.5 py-1 text-xs capitalize focus-ring ${sortKey === k ? "border-pulse-400 text-pulse-300" : "border-void-700 text-ink-faint hover:text-ink"}`} aria-pressed={sortKey === k}>
+              <button key={k} onClick={() => setSortKey(k)} className={`rounded-lg border px-2.5 py-1 text-xs capitalize focus-ring ${sortKey === k ? "border-pulse-400 text-pulse-700 dark:text-pulse-300" : "border-void-700 text-ink-faint hover:text-ink"}`} aria-pressed={sortKey === k}>
                 sort by {k}
               </button>
             ))}
-            <button onClick={() => setOnlyMissing((v) => !v)} className={`rounded-lg border px-2.5 py-1 text-xs focus-ring ${onlyMissing ? "border-amber-400 text-amber-300" : "border-void-700 text-ink-faint hover:text-ink"}`} aria-pressed={onlyMissing}>
+            <button onClick={() => setOnlyMissing((v) => !v)} className={`rounded-lg border px-2.5 py-1 text-xs focus-ring ${onlyMissing ? "border-amber-400 text-amber-600 dark:text-amber-300" : "border-void-700 text-ink-faint hover:text-ink"}`} aria-pressed={onlyMissing}>
               missing only
             </button>
           </div>
@@ -106,7 +106,7 @@ export function DataExplorer() {
                 <tr key={r.id} className={`border-t border-void-700/40 ${r.study > 24 ? "bg-rose-400/10" : r.sleep === null ? "bg-amber-400/5" : ""}`}>
                   <td className="px-3 py-1.5 font-mono text-xs text-ink-faint">{r.id}</td>
                   <td className="px-3 py-1.5 font-mono">{r.study}</td>
-                  <td className="px-3 py-1.5 font-mono">{r.sleep ?? <span className="text-amber-300">—missing—</span>}</td>
+                  <td className="px-3 py-1.5 font-mono">{r.sleep ?? <span className="text-amber-600 dark:text-amber-300">-missing-</span>}</td>
                   <td className="px-3 py-1.5 font-mono">{r.passed ? "✓" : "✗"}</td>
                 </tr>
               ))}
@@ -142,7 +142,7 @@ export function DataExplorer() {
           <Button className="mt-4" onClick={submit}>Report findings</Button>
         ) : (
           <p className="mt-4 text-sm text-ink">
-            {all ? "All four caught. Real datasets arrive dirty — cleaning them IS data science." : `You flagged ${guess.size}/4 expected findings. Inspect once more.`}
+            {all ? "All four caught. Real datasets arrive dirty - cleaning them IS data science." : `You flagged ${guess.size}/4 expected findings. Inspect once more.`}
           </p>
         )}
       </GlassCard>

@@ -23,7 +23,7 @@ for (let i = 0; i < 60; i++) {
 }
 console.log("server up (production mode with real Supabase)");
 
-// Reuse/confirm one stable live account — avoids tripping Supabase's
+// Reuse/confirm one stable live account - avoids tripping Supabase's
 // email-send rate limit when re-running this probe.
 const email = process.env.PROBE_EMAIL ?? `final-live-${Date.now()}@outlook.com`;
 const password = "Sup3r-secure-pass!";

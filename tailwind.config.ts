@@ -10,7 +10,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Neutral surface scale — remaps via CSS vars (light default, .dark override)
+        // Neutral surface scale - remaps via CSS vars (light default, .dark override)
         void: {
           950: "var(--void-950)",
           900: "var(--void-900)",
@@ -85,7 +85,7 @@ const config: Config = {
         mono: ["'Cascadia Code'", "Consolas", "monospace"],
       },
       boxShadow: {
-        // Clean, layered card shadows — no neon glow.
+        // Clean, layered card shadows - no neon glow.
         card: "0 1px 2px rgba(16, 24, 40, 0.05)",
         lift: "0 4px 8px rgba(16, 24, 40, 0.06), 0 2px 4px rgba(16, 24, 40, 0.04)",
         pop: "0 12px 24px rgba(16, 24, 40, 0.08), 0 4px 8px rgba(16, 24, 40, 0.04)",

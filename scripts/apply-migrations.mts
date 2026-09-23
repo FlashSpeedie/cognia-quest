@@ -3,7 +3,7 @@
  * Applies supabase/migrations/*.sql in filename order against the project.
  *
  * PostgREST cannot run DDL, so this needs ONE of:
- *   SUPABASE_DB_URL     — direct pooler/postgres connection string
+ *   SUPABASE_DB_URL     - direct pooler/postgres connection string
  *                         (Dashboard → Project Settings → Database)
  * or run the SQL manually in the Supabase SQL Editor, then:
  *   npx tsx scripts/verify-schema.ts

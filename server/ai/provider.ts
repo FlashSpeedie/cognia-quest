@@ -8,7 +8,7 @@ import { getGeminiConfig } from "@/lib/env";
  *  - GEMINI_API_KEY never leaves the server (this module must not be
  *    imported from client components);
  *  - deterministic educational scoring (prompt rubric, quizzes, missions)
- *    NEVER goes through the LLM — Gemini only adds conversational help;
+ *    NEVER goes through the LLM - Gemini only adds conversational help;
  *  - bounded input/output, hard timeout, no silent swallowing: failures
  *    surface as typed results so routes can answer 503/504 honestly.
  */

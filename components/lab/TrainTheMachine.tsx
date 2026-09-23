@@ -65,7 +65,7 @@ export function TrainTheMachine() {
       if (data.xp?.leveledUp) fireLevelUp({ to: data.xp.leveledUp.to, level: data.xp.leveledUp.level });
       router.refresh();
     } catch {
-      setError("Network error — your dataset is still here, try again.");
+      setError("Network error - your dataset is still here, try again.");
     } finally {
       setLoading(false);
     }
@@ -119,7 +119,7 @@ export function TrainTheMachine() {
                       <button
                         onClick={() => updateRow(i, { passed: !row.passed })}
                         aria-pressed={row.passed}
-                        className={`rounded-lg border px-2.5 py-1 font-mono text-xs font-bold focus-ring ${row.passed ? "border-mint-400/50 bg-mint-400/10 text-mint-300" : "border-rose-400/40 bg-rose-400/10 text-rose-300"}`}
+                        className={`rounded-lg border px-2.5 py-1 font-mono text-xs font-bold focus-ring ${row.passed ? "border-mint-400/50 bg-mint-400/10 text-mint-700 dark:text-mint-300" : "border-rose-400/40 bg-rose-400/10 text-rose-700 dark:text-rose-300"}`}
                       >
                         {row.passed ? "YES" : "NO"}
                       </button>
@@ -151,12 +151,12 @@ export function TrainTheMachine() {
         <GlassCard className="space-y-4 p-5">
           <h3 className="font-display font-bold text-ink">Training controls</h3>
           <Slider label={`Extra synthetic samples: ${extra}`} hint="How much more data to auto-generate for training" value={extra} min={0} max={60} onChange={setExtra} />
-          <Slider label={`Label noise: ${Math.round(noise * 100)}%`} hint="Chance each added label is flipped — real data has errors" value={Math.round(noise * 100)} min={0} max={100} onChange={(v) => setNoise(v / 100)} />
+          <Slider label={`Label noise: ${Math.round(noise * 100)}%`} hint="Chance each added label is flipped - real data has errors" value={Math.round(noise * 100)} min={0} max={100} onChange={(v) => setNoise(v / 100)} />
           <Slider label={`Test split: ${Math.round(split * 100)}%`} hint="How much data is held back for honest testing" value={Math.round(split * 100)} min={10} max={50} onChange={(v) => setSplit(v / 100)} />
           <Button onClick={train} loading={loading} size="lg" className="w-full" disabled={rows.length < 2}>
             {loading ? "Training…" : "TRAIN MODEL"}
           </Button>
-          {error && <p role="alert" className="rounded-lg border border-rose-400/40 bg-rose-400/10 p-3 text-sm text-rose-300">{error}</p>}
+          {error && <p role="alert" className="rounded-lg border border-rose-400/40 bg-rose-400/10 p-3 text-sm text-rose-700 dark:text-rose-300">{error}</p>}
         </GlassCard>
       </div>
 
@@ -164,13 +164,13 @@ export function TrainTheMachine() {
       <div className="space-y-4">
         {!r && !loading && (
           <GlassCard className="flex min-h-64 flex-col items-center justify-center p-8 text-center">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-volt-500/15 text-volt-300">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-volt-500/15 text-volt-700 dark:text-volt-300">
               <Icon name="cpu" size={26} />
             </div>
             <p className="mt-4 font-display text-lg font-bold text-ink">Model status: untrained</p>
             <p className="mt-1 max-w-sm text-sm text-ink-dim">
-              Edit the data, add noise, then train. Try to get 80%+ test accuracy — then sabotage the data and train again.
-              And note: more data is not automatically better — 40 extra rows at 40% noise can make things worse.
+              Edit the data, add noise, then train. Try to get 80%+ test accuracy - then sabotage the data and train again.
+              And note: more data is not automatically better - 40 extra rows at 40% noise can make things worse.
             </p>
             <p className="mt-3 font-mono text-[10px] uppercase tracking-widest text-ink-faint">Educational simulation · deterministic logistic model</p>
           </GlassCard>
@@ -193,7 +193,7 @@ export function TrainTheMachine() {
                   <p className="font-mono text-xs font-bold uppercase tracking-widest text-rose-400">Training blocked</p>
                   <p className="mt-2 text-sm text-ink">
                     {r.problem === "one-class"
-                      ? "Your dataset contains only one answer. A model can't learn a difference that isn't there — it would just always say the same thing."
+                      ? "Your dataset contains only one answer. A model can't learn a difference that isn't there - it would just always say the same thing."
                       : "Not enough usable rows. Give the model at least 4 examples."}
                   </p>
                   <p className="mt-2 text-sm text-ink-dim">This is a feature: lesson one of ML is that data decides everything.</p>
@@ -210,7 +210,7 @@ export function TrainTheMachine() {
                       <p className="mt-1 font-display text-2xl font-black text-ink">{Math.round(r.trainAccuracy * 100)}%</p>
                     </div>
                     <div className="rounded-xl border border-pulse-400/40 bg-pulse-400/5 p-3">
-                      <p className="font-mono text-[10px] uppercase text-pulse-300">Test acc</p>
+                      <p className="font-mono text-[10px] uppercase text-pulse-700 dark:text-pulse-300">Test acc</p>
                       <p className="mt-1 font-display text-2xl font-black text-ink">{Math.round(r.testAccuracy * 100)}%</p>
                     </div>
                     <div className="rounded-xl border border-void-700 p-3">
@@ -222,7 +222,7 @@ export function TrainTheMachine() {
                     Baseline = guessing the majority class. Test accuracy beats it only if the model actually learned a pattern.{" "}
                     {r.trainAccuracy - r.testAccuracy > 0.15 && "⚠ Train ≫ test: the model is memorizing (overfitting)."}
                   </p>
-                  <p className="mt-2 font-mono text-[11px] text-volt-300">
+                  <p className="mt-2 font-mono text-[11px] text-volt-700 dark:text-volt-300">
                     learned rule: pass ⇔ score({r.weights[1]} × study + {r.weights[2]} × sleep + {r.weights[0]}) ≥ 0.5
                   </p>
                 </>
@@ -236,10 +236,10 @@ export function TrainTheMachine() {
                 <p className="font-mono text-[10px] uppercase tracking-widest text-ink-faint">Confusion matrix (test set)</p>
                 <div className="mt-3 grid grid-cols-2 gap-2 text-center">
                   {[
-                    { k: "tp", v: r.confusion.tp, label: "Correctly predicted PASS", tone: "text-mint-300" },
-                    { k: "fn", v: r.confusion.fn, label: "Missed passes (said fail)", tone: "text-amber-300" },
-                    { k: "fp", v: r.confusion.fp, label: "False alarms (said pass)", tone: "text-amber-300" },
-                    { k: "tn", v: r.confusion.tn, label: "Correctly predicted FAIL", tone: "text-mint-300" },
+                    { k: "tp", v: r.confusion.tp, label: "Correctly predicted PASS", tone: "text-mint-700 dark:text-mint-300" },
+                    { k: "fn", v: r.confusion.fn, label: "Missed passes (said fail)", tone: "text-amber-600 dark:text-amber-300" },
+                    { k: "fp", v: r.confusion.fp, label: "False alarms (said pass)", tone: "text-amber-600 dark:text-amber-300" },
+                    { k: "tn", v: r.confusion.tn, label: "Correctly predicted FAIL", tone: "text-mint-700 dark:text-mint-300" },
                   ].map((c) => (
                     <div key={c.k} className="rounded-xl border border-void-700 p-3">
                       <p className={`font-display text-xl font-black ${c.tone}`}>{c.v}</p>
@@ -253,7 +253,7 @@ export function TrainTheMachine() {
             {/* teaching callouts */}
             {r.testAccuracy >= 0.8 && (
               <GlassCard className="border-mint-400/30 bg-mint-400/5 p-5">
-                <p className="font-semibold text-mint-300">Solid model. Now break it.</p>
+                <p className="font-semibold text-mint-700 dark:text-mint-300">Solid model. Now break it.</p>
                 <p className="mt-1 text-sm text-ink-dim">
                   Ideas: delete the failing students (one-sided data), crank noise past 40%, or train on 4 rows.
                   Notice <em>why</em> accuracy collapses.
@@ -262,7 +262,7 @@ export function TrainTheMachine() {
             )}
             {r.testAccuracy < 0.6 && (
               <GlassCard className="border-rose-400/30 bg-rose-400/5 p-5">
-                <p className="font-semibold text-rose-300">Not quite — and that&apos;s the lesson.</p>
+                <p className="font-semibold text-rose-700 dark:text-rose-300">Not quite - and that&apos;s the lesson.</p>
                 <p className="mt-1 text-sm text-ink-dim">
                   The model did what it could with what you gave it. More/better data usually beats cleverer algorithms.
                 </p>

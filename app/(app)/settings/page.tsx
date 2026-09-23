@@ -12,15 +12,15 @@ export default async function SettingsPage() {
   if (!user) redirect("/login");
   return (
     <div className="max-w-2xl">
-      <SectionHeading kicker="Control panel" title="Settings" description="AI Quest adapts to how you read, move, and focus. All privacy-respecting, all reversible." />
+      <SectionHeading kicker="Control panel" title="Settings" description="Cognia Quest adapts to how you read, move, and focus. All privacy-respecting, all reversible." />
       <Card className="mt-8 p-6">
         <SettingsForm initial={user.preferences} />
       </Card>
       <Card className="mt-6 p-6">
         <h2 className="font-display text-lg font-bold text-ink">Your data</h2>
         <p className="mt-2 text-sm text-ink-dim">
-          AI Quest stores only your account (email, display name) and learning activity. No tracking, no ads,
-          no sale of data — the same privacy principles this platform teaches.
+          Cognia Quest stores only your account (email, display name) and learning activity. No tracking, no ads,
+          no sale of data - the same privacy principles this platform teaches.
         </p>
         <p className="mt-2 text-sm text-ink-dim">
           Theme and motion preferences apply instantly and persist on this device too.

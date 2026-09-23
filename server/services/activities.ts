@@ -108,7 +108,7 @@ export async function submitEthics(
   let xp: AwardResult | undefined;
   if (coverage >= 60) {
     xp = await awardXP(db, user, { sourceType: "ethics", sourceId: caseId, note: `Ethics review: ${c.title} (${coverage}%)` });
-    await logActivity(db, user.id, "ethics_review", `Ethics review: ${c.title} — ${coverage}% coverage`);
+    await logActivity(db, user.id, "ethics_review", `Ethics review: ${c.title} - ${coverage}% coverage`);
   }
 
   const events: MissionEvent[] = [{ type: "ethics", id: "ethics:reviewed" }];

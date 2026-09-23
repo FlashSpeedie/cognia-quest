@@ -33,7 +33,7 @@ export default async function PromptBattleTaskPage({ params }: { params: Promise
         <span aria-hidden>/</span>
         <Link href="/lab/prompt-battle" className="hover:text-ink focus-ring rounded">Prompt Battle</Link>
         <span aria-hidden>/</span>
-        <span className="text-pulse-300">{task.category}</span>
+        <span className="text-pulse-700 dark:text-pulse-300">{task.category}</span>
       </nav>
       <SectionHeading kicker={task.category} title={task.task} />
       {attempts.length > 0 && (
@@ -51,14 +51,14 @@ export default async function PromptBattleTaskPage({ params }: { params: Promise
             </p>
           </div>
           <div className="text-right">
-            <p className={`font-display text-2xl font-black ${best >= 80 ? "text-mint-300" : "text-ink"}`}>{best}/100</p>
+            <p className={`font-display text-2xl font-black ${best >= 80 ? "text-mint-700 dark:text-mint-300" : "text-ink"}`}>{best}/100</p>
             <p className="font-mono text-[10px] uppercase tracking-widest text-ink-faint">{attempts.length} attempt{attempts.length === 1 ? "" : "s"}</p>
           </div>
         </GlassCard>
       )}
       <GlassCard className="mt-6 border-amber-400/25 bg-amber-400/5 p-5">
         <p className="text-sm text-ink-dim">
-          <span className="font-semibold text-amber-300">Weak start:</span> “{task.weakExample}” — improve on this.
+          <span className="font-semibold text-amber-600 dark:text-amber-300">Weak start:</span> “{task.weakExample}” - improve on this.
         </p>
         <p className="mt-2 text-xs text-ink-faint">
           Strong prompts here usually name: {task.expectations.join(" · ")}

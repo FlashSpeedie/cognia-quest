@@ -59,7 +59,7 @@ export async function recordSection(db: Db, user: User, lessonId: string, sectio
 }
 
 /**
- * Grade a quiz attempt server-side (answers validated against content —
+ * Grade a quiz attempt server-side (answers validated against content -
  * the client can never claim a score), update lesson progress, award XP
  * with perfect bonus, touch streak, record mission events, check badges.
  */

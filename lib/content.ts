@@ -1,4 +1,4 @@
-/** Content model — modules, lessons, quizzes, missions, cases (spec §40/§86). */
+/** Content model - modules, lessons, quizzes, missions, cases (spec §40/§86). */
 
 // ── Quizzes ─────────────────────────────────────────────────────────────
 export interface QuizQuestion {
@@ -100,7 +100,7 @@ export const ISSUE_LABELS: Record<IssueType, string> = {
   "missing-context": "Missing context",
   privacy: "Privacy concern",
   overconfidence: "Overconfidence",
-  none: "Nothing — this is fine",
+  none: "Nothing - this is fine",
 };
 
 export interface DetectiveCase {

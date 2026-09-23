@@ -39,7 +39,7 @@ export async function getDb(): Promise<Db> {
   } else {
     if (process.env.NODE_ENV === "production") {
       console.warn(
-        "[ai-quest] Supabase is not configured — running on the LOCAL JSON datastore. " +
+        "[ai-quest] Supabase is not configured - running on the LOCAL JSON datastore. " +
           "That store is for development/judging only; do not use it as production state. " +
           "Set NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY / SUPABASE_SECRET_KEY.",
       );

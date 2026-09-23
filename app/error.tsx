@@ -15,7 +15,7 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
         <span className="text-4xl" aria-hidden="true">🛠️</span>
         <h1 className="mt-4 font-display text-2xl font-bold text-ink">Something went wrong</h1>
         <p className="mt-2 text-sm text-ink-dim">
-          A subsystem hiccupped. Your progress is safe — it lives on the server, not in this page.
+          A subsystem hiccupped. Your progress is safe - it lives on the server, not in this page.
         </p>
         <div className="mt-6 flex justify-center gap-3">
           <Button onClick={reset}>Try again</Button>

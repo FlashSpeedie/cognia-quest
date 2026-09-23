@@ -2,7 +2,7 @@ import { getDb } from "@/server/db/db";
 import { json, requireUser } from "@/server/http";
 import { levelFor } from "@/lib/levels";
 
-/** Opt-in only (spec §39). Returns display name + XP + level — nothing else. */
+/** Opt-in only (spec §39). Returns display name + XP + level - nothing else. */
 export async function GET() {
   const auth = await requireUser();
   if ("response" in auth) return auth.response;

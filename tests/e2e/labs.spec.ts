@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { DEMO_STATE } from "./states";
 
-// Reuse the demo session — one login per suite, no rate-limit pressure.
+// Reuse the demo session - one login per suite, no rate-limit pressure.
 test.use({ storageState: DEMO_STATE });
 
 test("Train the Machine: train → model report → XP", async ({ page }) => {

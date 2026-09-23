@@ -6,7 +6,7 @@ import { json, throttle } from "@/server/http";
 
 /**
  * Demo mode (spec §73): one-click sign-in to the seeded demo account.
- * Disabled whenever Supabase (production backend) is configured — a real
+ * Disabled whenever Supabase (production backend) is configured - a real
  * deployment must not offer shared demo logins. See lib/env.isDemoEnabled.
  */
 export async function POST(req: Request) {
@@ -17,7 +17,7 @@ export async function POST(req: Request) {
 
   const db = await getDb();
   const demo = await db.table("users").first({ email: DEMO_EMAIL });
-  if (!demo) return json({ error: "Demo account not available — run `npm run seed`." }, 404);
+  if (!demo) return json({ error: "Demo account not available - run `npm run seed`." }, 404);
 
   const cookie = await createSession(demo.id);
   const jar = await cookies();

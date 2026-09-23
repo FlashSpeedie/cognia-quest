@@ -4,11 +4,11 @@ import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { GlassCard } from "@/components/ui/Card";
 
-/** "AI OR NOT?" — classify systems. Deterministic, educational. */
+/** "AI OR NOT?" - classify systems. Deterministic, educational. */
 export const AI_OR_NOT_ITEMS = [
-  { id: "spam", label: "Spam filter that learned from millions of emails", isAI: true, why: "Learns patterns from data — that's machine learning." },
+  { id: "spam", label: "Spam filter that learned from millions of emails", isAI: true, why: "Learns patterns from data - that's machine learning." },
   { id: "calc", label: "Pocket calculator", isAI: false, why: "Follows fixed arithmetic rules. Nothing is learned." },
-  { id: "rec", label: "Video app recommending your next watch", isAI: true, why: "Predicts your taste from behavior — a recommender model." },
+  { id: "rec", label: "Video app recommending your next watch", isAI: true, why: "Predicts your taste from behavior - a recommender model." },
   { id: "search", label: "Search engine ranking pages with learned relevance signals", isAI: true, why: "Modern ranking uses ML models trained on click/query data." },
   { id: "ifelse", label: "Thermostat: IF temp < 68°F THEN heat on", isAI: false, why: "A hand-written rule. No learning, no data-driven pattern." },
   { id: "vision", label: "Phone unlock that recognizes your face", isAI: true, why: "Computer vision model trained on facial features." },
@@ -58,8 +58,8 @@ export function AIOrNot({ onComplete }: { onComplete?: (scorePct: number) => voi
               </div>
               {checked && (
                 <p className="mt-2 text-xs text-ink-dim">
-                  <span className={a === item.isAI ? "font-bold text-mint-300" : "font-bold text-rose-400"}>
-                    {a === item.isAI ? "Correct — " : "Actually — "}
+                  <span className={a === item.isAI ? "font-bold text-mint-700 dark:text-mint-300" : "font-bold text-rose-400"}>
+                    {a === item.isAI ? "Correct - " : "Actually - "}
                   </span>
                   {item.why}
                 </p>
@@ -75,7 +75,7 @@ export function AIOrNot({ onComplete }: { onComplete?: (scorePct: number) => voi
           </Button>
         ) : (
           <p className="font-display text-lg font-bold text-ink">
-            {correctCount}/{AI_OR_NOT_ITEMS.length} — {correctCount === AI_OR_NOT_ITEMS.length ? "Perfect detector." : "the reveals above explain each."}
+            {correctCount}/{AI_OR_NOT_ITEMS.length} - {correctCount === AI_OR_NOT_ITEMS.length ? "Perfect detector." : "the reveals above explain each."}
           </p>
         )}
       </div>

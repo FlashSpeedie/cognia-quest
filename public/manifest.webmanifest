@@ -1,11 +1,11 @@
 {
-  "name": "AI Quest",
-  "short_name": "AI Quest",
-  "description": "Learn AI. Challenge AI. Use AI Responsibly.",
+  "name": "Cognia Quest",
+  "short_name": "Cognia Quest",
+  "description": "Learn AI. Question AI. Use AI Responsibly.",
   "start_url": "/dashboard",
   "display": "standalone",
-  "background_color": "#05070f",
-  "theme_color": "#05070f",
+  "background_color": "#f8fafc",
+  "theme_color": "#f8fafc",
   "icons": [
     { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
   ]

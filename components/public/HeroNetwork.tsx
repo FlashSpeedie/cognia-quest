@@ -1,6 +1,6 @@
 /**
- * Hero visual: a clean, product-like snapshot of the learning experience —
- * progress ring, lesson cards, mission steps — in place of a sci-fi map.
+ * Hero visual: a clean, product-like snapshot of the learning experience -
+ * progress ring, lesson cards, mission steps - in place of a sci-fi map.
  * Decorative (aria-hidden).
  */
 export function HeroNetwork() {
@@ -28,7 +28,7 @@ export function HeroNetwork() {
         </svg>
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-pulse-600">Course progress</p>
-          <p className="mt-1 font-display text-2xl font-bold text-ink">Level 6 — Critical Thinker</p>
+          <p className="mt-1 font-display text-2xl font-bold text-ink">Level 6 - Critical Thinker</p>
           <p className="mt-1 text-sm text-ink-dim">1,540 XP · 4 of 7 mission sets underway</p>
         </div>
       </div>

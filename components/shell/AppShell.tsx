@@ -7,7 +7,7 @@ import { Icon, type IconName } from "@/components/ui/Icon";
 import { NotificationBell } from "./NotificationBell";
 import { CommandPalette } from "./CommandPalette";
 import { LevelUpModal } from "@/components/app/LevelUpModal";
-import { Logo } from "@/components/public/PublicNav";
+import { BrandLogo } from "@/components/public/BrandLogo";
 import { levelProgress } from "@/lib/levels";
 
 export interface ShellUser {
@@ -94,8 +94,8 @@ export function AppShell({
           >
             <Icon name="menu" />
           </button>
-          <Link href="/dashboard" className="focus-ring rounded-lg" aria-label="AI Quest dashboard">
-            <Logo size="sm" />
+          <Link href="/dashboard" className="focus-ring rounded-lg" aria-label="Cognia Quest dashboard">
+            <BrandLogo size="sm" />
           </Link>
 
           {/* XP / level cluster */}
@@ -135,7 +135,7 @@ export function AppShell({
               href={n.href}
               aria-current={isActive(n.href) ? "page" : undefined}
               className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors focus-ring ${
-                isActive(n.href) ? "bg-pulse-50 text-pulse-700 dark:bg-pulse-950/50 dark:text-pulse-300" : "text-ink-dim hover:bg-void-800 hover:text-ink"
+                isActive(n.href) ? "bg-pulse-50 text-pulse-700 dark:bg-pulse-950/50 dark:text-pulse-700 dark:text-pulse-300" : "text-ink-dim hover:bg-void-800 hover:text-ink"
               }`}
             >
               <Icon name={n.icon} size={17} />
@@ -164,7 +164,7 @@ export function AppShell({
           <div className="absolute inset-0 bg-void-950/40 backdrop-blur-[2px]" onClick={() => setMenuOpen(false)} />
           <nav aria-label="Mobile" className="absolute left-0 top-0 h-full w-72 animate-fade-up border-r border-void-700/70 bg-void-900 p-4 shadow-pop">
             <div className="mb-4 flex items-center justify-between">
-              <Logo size="sm" />
+              <BrandLogo size="sm" />
               <button onClick={() => setMenuOpen(false)} aria-label="Close menu" className="rounded-lg p-2 text-ink-dim hover:bg-void-800 focus-ring">
                 <Icon name="x" />
               </button>
@@ -176,7 +176,7 @@ export function AppShell({
                   href={n.href}
                   onClick={() => setMenuOpen(false)}
                   className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium focus-ring ${
-                    isActive(n.href) ? "bg-pulse-50 text-pulse-700 dark:bg-pulse-950/50 dark:text-pulse-300" : "text-ink-dim"
+                    isActive(n.href) ? "bg-pulse-50 text-pulse-700 dark:bg-pulse-950/50 dark:text-pulse-700 dark:text-pulse-300" : "text-ink-dim"
                   }`}
                 >
                   <Icon name={n.icon} size={17} /> {n.label}

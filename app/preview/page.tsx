@@ -9,11 +9,13 @@ import { MODULES } from "@/content/modules";
 import { DETECTIVE_CASES } from "@/content/detective";
 import { Icon } from "@/components/ui/Icon";
 import { isDemoEnabled } from "@/lib/env";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Preview the Experience",
-  description: "Try a taste of AI Quest: sort AI from not-AI, browse the learning path, peek at detective cases and ethics scenarios.",
-};
+export const metadata: Metadata = pageMetadata({
+  title: "Preview the Learning Experience",
+  description: "Try Cognia Quest before you sign up: sort AI from not-AI, browse the learning path, and peek at detective cases and ethics scenarios.",
+  path: "/preview",
+});
 
 export default function PreviewPage() {
   const s = DETECTIVE_CASES[0]!;
@@ -24,7 +26,7 @@ export default function PreviewPage() {
         <SectionHeading
           kicker="Try before you enroll"
           title="A taste of the experience"
-          description="This is what 'interactive' means at AI Quest. Everything below is playable right now, no account needed."
+          description="This is what 'interactive' means at Cognia Quest. Everything below is playable right now, no account needed."
         />
 
         {/* Fundamentals preview: playable */}
@@ -48,7 +50,7 @@ export default function PreviewPage() {
                     <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink-faint">Module {m.order}</p>
                     <h3 className="mt-1 font-display text-lg font-bold text-ink">{m.title}</h3>
                   </div>
-                  <span className="rounded-lg border border-void-700 bg-void-800 p-2 text-pulse-300">
+                  <span className="rounded-lg border border-void-700 bg-void-800 p-2 text-pulse-700 dark:text-pulse-300">
                     <Icon name={m.icon as never} size={18} />
                   </span>
                 </div>
@@ -84,7 +86,7 @@ export default function PreviewPage() {
           <p className="mt-2 max-w-2xl text-ink-dim">
             A school wants AI that predicts which students might fail. Good idea? That&rsquo;s not the question.
             The question is which questions <em>you</em> ask first: Who knows it exists? Who can appeal? What data does it hoard?
-            Ethics Court scores your <em>coverage</em> — because responsible AI is a checklist, not a vibe.
+            Ethics Court scores your <em>coverage</em> - because responsible AI is a checklist, not a vibe.
           </p>
         </section>
 

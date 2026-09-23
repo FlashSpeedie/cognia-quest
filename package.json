@@ -2,7 +2,7 @@
   "name": "ai-quest",
   "version": "1.0.0",
   "private": true,
-  "description": "AI Quest — Learn AI. Challenge AI. Use AI Responsibly. An interactive AI literacy platform for grades 9-12.",
+  "description": "Cognia Quest - Learn AI. Question AI. Use AI Responsibly. An interactive AI literacy platform for grades 9-12.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

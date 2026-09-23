@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 import { DEMO_STATE } from "./states";
 
 /**
- * Production-security E2E: not "does the page render" — does the server
+ * Production-security E2E: not "does the page render" - does the server
  * refuse hostile input.
  */
 

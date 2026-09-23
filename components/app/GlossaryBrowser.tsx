@@ -27,7 +27,7 @@ export function GlossaryBrowser({ terms }: { terms: GlossaryTerm[] }) {
           id="glossary-search"
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="Search terms — try token, overfitting, bias…"
+          placeholder="Search terms - try token, overfitting, bias…"
           className="w-full rounded-xl border border-void-700 bg-void-850 py-3 pl-11 pr-4 text-sm text-ink placeholder:text-ink-faint focus-ring"
         />
       </div>
@@ -49,7 +49,7 @@ export function GlossaryBrowser({ terms }: { terms: GlossaryTerm[] }) {
                     <button
                       key={r}
                       onClick={() => setQ(r)}
-                      className="rounded-full border border-void-700 px-2 py-0.5 text-[11px] text-ink-faint transition-colors hover:border-pulse-400/50 hover:text-pulse-300 focus-ring"
+                      className="rounded-full border border-void-700 px-2 py-0.5 text-[11px] text-ink-faint transition-colors hover:border-pulse-400/50 hover:text-pulse-700 dark:text-pulse-300 focus-ring"
                     >
                       {r}
                     </button>
