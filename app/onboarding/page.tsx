@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation";
 import { getSessionUser } from "@/server/auth/session";
 import { OnboardingWizard } from "@/components/auth/OnboardingWizard";
-import type { Metadata } from "next";
+import { privateMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = { title: "Welcome" };
+export const metadata = privateMetadata("Welcome");
 export const dynamic = "force-dynamic";
 
 export default async function OnboardingPage() {

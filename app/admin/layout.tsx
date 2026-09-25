@@ -1,11 +1,14 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getSessionUser } from "@/server/auth/session";
 import { BrandLogo } from "@/components/public/BrandLogo";
 import { audit } from "@/server/services/audit";
 import { getDb } from "@/server/db/db";
+import { privateAreaMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
+export const metadata: Metadata = privateAreaMetadata();
 
 const ADMIN_NAV = [
   { href: "/admin", label: "Overview" },

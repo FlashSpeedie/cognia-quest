@@ -1,12 +1,9 @@
 import type { MetadataRoute } from "next";
+import { siteUrl } from "@/lib/seo";
+
+const PUBLIC_PATHS = ["/", "/about", "/preview", "/privacy"] as const;
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = (process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000").replace(/\/$/, "");
-  const now = new Date();
-  return [
-    { url: `${base}/`, lastModified: now, changeFrequency: "weekly", priority: 1.0 },
-    { url: `${base}/about`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${base}/preview`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${base}/privacy`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
-  ];
+  const base = siteUrl();
+  return PUBLIC_PATHS.map((path) => ({ url: `${base}${path}` }));
 }

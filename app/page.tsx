@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { PublicNav } from "@/components/public/PublicNav";
 import { HeroNetwork } from "@/components/public/HeroNetwork";
 import { GlassCard, SectionHeading } from "@/components/ui/Card";
@@ -6,14 +6,16 @@ import { Icon, type IconName } from "@/components/ui/Icon";
 import { Chip } from "@/components/ui/Chip";
 import { LinkButton } from "@/components/ui/Button";
 import { isDemoEnabled } from "@/lib/env";
+import { pageMetadata, siteUrl, SITE } from "@/lib/seo";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { PublicFooter } from "@/components/public/PublicFooter";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Cognia Quest | Interactive AI Learning for High School Students",
   description:
     "An interactive AI learning platform for high school students: understand how AI works, practice with interactive challenges, investigate AI mistakes, and learn responsible usage.",
-};
+  path: "/",
+});
 
 const PILLARS: { icon: IconName; kicker: string; title: string; desc: string; tone: string }[] = [
   {
@@ -55,39 +57,41 @@ const STEPS = [
 ];
 
 const BADGES_PREVIEW = [
-  { icon: "🔎", name: "AI Detective" },
-  { icon: "🧠", name: "Machine Learner" },
-  { icon: "🛡️", name: "Ethical Guardian" },
-  { icon: "🏗️", name: "AI Architect" },
+  { icon: "ðŸ”Ž", name: "AI Detective" },
+  { icon: "ðŸ§ ", name: "Machine Learner" },
+  { icon: "ðŸ›¡ï¸", name: "Ethical Guardian" },
+  { icon: "ðŸ—ï¸", name: "AI Architect" },
 ];
 
 export default function LandingPage() {
   const demo = isDemoEnabled();
-  const base = (process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000").replace(/\/$/, "");
+  const base = siteUrl();
   return (
     <div className="app-backdrop min-h-screen">
       <JsonLd
         data={{
           "@context": "https://schema.org",
           "@type": "WebSite",
-          name: "Cognia Quest",
+          name: SITE.name,
           url: `${base}/`,
           description:
             "Interactive AI learning platform for high school students: lessons, simulations, prompt engineering practice, and ethics scenarios.",
+          publisher: { "@type": "Organization", name: SITE.name, url: `${base}/` },
         }}
       />
       <JsonLd
         data={{
           "@context": "https://schema.org",
           "@type": "Organization",
-          name: "Cognia Quest",
+          name: SITE.name,
           url: `${base}/`,
-          description: "Learn AI. Question AI. Use AI Responsibly.",
+          description: SITE.tagline,
+          logo: `${base}/icon.svg`,
         }}
       />
       <PublicNav demoEnabled={demo} />
       <main id="main">
-        {/* ── HERO ─────────────────────────────────────────────── */}
+        {/* â”€â”€ HERO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <section className="mx-auto grid max-w-6xl items-center gap-10 px-4 pb-20 pt-32 lg:min-h-[80vh] lg:grid-cols-2 lg:pt-24">
           <div>
             <Chip tone="pulse" className="mb-5 uppercase tracking-[0.14em]">
@@ -114,7 +118,7 @@ export default function LandingPage() {
             {demo && (
               <p className="mt-6 flex items-center gap-2 text-sm text-ink-faint">
                 <Icon name="shield" size={16} />
-                No paywall for judges - hit &quot;Try demo&quot; up top and explore instantly.
+                Explore instantly in demo mode - no account needed.
               </p>
             )}
           </div>
@@ -125,7 +129,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ── PILLARS ──────────────────────────────────────────── */}
+        {/* â”€â”€ PILLARS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <section className="mx-auto max-w-6xl px-4 py-16">
           <SectionHeading
             kicker="One platform, four ways to think"
@@ -146,7 +150,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ── HOW IT WORKS ─────────────────────────────────────── */}
+        {/* â”€â”€ HOW IT WORKS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <section className="mx-auto max-w-6xl px-4 py-16">
           <SectionHeading kicker="The loop" title="How it works" />
           <ol className="mt-10 grid gap-4 md:grid-cols-5">
@@ -167,7 +171,7 @@ export default function LandingPage() {
           </ol>
         </section>
 
-        {/* ── MISSION MAP ──────────────────────────────────────── */}
+        {/* â”€â”€ MISSION MAP â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <section className="mx-auto max-w-6xl px-4 py-16">
           <SectionHeading
             kicker="Your route"
@@ -214,7 +218,7 @@ export default function LandingPage() {
           </dl>
         </section>
 
-        {/* ── GAMIFICATION STRIP ───────────────────────────────── */}
+        {/* â”€â”€ GAMIFICATION STRIP â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <section className="mx-auto max-w-6xl px-4 py-16">
           <div className="glass-panel grid gap-8 rounded-2xl p-8 md:grid-cols-2 lg:p-10">
             <div>
@@ -258,7 +262,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ── RESPONSIBLE AI STATEMENT ─────────────────────────── */}
+        {/* â”€â”€ RESPONSIBLE AI STATEMENT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <section className="mx-auto max-w-4xl px-4 py-16 text-center">
           <Icon name="shield" className="mx-auto text-mint-600" size={32} />
           <h2 className="mt-4 font-display text-2xl font-bold text-ink sm:text-3xl">Understand it. Question it. Own it.</h2>
@@ -269,7 +273,7 @@ export default function LandingPage() {
           </p>
         </section>
 
-        {/* ── FINAL CTA ────────────────────────────────────────── */}
+        {/* â”€â”€ FINAL CTA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <section className="mx-auto max-w-6xl px-4 pb-24">
           <div className="glass-panel relative overflow-hidden rounded-2xl p-10 text-center shadow-pop md:p-16">
             <h2 className="font-display text-2xl font-bold text-ink sm:text-3xl">

@@ -1,10 +1,6 @@
-import { pageMetadata } from "@/lib/seo";
+import { privateMetadata } from "@/lib/seo";
 import { LoginPage } from "./form";
 
-export const metadata = pageMetadata({
-  title: "Log In",
-  description: "Log back into Cognia Quest and continue your AI learning journey.",
-  path: "/login",
-});
+export const metadata = privateMetadata("Log In");
 
 export default LoginPage;

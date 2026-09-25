@@ -36,12 +36,15 @@ export function SectionHeading({
   title,
   description,
   className = "",
+  as = "h2",
 }: {
   kicker?: string;
   title: string;
   description?: string;
   className?: string;
+  as?: "h1" | "h2";
 }) {
+  const Heading = as;
   return (
     <header className={className}>
       {kicker && (
@@ -49,7 +52,7 @@ export function SectionHeading({
           {kicker}
         </p>
       )}
-      <h2 className="font-display text-2xl font-bold tracking-tight text-ink sm:text-[1.75rem]">{title}</h2>
+      <Heading className="font-display text-2xl font-bold tracking-tight text-ink sm:text-[1.75rem]">{title}</Heading>
       {description && <p className="mt-2 max-w-2xl leading-relaxed text-ink-dim">{description}</p>}
     </header>
   );

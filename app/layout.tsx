@@ -2,25 +2,18 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { ToastProvider } from "@/components/ui/Toast";
 import { ServiceWorkerRegistration } from "@/components/app/ServiceWorkerRegistration";
+import { siteUrl, SITE } from "@/lib/seo";
 
-const metadataBase = new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000");
+const metadataBase = new URL(siteUrl());
 
 export const metadata: Metadata = {
   metadataBase,
+  applicationName: SITE.name,
   title: {
-    default: "Cognia Quest | Interactive AI Learning for High School Students",
-    template: "%s | Cognia Quest",
+    default: `${SITE.name} | Interactive AI Learning for High School Students`,
+    template: `%s | ${SITE.name}`,
   },
-  description:
-    "An interactive AI learning platform for high school students: understand how AI works, practice with interactive challenges, spot AI mistakes, and learn responsible usage.",
-  keywords: [
-    "AI literacy",
-    "high school AI education",
-    "learn artificial intelligence",
-    "prompt engineering for students",
-    "AI ethics for students",
-    "machine learning basics",
-  ],
+  description: SITE.description,
   alternates: { canonical: "/" },
   openGraph: {
     title: "Cognia Quest | Interactive AI Learning for High School Students",

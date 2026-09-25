@@ -3,7 +3,8 @@ import { PublicNav } from "@/components/public/PublicNav";
 import { PublicFooter } from "@/components/public/PublicFooter";
 import { SectionHeading, GlassCard } from "@/components/ui/Card";
 import { isDemoEnabled } from "@/lib/env";
-import { pageMetadata } from "@/lib/seo";
+import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
+import { JsonLd } from "@/components/seo/JsonLd";
 
 export const metadata: Metadata = pageMetadata({
   title: "Privacy",
@@ -15,9 +16,10 @@ export default function PrivacyPage() {
   const demo = isDemoEnabled();
   return (
     <div className="app-backdrop min-h-screen">
+      <JsonLd data={breadcrumbJsonLd("Privacy", "/privacy")} />
       <PublicNav demoEnabled={demo} />
       <main id="main" className="mx-auto max-w-3xl px-4 pb-24 pt-32">
-        <SectionHeading kicker="Our commitment" title="Privacy, in plain language" />
+        <SectionHeading as="h1" kicker="Our commitment" title="Privacy, in plain language" />
         <div className="mt-8 space-y-4">
           {[
             {

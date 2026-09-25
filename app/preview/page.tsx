@@ -9,7 +9,8 @@ import { MODULES } from "@/content/modules";
 import { DETECTIVE_CASES } from "@/content/detective";
 import { Icon } from "@/components/ui/Icon";
 import { isDemoEnabled } from "@/lib/env";
-import { pageMetadata } from "@/lib/seo";
+import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
+import { JsonLd } from "@/components/seo/JsonLd";
 
 export const metadata: Metadata = pageMetadata({
   title: "Preview the Learning Experience",
@@ -21,9 +22,11 @@ export default function PreviewPage() {
   const s = DETECTIVE_CASES[0]!;
   return (
     <div className="app-backdrop min-h-screen">
+      <JsonLd data={breadcrumbJsonLd("Preview", "/preview")} />
       <PublicNav demoEnabled={isDemoEnabled()} />
       <main id="main" className="mx-auto max-w-5xl px-4 pb-24 pt-32">
         <SectionHeading
+          as="h1"
           kicker="Try before you enroll"
           title="A taste of the experience"
           description="This is what 'interactive' means at Cognia Quest. Everything below is playable right now, no account needed."

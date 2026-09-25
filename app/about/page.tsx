@@ -4,10 +4,11 @@ import { PublicFooter } from "@/components/public/PublicFooter";
 import { SectionHeading, GlassCard } from "@/components/ui/Card";
 import { Icon } from "@/components/ui/Icon";
 import { isDemoEnabled } from "@/lib/env";
-import { pageMetadata } from "@/lib/seo";
+import { pageMetadata, siteUrl, breadcrumbJsonLd } from "@/lib/seo";
+import { JsonLd } from "@/components/seo/JsonLd";
 
 export const metadata: Metadata = pageMetadata({
-  title: "About Cognia Quest",
+  title: "About",
   description: "Why Cognia Quest exists: interactive AI literacy for grades 9-12, built around doing, questioning, and deciding instead of passive reading.",
   path: "/about",
 });
@@ -48,9 +49,22 @@ const PRINCIPLES = [
 export default function AboutPage() {
   return (
     <div className="app-backdrop min-h-screen">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "AboutPage",
+          name: "About Cognia Quest",
+          url: `${siteUrl()}/about`,
+          description:
+            "Why Cognia Quest exists: interactive AI literacy for grades 9-12, built around doing, questioning, and deciding instead of passive reading.",
+          isPartOf: { "@type": "WebSite", name: "Cognia Quest", url: `${siteUrl()}/` },
+        }}
+      />
+      <JsonLd data={breadcrumbJsonLd("About", "/about")} />
       <PublicNav demoEnabled={isDemoEnabled()} />
       <main id="main" className="mx-auto max-w-4xl px-4 pb-20 pt-32">
         <SectionHeading
+          as="h1"
           kicker="About the project"
           title="AI literacy you can touch"
           description="Cognia Quest turns AI education from something students read into something students experience."

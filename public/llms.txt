@@ -1,0 +1,16 @@
+# Cognia Quest
+
+> Cognia Quest is an interactive AI learning platform for high school students (grades 9-12). Students learn how artificial intelligence works through interactive lessons, hands-on machine learning labs, prompt engineering practice, investigations of AI hallucinations and bias, and AI ethics scenarios - earning XP, levels, and badges as they progress.
+
+## Main pages
+
+- [Home](https://cognia-quest.vercel.app/): Overview of the platform - interactive AI lessons, labs, AI detective cases, and ethics challenges for high school students.
+- [About](https://cognia-quest.vercel.app/about): The design principles behind Cognia Quest and why it teaches AI literacy through practice rather than passive reading.
+- [Preview](https://cognia-quest.vercel.app/preview): Try sample lessons, browse the full learning path, and see an AI Detective case - no account needed.
+- [Privacy](https://cognia-quest.vercel.app/privacy): How Cognia Quest handles student data - minimally, transparently, without advertising or tracking.
+
+## Notes
+
+- The full learning experience (7 modules with 18+ interactive lessons, 10 missions, machine learning labs, prompt battles, a 15-case AI Detective, and the Ethics Court) is available after creating a free account.
+- Topics covered include AI fundamentals, machine learning, generative AI, tokens and context windows, prompt engineering, AI hallucinations, AI bias, AI ethics, and responsible AI use.
+- Every simulation is labeled as an educational model; XP and badges are validated server-side.

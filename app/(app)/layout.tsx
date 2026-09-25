@@ -1,9 +1,12 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getSessionUser } from "@/server/auth/session";
 import { getDb } from "@/server/db/db";
 import { AppShell } from "@/components/shell/AppShell";
+import { privateAreaMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
+export const metadata: Metadata = privateAreaMetadata();
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const user = await getSessionUser();
