@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { isSupabaseConfigured } from "@/lib/env";
+import { siteUrl } from "@/lib/site";
 import type { Db } from "@/server/db/db";
 import { getDb, newId } from "@/server/db/db";
 import { hashPassword, verifyPassword } from "@/server/auth/password";
@@ -70,14 +71,13 @@ async function registerLocal(
 }
 
 async function registerSupabase(data: { email: string; displayName: string; password: string }): Promise<Result> {
-  const appUrl = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/\/$/, "");
   const supabase = await authClientForCookies({ writable: true });
   const { data: r, error } = await supabase.auth.signUp({
     email: data.email,
     password: data.password,
     options: {
       data: { display_name: data.displayName },
-      emailRedirectTo: appUrl ? `${appUrl}/auth/callback` : undefined,
+      emailRedirectTo: `${siteUrl()}/auth/callback`,
     },
   });
   if (error) {
@@ -190,10 +190,9 @@ export async function requestPasswordReset(emailRaw: string): Promise<{ ok: true
     // route pretends success to avoid leaking which emails exist.
     return { ok: true };
   }
-  const appUrl = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/\/$/, "");
   const supabase = await authClientForCookies({ writable: true });
   const { error } = await supabase.auth.resetPasswordForEmail(email.data.toLowerCase().trim(), {
-    redirectTo: `${appUrl || "http://localhost:3000"}/auth/callback?next=/reset-password`,
+    redirectTo: `${siteUrl()}/auth/callback?next=/reset-password`,
   });
   if (error) return { ok: false, error: "Could not send the reset email - try again shortly" };
   return { ok: true };

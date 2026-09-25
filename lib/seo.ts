@@ -1,25 +1,7 @@
 import type { Metadata } from "next";
+import { SITE, siteUrl } from "@/lib/site";
 
-export const SITE = {
-  name: "Cognia Quest",
-  tagline: "Learn AI. Question AI. Use AI Responsibly.",
-  description:
-    "An interactive AI learning platform for high school students: understand how AI works, practice with interactive challenges, investigate AI mistakes, and learn responsible usage.",
-} as const;
-
-/**
- * Canonical production URL, resolved in priority order:
- *  1. NEXT_PUBLIC_APP_URL (explicit override, e.g. a custom domain)
- *  2. VERCEL_PROJECT_PRODUCTION_DOMAIN (provided automatically by Vercel)
- *  3. localhost (local development only - never used on a Vercel build)
- */
-export function siteUrl(): string {
-  const explicit = process.env.NEXT_PUBLIC_APP_URL?.trim();
-  if (explicit) return explicit.replace(/\/+$/, "");
-  const domain = process.env.VERCEL_PROJECT_PRODUCTION_DOMAIN?.trim();
-  if (domain) return `https://${domain.replace(/^https?:\/\//, "").replace(/\/+$/, "")}`;
-  return "http://localhost:3000";
-}
+export { SITE, siteUrl } from "@/lib/site";
 
 /**
  * Standard public-page metadata: unique title + description, absolute

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import {
   siteUrl,
@@ -14,7 +14,12 @@ import robots from "@/app/robots";
 
 const PROD_URL = "https://cognia-quest.vercel.app";
 
-const envKeys = ["NEXT_PUBLIC_APP_URL", "VERCEL_PROJECT_PRODUCTION_DOMAIN"] as const;
+const envKeys = [
+  "NEXT_PUBLIC_SITE_URL",
+  "NEXT_PUBLIC_APP_URL",
+  "VERCEL_PROJECT_PRODUCTION_URL",
+  "VERCEL_PROJECT_PRODUCTION_DOMAIN",
+] as const;
 let saved: Record<string, string | undefined> = {};
 
 beforeEach(() => {
@@ -33,24 +38,35 @@ afterEach(() => {
 });
 
 describe("siteUrl resolution", () => {
-  it("uses NEXT_PUBLIC_APP_URL when set, stripping trailing slashes", () => {
-    process.env.NEXT_PUBLIC_APP_URL = "https://custom.example.com/";
+  it("uses NEXT_PUBLIC_SITE_URL with highest priority, stripping trailing slashes", () => {
+    process.env.NEXT_PUBLIC_SITE_URL = "https://custom.example.com/";
+    process.env.NEXT_PUBLIC_APP_URL = "https://ignored.example.com";
     expect(siteUrl()).toBe("https://custom.example.com");
   });
 
-  it("falls back to the Vercel production domain when the override is unset", () => {
+  it("uses the legacy NEXT_PUBLIC_APP_URL alias when SITE_URL is unset", () => {
+    process.env.NEXT_PUBLIC_APP_URL = "https://alias.example.com";
+    expect(siteUrl()).toBe("https://alias.example.com");
+  });
+
+  it("falls back to the Vercel production URL when overrides are unset", () => {
+    process.env.VERCEL_PROJECT_PRODUCTION_URL = "cognia-quest.vercel.app";
+    expect(siteUrl()).toBe(PROD_URL);
+  });
+
+  it("accepts the alternate Vercel production domain spelling", () => {
     process.env.VERCEL_PROJECT_PRODUCTION_DOMAIN = "cognia-quest.vercel.app";
     expect(siteUrl()).toBe(PROD_URL);
   });
 
-  it("prefers the explicit override over the Vercel domain", () => {
-    process.env.NEXT_PUBLIC_APP_URL = PROD_URL;
-    process.env.VERCEL_PROJECT_PRODUCTION_DOMAIN = "something-else.vercel.app";
+  it("prefers the Vercel URL over the domain spelling", () => {
+    process.env.VERCEL_PROJECT_PRODUCTION_URL = "cognia-quest.vercel.app";
+    process.env.VERCEL_PROJECT_PRODUCTION_DOMAIN = "ignored.vercel.app";
     expect(siteUrl()).toBe(PROD_URL);
   });
 
   it("normalizes a scheme-prefixed Vercel domain", () => {
-    process.env.VERCEL_PROJECT_PRODUCTION_DOMAIN = "https://cognia-quest.vercel.app";
+    process.env.VERCEL_PROJECT_PRODUCTION_URL = "https://cognia-quest.vercel.app";
     expect(siteUrl()).toBe(PROD_URL);
   });
 
@@ -194,6 +210,39 @@ describe("SEO surfaces stay free of development and competition references", () 
       }
     });
   }
+});
+
+describe("no localhost leaks into production runtime code", () => {
+  const runtimeDirs = ["app", "server", "components", "lib"];
+  const collected: { file: string }[] = [];
+
+  const walk = (dir: string) => {
+    for (const entry of readdirSync(join(repoRoot, dir), { withFileTypes: true })) {
+      if (entry.name.startsWith(".") || entry.name === "node_modules") continue;
+      const full = join(dir, entry.name);
+      if (entry.isDirectory()) walk(full);
+      else if (/\.(ts|tsx|mts|mjs)$/.test(entry.name)) {
+        const src = readFileSync(join(repoRoot, full), "utf8");
+        if (/localhost|127\.0\.0\.1/.test(src)) collected.push({ file: full });
+      }
+    }
+  };
+
+  it("the only localhost default in runtime code is the documented dev fallback in lib/site.ts", () => {
+    for (const dir of runtimeDirs) walk(dir);
+    const offenders = collected.filter((c) => !c.file.replaceAll("\\", "/").startsWith("lib/site.ts"));
+    expect(
+      offenders.map((c) => c.file),
+      "runtime files must not hardcode localhost/127.0.0.1 - route URLs through siteUrl()",
+    ).toEqual([]);
+  });
+
+  it("the auth service builds email redirect links from the central helper, not hardcoded hosts", () => {
+    const src = readFileSync(join(repoRoot, "server", "services", "authService.ts"), "utf8");
+    expect(src).toContain("siteUrl()");
+    expect(src).toContain("emailRedirectTo: `${siteUrl()}/auth/callback`");
+    expect(src).toContain("redirectTo: `${siteUrl()}/auth/callback?next=/reset-password`");
+  });
 });
 
 describe("public pages have unique, complete metadata", () => {
