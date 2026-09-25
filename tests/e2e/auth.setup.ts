@@ -18,6 +18,8 @@ setup("authenticate admin", async ({ page }) => {
   await page.getByLabel("Email").fill("admin@aiquest.dev");
   await page.getByLabel("Password").fill("admin1234");
   await page.getByRole("button", { name: /Log in/i }).click();
-  await expect(page).toHaveURL(/\/(dashboard|admin)/, { timeout: 15000 });
+  // The server decides the destination from the authenticated record:
+  // an admin must land on the admin console, never the student dashboard.
+  await expect(page).toHaveURL(/\/admin/, { timeout: 15000 });
   await page.context().storageState({ path: adminFile });
 });

@@ -1,9 +1,24 @@
 import { describe, it, expect } from "vitest";
 import { freshDb } from "./setup";
-import { registerUser, loginUser } from "@/server/services/authService";
+import { registerUser, loginUser, postLoginPath } from "@/server/services/authService";
 import { completeOnboarding } from "@/server/services/user";
 
 describe("authentication service", () => {
+  it("routes users after login based on the server-side record only", async () => {
+    const db = await freshDb();
+    const r = await registerUser(db, { email: "dest@t.dev", displayName: "Dest", password: "password12" });
+    if (!r.ok) throw new Error("reg failed");
+    // Fresh student → onboarding first.
+    expect(postLoginPath(r.user)).toBe("/onboarding");
+    await completeOnboarding(db, r.user, { learnerType: "explorer", goal: "understand" });
+    const onboarded = await db.table("users").get(r.user.id);
+    expect(postLoginPath(onboarded!)).toBe("/dashboard");
+    // Promoting the server record - the only way to become admin - reroutes.
+    await db.table("users").update(r.user.id, { role: "admin" });
+    const admin = await db.table("users").get(r.user.id);
+    expect(postLoginPath(admin!)).toBe("/admin");
+  });
+
   it("registers, hashes passwords, and rejects duplicates", async () => {
     const db = await freshDb();
     const r = await registerUser(db, { email: "New@Test.dev", displayName: "Newbie", password: "supersecret1" });

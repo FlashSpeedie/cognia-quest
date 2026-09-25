@@ -164,6 +164,17 @@ async function loginSupabase(data: { email: string; password: string }): Promise
   return { ok: true, user };
 }
 
+/**
+ * Post-login destination, decided exclusively from the SERVER-side user
+ * record. Admins land on the console; students go to their dashboard (or
+ * onboarding first). The client never chooses this - the login response
+ * carries the path, and a client-supplied role field is ignored.
+ */
+export function postLoginPath(user: Pick<User, "role" | "onboarding">): string {
+  if (user.role === "admin") return "/admin";
+  return user.onboarding.completed ? "/dashboard" : "/onboarding";
+}
+
 export async function logoutUser(): Promise<void> {
   if (!isSupabaseConfigured()) return; // local route deletes its own session row
   const supabase = await authClientForCookies({ writable: true });

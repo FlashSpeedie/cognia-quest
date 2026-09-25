@@ -23,11 +23,14 @@ export function LoginPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: fd.get("email"), password: fd.get("password") }),
       });
-      const data = (await res.json()) as { error?: string; onboard?: boolean };
+      const data = (await res.json()) as { error?: string; redirect?: string; onboard?: boolean };
       if (!res.ok) {
         setError(data.error ?? "Login failed");
       } else {
-        router.push(data.onboard ? "/onboarding" : "/dashboard");
+        // Server decides where this user belongs (admin -> /admin, student
+        // -> /dashboard, new user -> /onboarding). Falls back for older
+        // server builds that don't send `redirect`.
+        router.push(data.redirect ?? (data.onboard ? "/onboarding" : "/dashboard"));
         router.refresh();
       }
     } catch {

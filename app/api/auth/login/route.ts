@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { getDb } from "@/server/db/db";
-import { loginUser, loginSchema } from "@/server/services/authService";
+import { loginUser, loginSchema, postLoginPath } from "@/server/services/authService";
 import { createSession, SESSION_COOKIE } from "@/server/auth/session";
 import { isSupabaseConfigured } from "@/lib/env";
 import { json, parseBody, throttle } from "@/server/http";
@@ -16,9 +16,12 @@ export async function POST(req: Request) {
   const result = await loginUser(db, parsed.data);
   if (!result.ok) return json({ error: result.error }, 401);
 
+  // Destination is computed from the server-side user record only.
+  const redirect = postLoginPath(result.user);
+
   if (isSupabaseConfigured()) {
     // Session cookies were written by the Supabase Auth sign-in above.
-    return json({ ok: true, onboard: result.user.onboarding.completed ? false : true });
+    return json({ ok: true, onboard: !result.user.onboarding.completed, redirect });
   }
 
   const cookie = await createSession(result.user.id);
@@ -30,5 +33,5 @@ export async function POST(req: Request) {
     path: "/",
     maxAge: 60 * 60 * 24 * 30,
   });
-  return json({ ok: true, onboard: result.user.onboarding.completed ? false : true });
+  return json({ ok: true, onboard: !result.user.onboarding.completed, redirect });
 }
