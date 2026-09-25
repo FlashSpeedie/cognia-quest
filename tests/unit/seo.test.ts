@@ -70,7 +70,12 @@ describe("siteUrl resolution", () => {
     expect(siteUrl()).toBe(PROD_URL);
   });
 
-  it("uses localhost only when no deployment env is present", () => {
+  it("resolves the canonical production origin when no env is present", () => {
+    expect(siteUrl()).toBe(PROD_URL);
+  });
+
+  it("local development intentionally opts into localhost via the explicit env alias", () => {
+    process.env.NEXT_PUBLIC_APP_URL = "http://localhost:3000";
     expect(siteUrl()).toBe("http://localhost:3000");
   });
 });
