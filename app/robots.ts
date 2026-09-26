@@ -20,6 +20,8 @@ const AUTHENTICATED_AREAS = [
   "/detective",
   "/ethics",
   "/final-challenge",
+  "/glossary",
+  "/careers",
 ] as const;
 
 export default function robots(): MetadataRoute.Robots {

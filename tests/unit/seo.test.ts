@@ -159,6 +159,11 @@ describe("sitemap", () => {
       "/academy",
       "/missions",
       "/lab",
+      "/detective",
+      "/ethics",
+      "/final-challenge",
+      "/glossary",
+      "/careers",
       "/settings",
       "/profile",
     ]) {
@@ -181,7 +186,20 @@ describe("robots.txt", () => {
       Array.isArray(rule.userAgent) ? rule.userAgent.includes("*") : rule.userAgent === "*",
     )!;
     expect(star.allow).toContain("/");
-    for (const blocked of ["/admin", "/api", "/auth", "/dashboard", "/academy"]) {
+    for (const blocked of [
+      "/admin",
+      "/api",
+      "/auth",
+      "/dashboard",
+      "/academy",
+      "/missions",
+      "/lab",
+      "/detective",
+      "/ethics",
+      "/final-challenge",
+      "/glossary",
+      "/careers",
+    ]) {
       expect(star.disallow).toContain(blocked);
     }
   });
@@ -196,6 +214,38 @@ describe("robots.txt", () => {
     for (const open of ["/about", "/preview", "/privacy", "/login", "/register", "/forgot-password", "/reset-password"]) {
       expect(star.disallow).not.toContain(open);
     }
+  });
+});
+
+describe("public/ mirrors stay in sync with the generated routes", () => {
+  const read = (rel: string) => readFileSync(join(repoRoot, rel), "utf8");
+
+  it("public/robots.txt mirrors the production robots route policy", () => {
+    process.env.NEXT_PUBLIC_APP_URL = PROD_URL;
+    const r = robots();
+    const rules = Array.isArray(r.rules) ? r.rules : r.rules ? [r.rules] : [];
+    const star = rules.find((rule: { userAgent?: string | string[] }) =>
+      Array.isArray(rule.userAgent) ? rule.userAgent.includes("*") : rule.userAgent === "*",
+    )!;
+    const file = read("public/robots.txt");
+    expect(file).toContain("User-Agent: *");
+    expect(file).toContain("Allow: /");
+    for (const blocked of star.disallow as readonly string[]) {
+      expect(file, `public/robots.txt must disallow ${blocked}`).toContain(`Disallow: ${blocked}`);
+    }
+    expect(file).toContain(`Sitemap: ${PROD_URL}/sitemap.xml`);
+    expect(file).not.toMatch(/localhost|127\.0\.0\.1/);
+  });
+
+  it("public/sitemap.xml mirrors the production sitemap route URLs", () => {
+    process.env.NEXT_PUBLIC_APP_URL = PROD_URL;
+    const expected = sitemap().map((e) => e.url).sort();
+    const file = read("public/sitemap.xml");
+    const locs = [...file.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]!.trim());
+    expect(locs.sort()).toEqual(expected);
+    expect(new Set(locs).size).toBe(locs.length);
+    expect(file).not.toMatch(/localhost|127\.0\.0\.1/);
+    expect(file).toContain('xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"');
   });
 });
 
@@ -248,6 +298,8 @@ const seoSurfaces = [
   "app/privacy/page.tsx",
   "public/llms.txt",
   "public/manifest.webmanifest",
+  "public/robots.txt",
+  "public/sitemap.xml",
 ].map((p) => join(repoRoot, p));
 
 describe("SEO surfaces stay free of development and competition references", () => {

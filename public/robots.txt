@@ -1,0 +1,24 @@
+User-Agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /api
+Disallow: /auth
+Disallow: /onboarding
+Disallow: /settings
+Disallow: /profile
+Disallow: /progress
+Disallow: /achievements
+Disallow: /certificate
+Disallow: /leaderboard
+Disallow: /map
+Disallow: /academy
+Disallow: /missions
+Disallow: /lab
+Disallow: /detective
+Disallow: /ethics
+Disallow: /final-challenge
+Disallow: /glossary
+Disallow: /careers
+
+Sitemap: https://cognia-quest.vercel.app/sitemap.xml
