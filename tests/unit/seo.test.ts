@@ -19,6 +19,7 @@ const envKeys = [
   "NEXT_PUBLIC_APP_URL",
   "VERCEL_PROJECT_PRODUCTION_URL",
   "VERCEL_PROJECT_PRODUCTION_DOMAIN",
+  "VERCEL_ENV",
 ] as const;
 let saved: Record<string, string | undefined> = {};
 
@@ -77,6 +78,51 @@ describe("siteUrl resolution", () => {
   it("local development intentionally opts into localhost via the explicit env alias", () => {
     process.env.NEXT_PUBLIC_APP_URL = "http://localhost:3000";
     expect(siteUrl()).toBe("http://localhost:3000");
+  });
+
+  it("never resolves a loopback override to localhost on a Vercel production build", () => {
+    process.env.VERCEL_ENV = "production";
+    process.env.NEXT_PUBLIC_SITE_URL = "http://localhost:3000";
+    process.env.NEXT_PUBLIC_APP_URL = "http://localhost:3000";
+    expect(siteUrl()).toBe(PROD_URL);
+  });
+
+  it("ignores a 127.0.0.1 override on Vercel preview builds too", () => {
+    process.env.VERCEL_ENV = "preview";
+    process.env.NEXT_PUBLIC_SITE_URL = "http://127.0.0.1:3000";
+    expect(siteUrl()).toBe(PROD_URL);
+  });
+
+  it("still honors a non-loopback explicit override on Vercel (custom domain)", () => {
+    process.env.VERCEL_ENV = "production";
+    process.env.NEXT_PUBLIC_SITE_URL = "https://custom.example.com";
+    expect(siteUrl()).toBe("https://custom.example.com");
+  });
+});
+
+describe("auth + SEO surfaces under a misconfigured localhost env var on Vercel", () => {
+  beforeEach(() => {
+    process.env.VERCEL_ENV = "production";
+    process.env.NEXT_PUBLIC_SITE_URL = "http://localhost:3000";
+  });
+
+  it("signup confirmation and password-reset email redirects use the production origin", () => {
+    expect(`${siteUrl()}/auth/callback`).toBe(`${PROD_URL}/auth/callback`);
+    expect(`${siteUrl()}/auth/callback?next=/reset-password`).toBe(`${PROD_URL}/auth/callback?next=/reset-password`);
+  });
+
+  it("robots.txt references the production sitemap", () => {
+    expect(robots().sitemap).toBe(`${PROD_URL}/sitemap.xml`);
+  });
+
+  it("the sitemap emits only production URLs", () => {
+    const urls = sitemap().map((e) => e.url);
+    expect(urls).toEqual([`${PROD_URL}/`, `${PROD_URL}/about`, `${PROD_URL}/preview`, `${PROD_URL}/privacy`]);
+  });
+
+  it("canonical metadata points at the production origin", () => {
+    const meta = pageMetadata({ title: "About", description: "d", path: "/about" });
+    expect(meta.alternates?.canonical).toBe(`${PROD_URL}/about`);
   });
 });
 
