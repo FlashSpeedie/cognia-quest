@@ -90,6 +90,7 @@ const profileB = { ...profileA, id: b.id, email: credsB.email, displayName: "RLS
 await seed("users", profileA);
 await seed("users", profileB);
 await seed("xp_events", { id: `rls-${stamp}`, userId: a.id, amount: 10, sourceType: "lesson", sourceId: "rls", day: "2026-01-01", createdAt: new Date().toISOString() });
+await seed("academy_module_results", { id: `rls-amr-${stamp}`, userId: a.id, moduleId: "module-1", bestScore: 90, passed: true, attempts: 1, passedAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
 
 // 1. A reads own profile
 {
@@ -110,6 +111,29 @@ await seed("xp_events", { id: `rls-${stamp}`, userId: a.id, amount: 10, sourceTy
 {
   const r = await rest(jwtA, `xp_events?select=data&data->>userId=eq.${a.id}`);
   check("A reads own xp_events", r.status === 200 && Array.isArray(r.body) && r.body.length === 1);
+}
+// 3c. Academy module results: private per student (same posture as lesson_progress)
+{
+  const r = await rest(jwtA, `academy_module_results?select=data&data->>userId=eq.${a.id}`);
+  check("A reads own academy_module_results", r.status === 200 && Array.isArray(r.body) && r.body.length === 1);
+  const r2 = await rest(jwtB, `academy_module_results?select=data&data->>userId=eq.${a.id}`);
+  check("B cannot read A's academy_module_results", r2.status === 200 && Array.isArray(r2.body) && r2.body.length === 0);
+}
+// 3d. A cannot forge a module result (no client write path)
+{
+  const r = await rest(jwtA, `academy_module_results`, {
+    method: "POST",
+    body: JSON.stringify({ data: { id: "forged-amr", userId: a.id, moduleId: "module-1", bestScore: 100, passed: true, attempts: 1, updatedAt: new Date().toISOString() } }),
+  });
+  check("A cannot INSERT academy_module_results (forged result rejected)", r.status === 401 || r.status === 403 || (r.status === 400 && JSON.stringify(r.body).includes("row-level security")));
+  const r2 = await rest(jwtA, `academy_module_results?data->>id=eq.rls-amr-${stamp}`, {
+    method: "PATCH",
+    body: JSON.stringify({ data: { id: `rls-amr-${stamp}`, userId: a.id, moduleId: "module-1", bestScore: 100, passed: true, attempts: 1, updatedAt: new Date().toISOString() } }),
+  });
+  check("A cannot UPDATE academy_module_results", r2.status === 401 || r2.status === 403 || r2.status === 404 || r2.status === 405);
+  const verify = await rest(jwtA, `academy_module_results?select=data&data->>id=eq.rls-amr-${stamp}`);
+  const unchanged = Array.isArray(verify.body) && verify.body.length === 1 && (verify.body[0] as { data: { bestScore?: number } }).data.bestScore === 90;
+  check("A's academy result unchanged after attack", unchanged);
 }
 // 4. A tries to insert a fake XP event
 {
@@ -134,6 +158,8 @@ await seed("xp_events", { id: `rls-${stamp}`, userId: a.id, amount: 10, sourceTy
 {
   const r = await rest(pub!, `users?select=data&limit=5`);
   check("anonymous cannot read users", (Array.isArray(r.body) && r.body.length === 0) || r.status === 401 || r.status === 403);
+  const r2 = await rest(pub!, `academy_module_results?select=data&limit=5`);
+  check("anonymous cannot read academy results", (Array.isArray(r2.body) && r2.body.length === 0) || r2.status === 401 || r2.status === 403, `status=${r2.status}`);
 }
 
 console.log(failures === 0 ? "\nRLS VERIFY: ALL PASS" : `\nRLS VERIFY: ${failures} FAILURES`);

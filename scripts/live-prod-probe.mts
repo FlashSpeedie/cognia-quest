@@ -62,7 +62,7 @@ async function ensureAccount(emailAddr: string, pw: string) {
 //    Public-signup itself was already proven: earlier probe returned 201
 //    {"ok":true,"confirmEmail":true} for a fresh address, correctly starting
 //    the email-confirmation flow that real production requires.
-await ensureAccount(email, password);
+const probeId = await ensureAccount(email, password);
 const login0 = await fetch("http://localhost:3220/api/auth/login", {
   method: "POST",
   headers: { "content-type": "application/json" },
@@ -151,6 +151,86 @@ ok("coach returns real feedback + deterministic score intact", coach.ok && typeo
 // ── 10. demo isolation is real in production mode ───────────────────────
 const demo = await fetch("http://localhost:3220/api/auth/demo", { method: "POST" });
 ok("demo login disabled in production", demo.status === 404, `status=${demo.status}`);
+
+// ── 11. Academy (Module 1) against the real database ─────────────────────
+// academy_module_results powers the module test; before migration 0004 these
+// requests crashed with "Could not find the table ... in the schema cache".
+{
+  const h = await fetch("http://localhost:3220/academy-new", { headers: { cookie: cookies3 } });
+  ok("academy home renders for a signed-in student", h.status === 200, `status=${h.status}`);
+
+  const m = await fetch("http://localhost:3220/academy-new/module/1", { headers: { cookie: cookies3 } });
+  const mBody = await m.text();
+  ok("module 1 overview renders (module result read OK)", m.status === 200 && !mBody.includes("Something went wrong"), `status=${m.status}`);
+
+  const l = await fetch("http://localhost:3220/academy-new/module/1/lesson/welcome-to-machine-learning", { headers: { cookie: cookies3 } });
+  ok("lesson page renders", l.status === 200, `status=${l.status}`);
+
+  const t = await fetch("http://localhost:3220/academy-new/module/1/test", { headers: { cookie: cookies3 } });
+  ok("module test page renders", t.status === 200, `status=${t.status}`);
+
+  // Free response: the flow whose stack trace surfaced the missing table.
+  const fr = await fetch("http://localhost:3220/api/academy/free-response", {
+    method: "POST",
+    headers: { "content-type": "application/json", cookie: cookies3 },
+    body: JSON.stringify({
+      lessonId: "m1-l1",
+      response:
+        "A machine learns by finding patterns in examples rather than following rules someone wrote by hand. " +
+        "My music app probably learned from data about what I listen to and skip, so it can predict and recommend new songs I will like.",
+    }),
+  });
+  const frBody = await fr.json().catch(() => ({}));
+  ok("free response submits + returns feedback", fr.ok && typeof frBody?.feedback?.score === "number", `status=${fr.status}`);
+
+  // Module test with perfect answers, straight from the repo content.
+  const { MODULE_TEST } = await import("@/content/academy/module-1/module-test");
+  const answers = MODULE_TEST.questions.map((q) => (q.kind === "mcq" ? [q.correct] : [...q.correct]));
+  const submit = (cookie: string) =>
+    fetch("http://localhost:3220/api/academy/quiz", {
+      method: "POST",
+      headers: { "content-type": "application/json", cookie },
+      body: JSON.stringify({ quizId: MODULE_TEST.id, answers }),
+    });
+  const t1 = await (await submit(cookies3)).json().catch(() => ({}));
+  ok("module test graded + passed + XP awarded", t1?.ok === true && t1?.passed === true && t1?.pct === 100 && (t1?.xp?.awarded ?? 0) > 0, `pct=${t1?.pct} xp=${t1?.xp?.awarded}`);
+
+  // Retake: same content again - best score kept, attempts tracked, no new row.
+  const t2 = await (await submit(cookies3)).json().catch(() => ({}));
+  ok("module test retake tracks attempts without resetting best", t2?.ok === true && t2?.bestScore === 100 && t2?.attempts === 2, `best=${t2?.bestScore} attempts=${t2?.attempts}`);
+
+  // Server-side truth: exactly ONE result row for this student, bestScore 100.
+  const { createClient: createAdmin } = await import("@supabase/supabase-js");
+  const adminClient = createAdmin(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SECRET_KEY!, { auth: { persistSession: false } });
+  const { data: rows } = await adminClient.from("academy_module_results").select("data").eq("data->>userId", probeId);
+  const row = (rows ?? [])[0] as { data: { bestScore?: number; passed?: boolean; attempts?: number } } | undefined;
+  ok("exactly one persisted module result row (no duplicates)", (rows ?? []).length === 1 && row?.data?.bestScore === 100 && row?.data?.passed === true, `rows=${(rows ?? []).length}`);
+
+  // Sign out / sign in: a fresh session still sees the result on the overview.
+  await fetch("http://localhost:3220/api/auth/logout", { method: "POST", headers: { cookie: cookies3 } });
+  const login4 = await fetch("http://localhost:3220/api/auth/login", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
+  const cookies4 = (login4.headers.getSetCookie?.() ?? []).map((c) => c.split(";")[0]).join("; ");
+  const m2 = await fetch("http://localhost:3220/academy-new/module/1", { headers: { cookie: cookies4 } });
+  const m2Body = await m2.text();
+  ok("re-login still shows the stored module result", m2.status === 200 && m2Body.includes("module test passed"), `status=${m2.status}`);
+
+  // Another student must not see this result anywhere on their own view.
+  const emailB = process.env.PROBE_EMAIL_B ?? "final-live-b@outlook.com";
+  await ensureAccount(emailB, password);
+  const loginB = await fetch("http://localhost:3220/api/auth/login", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ email: emailB, password }),
+  });
+  const cookiesB = (loginB.headers.getSetCookie?.() ?? []).map((c) => c.split(";")[0]).join("; ");
+  const mB = await fetch("http://localhost:3220/academy-new/module/1", { headers: { cookie: cookiesB } });
+  const mBBody = await mB.text();
+  ok("another student sees no trace of the first result", mB.status === 200 && !mBBody.includes("module test passed") && !mBBody.includes("best: 100%"), `status=${mB.status}`);
+}
 
 console.log(failures === 0 ? "\nLIVE PRODUCTION PROBE: ALL PASS" : `\n${failures} LIVE FAILURE(S)`);
 srv.kill();

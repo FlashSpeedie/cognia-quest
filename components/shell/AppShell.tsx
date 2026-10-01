@@ -57,7 +57,7 @@ const NAV: { href: string; label: string; icon: IconName }[] = [
   { href: "/map", label: "Quest Map", icon: "network" },
 ];
 
-const MOBILE_NAV = NAV.filter((n) => ["/dashboard", "/academy", "/lab", "/detective", "/missions"].includes(n.href));
+const MOBILE_NAV = NAV.filter((n) => ["/dashboard", "/academy-new", "/lab", "/detective", "/missions"].includes(n.href));
 
 export function AppShell({
   user,
