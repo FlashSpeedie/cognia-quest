@@ -41,6 +41,9 @@ export function PublicNav({ demoEnabled = false }: { demoEnabled?: boolean }) {
           <BrandLogo />
         </Link>
         <div className="hidden items-center gap-8 text-sm font-medium text-ink-dim md:flex">
+          <Link href="/academy-new" className="transition-colors hover:text-ink focus-ring rounded px-1 py-2">
+            Academy
+          </Link>
           <Link href="/about" className="transition-colors hover:text-ink focus-ring rounded px-1 py-2">
             How it works
           </Link>

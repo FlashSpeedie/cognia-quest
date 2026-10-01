@@ -111,8 +111,8 @@ export default function LandingPage() {
               <LinkButton href="/register" size="lg">
                 Start learning
               </LinkButton>
-              <LinkButton href="/preview" variant="secondary" size="lg">
-                Explore the learning path
+              <LinkButton href="/academy-new" variant="secondary" size="lg">
+                Explore the Academy
               </LinkButton>
             </div>
             {demo && (

@@ -26,6 +26,7 @@ const EMPTY: StoreShape = {
   activity: [],
   notifications: [],
   final_results: [],
+  academy_module_results: [],
   audit_log: [],
 };
 

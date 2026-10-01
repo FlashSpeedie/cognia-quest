@@ -192,6 +192,24 @@ export interface FinalResult {
   completedAt: string;
 }
 
+// ── Academy module assessment ────────────────────────────────────────────
+/**
+ * One row per (user, module) for the public Academy module tests.
+ * Kept separate from lesson_progress because a module assessment has a
+ * different shape: best score, attempts, and a pass/fail mastery decision
+ * rather than a per-section checklist.
+ */
+export interface AcademyModuleResult {
+  id: string; // `${userId}:${moduleId}`
+  userId: string;
+  moduleId: string; // e.g. "module-1"
+  bestScore: number; // best attempt % 0-100
+  passed: boolean; // bestScore reached the module's mastery threshold
+  attempts: number;
+  passedAt: string | null;
+  updatedAt: string;
+}
+
 // ── Admin / audit ───────────────────────────────────────────────────────
 export interface AuditEntry {
   id: string;
@@ -218,6 +236,7 @@ export interface Schema {
   activity: ActivityItem;
   notifications: AppNotification;
   final_results: FinalResult;
+  academy_module_results: AcademyModuleResult;
   audit_log: AuditEntry;
 }
 

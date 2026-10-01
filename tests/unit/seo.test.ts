@@ -117,7 +117,24 @@ describe("auth + SEO surfaces under a misconfigured localhost env var on Vercel"
 
   it("the sitemap emits only production URLs", () => {
     const urls = sitemap().map((e) => e.url);
-    expect(urls).toEqual([`${PROD_URL}/`, `${PROD_URL}/about`, `${PROD_URL}/preview`, `${PROD_URL}/privacy`]);
+    expect(urls).toEqual([
+      `${PROD_URL}/`,
+      `${PROD_URL}/about`,
+      `${PROD_URL}/preview`,
+      `${PROD_URL}/privacy`,
+      `${PROD_URL}/academy-new`,
+      `${PROD_URL}/academy-new/module/1`,
+      `${PROD_URL}/academy-new/module/1/test`,
+      `${PROD_URL}/academy-new/references`,
+      `${PROD_URL}/academy-new/module/1/lesson/welcome-to-machine-learning`,
+      `${PROD_URL}/academy-new/module/1/lesson/the-ml-roadmap`,
+      `${PROD_URL}/academy-new/module/1/lesson/supervised-vs-unsupervised`,
+      `${PROD_URL}/academy-new/module/1/lesson/regression-vs-classification`,
+      `${PROD_URL}/academy-new/module/1/lesson/how-do-we-know-a-model-is-working`,
+      `${PROD_URL}/academy-new/module/1/lesson/training-validation-and-testing`,
+      `${PROD_URL}/academy-new/module/1/lesson/bias-and-variance`,
+      `${PROD_URL}/academy-new/module/1/lesson/overfitting-and-generalization`,
+    ]);
   });
 
   it("canonical metadata points at the production origin", () => {
@@ -130,7 +147,19 @@ describe("sitemap", () => {
   it("contains exactly the public pages on the production host", () => {
     process.env.NEXT_PUBLIC_APP_URL = PROD_URL;
     const urls = sitemap().map((e) => e.url);
-    expect(urls).toEqual([`${PROD_URL}/`, `${PROD_URL}/about`, `${PROD_URL}/preview`, `${PROD_URL}/privacy`]);
+    expect(urls.slice(0, 8)).toEqual([
+      `${PROD_URL}/`,
+      `${PROD_URL}/about`,
+      `${PROD_URL}/preview`,
+      `${PROD_URL}/privacy`,
+      `${PROD_URL}/academy-new`,
+      `${PROD_URL}/academy-new/module/1`,
+      `${PROD_URL}/academy-new/module/1/test`,
+      `${PROD_URL}/academy-new/references`,
+    ]);
+    // The 8 Academy lesson pages round out the list.
+    expect(urls).toHaveLength(16);
+    expect(urls.filter((u) => u.includes("/lesson/"))).toHaveLength(8);
   });
 
   it("never emits localhost or preview URLs when deployed", () => {
@@ -145,9 +174,9 @@ describe("sitemap", () => {
 
   it("contains no private or utility routes", () => {
     process.env.NEXT_PUBLIC_APP_URL = PROD_URL;
-    const joined = sitemap()
-      .map((e) => e.url)
-      .join(" ");
+    // Exact path comparison - a plain substring check would wrongly reject
+    // the public /academy-new area because /academy is a blocked prefix.
+    const paths = sitemap().map((e) => new URL(e.url).pathname);
     for (const forbidden of [
       "/admin",
       "/api",
@@ -167,7 +196,7 @@ describe("sitemap", () => {
       "/settings",
       "/profile",
     ]) {
-      expect(joined).not.toContain(forbidden);
+      expect(paths.some((p) => p === forbidden || p.startsWith(`${forbidden}/`)), `${forbidden} must stay out of the sitemap`).toBe(false);
     }
   });
 });
@@ -211,9 +240,23 @@ describe("robots.txt", () => {
     const star = rules.find((rule: { userAgent?: string | string[] }) =>
       Array.isArray(rule.userAgent) ? rule.userAgent.includes("*") : rule.userAgent === "*",
     )!;
-    for (const open of ["/about", "/preview", "/privacy", "/login", "/register", "/forgot-password", "/reset-password"]) {
+    for (const open of ["/about", "/preview", "/privacy", "/login", "/register", "/forgot-password", "/reset-password", "/academy-new"]) {
       expect(star.disallow).not.toContain(open);
     }
+  });
+
+  it("explicitly allows the public Academy area even though /academy is blocked by prefix", () => {
+    process.env.NEXT_PUBLIC_APP_URL = PROD_URL;
+    const r = robots();
+    const rules = Array.isArray(r.rules) ? r.rules : r.rules ? [r.rules] : [];
+    const star = rules.find((rule: { userAgent?: string | string[] }) =>
+      Array.isArray(rule.userAgent) ? rule.userAgent.includes("*") : rule.userAgent === "*",
+    )!;
+    const allow = Array.isArray(star.allow) ? star.allow : [star.allow ?? "/"];
+    // Longest-prefix wins: the /academy-new allow rule out-specifies the
+    // /academy disallow rule, keeping the public Academy crawlable.
+    expect(allow).toContain("/academy-new");
+    expect(star.disallow).toContain("/academy");
   });
 });
 

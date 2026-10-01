@@ -29,7 +29,9 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: "*",
-        allow: "/",
+        // Longest-prefix wins: /academy-new is public and crawlable even
+        // though the authenticated /academy area is blocked.
+        allow: ["/", "/academy-new"],
         disallow: [...AUTHENTICATED_AREAS],
       },
     ],
