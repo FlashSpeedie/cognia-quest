@@ -201,20 +201,6 @@ export default async function AcademyHome() {
           </div>
         </div>
       </section>
-
-      {/* ── Upcoming ── */}
-      <section aria-labelledby="upcoming-heading" className="mt-10">
-        <h2 id="upcoming-heading" className="font-display text-xl font-bold text-ink">
-          Coming next
-        </h2>
-        <div className="mt-4 rounded-2xl border border-dashed border-void-700 bg-void-850 px-6 py-5">
-          <p className="text-sm font-semibold text-ink-dim">Module 2 — hands-on machine learning</p>
-          <p className="mt-1.5 text-sm text-ink-faint">
-            Upcoming. Module 1 stays the starting point: master these foundations first and the
-            practice-based modules that follow will land on solid ground.
-          </p>
-        </div>
-      </section>
     </div>
   );
 }

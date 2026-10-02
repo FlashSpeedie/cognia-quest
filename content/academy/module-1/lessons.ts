@@ -28,7 +28,15 @@ export function lessonById(id: string): AcademyLesson | null {
   return LESSONS.find((l) => l.meta.id === id) ?? null;
 }
 
-/** Flat checkpoint list for a lesson (used by the progress service). */
+/** Flat checkpoint list for a lesson, in video order (used by the player + progress service). */
 export function checkpointsOf(lesson: AcademyLesson) {
-  return lesson.blocks.flatMap((b) => (b.kind === "checkpoint" ? [b.checkpoint] : []));
+  return [...lesson.checkpoints].sort((a, b) => a.timestampSeconds - b.timestampSeconds);
+}
+
+/**
+ * Every section id the progress service accepts as a markable step:
+ * the required completion steps plus optional enrichment interactions.
+ */
+export function markableStepIds(lesson: AcademyLesson): string[] {
+  return [...lesson.requiredSectionIds, ...lesson.optionalSectionIds];
 }

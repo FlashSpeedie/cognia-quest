@@ -69,7 +69,7 @@ export default async function ModuleOverviewPage({ params }: { params: Promise<{
   return (
     <div>
       <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-ink-faint">
-        <a href="/academy-new" className="hover:text-ink focus-ring rounded">Academy</a>
+        <a href="/academy-new" className="hover:text-ink focus-ring rounded">Academy (New)</a>
         <span aria-hidden="true">/</span>
         <span className="text-pulse-700 dark:text-pulse-300">Module 1</span>
       </nav>
@@ -177,7 +177,12 @@ export default async function ModuleOverviewPage({ params }: { params: Promise<{
                     </span>
                     <span className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-ink-faint">
                       <span>{l.meta.minutes} min</span>
-                      <span className="font-mono">video {formatSegment(l.meta.segment.start, l.meta.segment.end)}</span>
+                      <span className="font-mono">
+                        video{" "}
+                        {l.video.segments.length > 1
+                          ? `${l.video.segments.length} segments`
+                          : formatSegment(l.video.segments[0]?.startSeconds ?? 0, l.video.segments[0]?.endSeconds ?? 0)}
+                      </span>
                       {user && row && row.sectionsDone.length > 0 && (
                         <span>
                           {stepsPct}% of steps

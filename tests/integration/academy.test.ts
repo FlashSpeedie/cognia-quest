@@ -54,13 +54,16 @@ describe("academy section tracking", () => {
     const db = await freshDb();
     const user = await makeUser(db);
 
-    // Everything except the quiz.
-    for (const id of ["m1-l1-cp1", "m1-l1-cp2", "m1-l1-cp3", "m1-l1-activity", "m1-l1-freeresponse"]) {
-      await recordAcademySection(db, user, "m1-l1", id);
+    // Everything except the quiz: checkpoints + all four FRQs.
+    for (const cp of L1.checkpoints) {
+      await recordAcademySection(db, user, L1.meta.id, cp.id);
     }
-    let row = await db.table("lesson_progress").get(`${user.id}:m1-l1`);
+    for (const frq of L1.freeResponses) {
+      await recordAcademySection(db, user, L1.meta.id, frq.id);
+    }
+    let row = await db.table("lesson_progress").get(`${user.id}:${L1.meta.id}`);
     expect(row?.status).toBe("in_progress");
-    expect(row?.sectionsDone).toHaveLength(5);
+    expect(row?.sectionsDone).toHaveLength(L1.checkpoints.length + L1.freeResponses.length);
 
     // Passing quiz (>= 50%) completes the lesson and banks 50 XP once.
     const quiz = LESSON_QUIZZES.find((q) => q.id === "quiz-m1-l1")!;
@@ -68,16 +71,28 @@ describe("academy section tracking", () => {
     expect(pass.ok).toBe(true);
     expect(pass.lessonXp?.awarded).toBe(50);
 
-    row = await db.table("lesson_progress").get(`${user.id}:m1-l1`);
+    row = await db.table("lesson_progress").get(`${user.id}:${L1.meta.id}`);
     expect(row?.status).toBe("completed");
     expect(row?.quizBest).toBe(100);
 
     // Re-recording sections after completion never re-awards XP.
-    const again = await recordAcademySection(db, user, "m1-l1", "m1-l1-cp1");
+    const again = await recordAcademySection(db, user, L1.meta.id, L1.checkpoints[0]!.id);
     expect(again.ok).toBe(true);
     expect(again.lessonXp ?? null).toBeNull();
     const u = await db.table("users").get(user.id);
     expect(u!.xpTotal).toBe(50 + (pass.xp?.awarded ?? 0));
+  });
+
+  it("optional enrichment steps never gate completion and reject unknown ids", async () => {
+    const db = await freshDb();
+    const user = await makeUser(db);
+    // The activity is accepted (markable) but is NOT required for completion.
+    const act = await recordAcademySection(db, user, L1.meta.id, `${L1.meta.id}-activity`);
+    expect(act.ok).toBe(true);
+    expect(act.completed).toBe(false);
+    // Stale/unknown step ids are still rejected.
+    const bad = await recordAcademySection(db, user, L1.meta.id, `${L1.meta.id}-freeresponse`);
+    expect(bad.ok).toBe(false);
   });
 
   it("a below-50% quiz does NOT complete the lesson", async () => {
@@ -97,9 +112,13 @@ describe("academy section tracking", () => {
   it("tracks the best quiz score across retries without re-awarding lesson XP", async () => {
     const db = await freshDb();
     const user = await makeUser(db);
+    const lesson2 = LESSONS.find((l) => l.meta.id === "m1-l2")!;
     const quiz = LESSON_QUIZZES.find((q) => q.id === "quiz-m1-l2")!;
-    for (const id of ["m1-l2-cp1", "m1-l2-cp2", "m1-l2-cp3", "m1-l2-activity", "m1-l2-freeresponse"]) {
-      await recordAcademySection(db, user, "m1-l2", id);
+    for (const cp of lesson2.checkpoints) {
+      await recordAcademySection(db, user, lesson2.meta.id, cp.id);
+    }
+    for (const frq of lesson2.freeResponses) {
+      await recordAcademySection(db, user, lesson2.meta.id, frq.id);
     }
     // First attempt passes (5/6) - completing the lesson banks the 50 XP here.
     const bad = await submitAcademyQuiz(db, user, quiz.id, wrongAnswers(quiz.questions));
@@ -207,9 +226,12 @@ describe("module test", () => {
   it("module mastery rises with lessons + test score", async () => {
     const db = await freshDb();
     const user = await makeUser(db);
-    // Complete lesson 1 fully (sections + perfect quiz).
-    for (const id of ["m1-l1-cp1", "m1-l1-cp2", "m1-l1-cp3", "m1-l1-activity", "m1-l1-freeresponse"]) {
-      await recordAcademySection(db, user, "m1-l1", id);
+    // Complete lesson 1 fully (checkpoints + FRQs + perfect quiz).
+    for (const cp of L1.checkpoints) {
+      await recordAcademySection(db, user, L1.meta.id, cp.id);
+    }
+    for (const frq of L1.freeResponses) {
+      await recordAcademySection(db, user, L1.meta.id, frq.id);
     }
     const quiz = LESSON_QUIZZES.find((q) => q.id === "quiz-m1-l1")!;
     await submitAcademyQuiz(db, user, quiz.id, perfectAnswers(quiz.questions));

@@ -9,19 +9,21 @@ import { LESSONS } from "./lessons";
  * invented here.
  */
 
-function segmentLabel(start: number, end: number): string {
-  const fmt = (s: number) => {
-    const h = Math.floor(s / 3600);
-    const m = Math.floor((s % 3600) / 60);
-    const sec = s % 60;
-    return h > 0
-      ? `${h}:${String(m).padStart(2, "0")}:${String(sec).padStart(2, "0")}`
-      : `${m}:${String(sec).padStart(2, "0")}`;
-  };
+function fmt(s: number): string {
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const sec = s % 60;
+  return h > 0
+    ? `${h}:${String(m).padStart(2, "0")}:${String(sec).padStart(2, "0")}`
+    : `${m}:${String(sec).padStart(2, "0")}`;
+}
+
+/** Human-readable range like "50:01–52:23". */
+export function segmentRange(start: number, end: number): string {
   return `${fmt(start)}\u2013${fmt(end)}`;
 }
 
-/** Module-level primary source plus per-lesson segment citations. */
+/** Module-level primary source plus every lesson's segment citations. */
 export function moduleReferences(): ReferenceEntry[] {
   const v = MODULE_1.source;
   const primary: ReferenceEntry = {
@@ -32,22 +34,24 @@ export function moduleReferences(): ReferenceEntry[] {
     creator: `${v.creator} - original course creator, distributed through freeCodeCamp.org`,
     platform: v.platform,
     url: v.url,
-    detail: "Chapters 1-5 (00:00-1:41:03) - externally hosted by the original publisher",
+    detail: "Chapters 1-5 - externally hosted by the original publisher",
   };
 
-  const lessonRefs: ReferenceEntry[] = LESSONS.map((l) => ({
-    id: `ref-${l.meta.id}`,
-    kind: "primary" as const,
-    label: `Lesson ${l.meta.order} video segment`,
-    title: l.meta.title,
-    creator: v.creator,
-    platform: v.platform,
-    url: v.url,
-    detail: `Chapter ${l.meta.segment.chapter} - ${l.meta.segment.chapterTitle} (${segmentLabel(
-      l.meta.segment.start,
-      l.meta.segment.end,
-    )})`,
-  }));
+  const lessonRefs: ReferenceEntry[] = LESSONS.flatMap((l) =>
+    l.video.segments.map((seg, i) => ({
+      id: `ref-${seg.id}`,
+      kind: "primary" as const,
+      label:
+        l.video.segments.length > 1
+          ? `Lesson ${l.meta.order} video segment ${i + 1} of ${l.video.segments.length}`
+          : `Lesson ${l.meta.order} video segment`,
+      title: `${seg.label} (${l.meta.title})`,
+      creator: v.creator,
+      platform: v.platform,
+      url: v.url,
+      detail: `${seg.chapter} (${segmentRange(seg.startSeconds, seg.endSeconds)})`,
+    })),
+  );
 
   return [primary, ...lessonRefs];
 }
@@ -66,14 +70,18 @@ export function lessonReferences(lessonId: string): ReferenceEntry[] {
       creator: v.creator,
       platform: v.platform,
       url: v.url,
-      detail: `Chapter ${lesson.meta.segment.chapter} - ${
-        lesson.meta.segment.chapterTitle
-      } (${segmentLabel(lesson.meta.segment.start, lesson.meta.segment.end)})`,
+      detail:
+        lesson.video.segments.length === 1
+          ? `${lesson.video.segments[0]!.chapter} - ${lesson.video.segments[0]!.label} (${segmentRange(
+              lesson.video.segments[0]!.startSeconds,
+              lesson.video.segments[0]!.endSeconds,
+            )})`
+          : lesson.video.segments
+              .map(
+                (s, i) =>
+                  `Segment ${i + 1}: ${s.label} (${s.chapter}, ${segmentRange(s.startSeconds, s.endSeconds)})`,
+              )
+              .join(" · "),
     },
   ];
-}
-
-/** Human-readable segment range like "50:01-52:23". */
-export function segmentRange(start: number, end: number): string {
-  return segmentLabel(start, end);
 }

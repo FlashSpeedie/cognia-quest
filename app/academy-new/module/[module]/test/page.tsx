@@ -62,7 +62,7 @@ export default async function ModuleTestPage({ params }: { params: Promise<{ mod
     >
       <div className="mx-auto max-w-3xl">
         <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-ink-faint">
-          <a href="/academy-new" className="hover:text-ink focus-ring rounded">Academy</a>
+          <a href="/academy-new" className="hover:text-ink focus-ring rounded">Academy (New)</a>
           <span aria-hidden="true">/</span>
           <a href="/academy-new/module/1" className="hover:text-ink focus-ring rounded">Module 1</a>
           <span aria-hidden="true">/</span>

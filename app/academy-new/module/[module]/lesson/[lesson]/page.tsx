@@ -2,22 +2,23 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getSessionUser } from "@/server/auth/session";
 import { getDb } from "@/server/db/db";
+import { getAcademyModuleState, lessonMasteryPcts } from "@/server/services/academyProgress";
 import { LESSONS, lessonBySlug, quizById } from "@/content/academy";
-import { MODULE_1, LESSON_MASTERY_THRESHOLD } from "@/content/academy/module-1/module";
-import { lessonReferences } from "@/content/academy/module-1/references";
-import { toPublicQuestion } from "@/lib/academy";
+import { MODULE_1, LESSON_MASTERY_THRESHOLD, lessonVideoSeconds } from "@/content/academy/module-1/module";
+import { toPublicQuestion, moduleMasteryPct } from "@/lib/academy";
 import { pageMetadata } from "@/lib/seo";
 import { LessonProgressProvider } from "@/components/academy-new/LessonProgressContext";
-import { LessonShell, type NavLesson } from "@/components/academy-new/LessonShell";
-import { VideoBlock } from "@/components/academy-new/VideoBlock";
+import { LessonShell, type NavLesson, type ModuleProgress } from "@/components/academy-new/LessonShell";
+import { LessonVideo } from "@/components/academy-new/LessonVideo";
 import { SourceAttribution } from "@/components/academy-new/SourceAttribution";
-import { BlockView } from "@/components/academy-new/BlockView";
 import { CheckpointCard } from "@/components/academy-new/CheckpointCard";
+import { LessonSheetView } from "@/components/academy-new/LessonSheetView";
 import { ActivityCard } from "@/components/academy-new/ActivityCard";
 import { QuizRunner } from "@/components/academy-new/QuizRunner";
-import { FreeResponseCard } from "@/components/academy-new/FreeResponseCard";
+import { FreeResponseQuiz } from "@/components/academy-new/FreeResponseCard";
 import { CompletionPanel } from "@/components/academy-new/CompletionPanel";
 import { TutorPanel } from "@/components/academy-new/TutorPanel";
+import { lessonReferences } from "@/content/academy/module-1/references";
 
 export const dynamic = "force-dynamic";
 
@@ -39,13 +40,21 @@ export async function generateMetadata({
 
 export default async function LessonPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ module: string; lesson: string }>;
+  searchParams: Promise<{ t?: string | string[] }>;
 }) {
   const { module: num, lesson: slug } = await params;
   if (num !== "1") notFound();
   const lesson = lessonBySlug(slug);
   if (!lesson) notFound();
+
+  // Tutor deep links (?t=sourceSeconds) position the player at the exact
+  // source moment the answer referenced.
+  const { t } = await searchParams;
+  const tRaw = Array.isArray(t) ? t[0] : t;
+  const initialSourceSeconds = tRaw != null && /^\d+$/.test(tRaw) ? Number(tRaw) : null;
 
   const user = await getSessionUser();
 
@@ -61,16 +70,28 @@ export default async function LessonPage({
     minutes: l.meta.minutes,
     state: "not_started" as const,
   }));
+  let moduleProgress: ModuleProgress = {
+    completed: 0,
+    total: LESSONS.length,
+    masteryPct: 0,
+    testPassed: false,
+  };
 
   if (user) {
     const db = await getDb();
-    const rows = await db.table("lesson_progress").find({ userId: user.id, moduleId: "module-1" });
-    const byLesson = new Map(rows.map((r) => [r.lessonId, r]));
+    const [state, pcts] = await Promise.all([
+      getAcademyModuleState(db, user.id),
+      lessonMasteryPcts(db, user.id),
+    ]);
+    const byLesson = new Map(state.lessonProgress.map((r) => [r.lessonId, r]));
     const row = byLesson.get(lesson.meta.id);
     initialDone = row?.sectionsDone ?? [];
     quizBest = row?.quizBest ?? null;
     attempts = row?.attempts ?? 0;
     alreadyBanked = row?.status === "completed";
+    const completedCount = LESSONS.filter(
+      (l) => byLesson.get(l.meta.id)?.status === "completed",
+    ).length;
     navStates = navStates.map((n) => {
       const l = LESSONS.find((x) => x.meta.slug === n.slug)!;
       const r = byLesson.get(l.meta.id);
@@ -79,6 +100,12 @@ export default async function LessonPage({
         state: r?.status === "completed" ? ("completed" as const) : r && r.sectionsDone.length > 0 ? ("in_progress" as const) : ("not_started" as const),
       };
     });
+    moduleProgress = {
+      completed: completedCount,
+      total: LESSONS.length,
+      masteryPct: moduleMasteryPct(pcts, state.moduleResult?.bestScore ?? null),
+      testPassed: state.moduleResult?.passed ?? false,
+    };
   }
 
   const quiz = quizById(lesson.quizId);
@@ -97,78 +124,79 @@ export default async function LessonPage({
       initialQuizBest={quizBest}
     >
       <LessonShell
-        moduleNumber={1}
-        moduleTitle={MODULE_1.title}
         lessons={navStates}
         currentSlug={lesson.meta.slug}
         currentOrder={lesson.meta.order}
         title={lesson.meta.title}
         minutes={lesson.meta.minutes}
         videoSource={MODULE_1.source.creator}
+        progress={moduleProgress}
         prevHref={prev ? `/academy-new/module/1/lesson/${prev.meta.slug}` : null}
         nextHref={next ? `/academy-new/module/1/lesson/${next.meta.slug}` : null}
       >
-        {/* ── Video (facade -> single embed, exact segment) ── */}
+        {/* ── Video: the focused segment playlist + creator credit ── */}
         <section aria-label="Lesson video">
           <h2 className="sr-only">Lesson video</h2>
-          <VideoBlock
+          <LessonVideo
+            lessonId={lesson.meta.id}
             videoId={MODULE_1.source.videoId}
-            start={lesson.meta.segment.start}
-            end={lesson.meta.segment.end}
-            title={MODULE_1.source.title}
-            creator={MODULE_1.source.creator}
+            segments={lesson.video.segments.map((s) => ({
+              id: s.id,
+              label: s.label,
+              chapter: s.chapter,
+              startSeconds: s.startSeconds,
+              endSeconds: s.endSeconds,
+            }))}
+            checkpoints={lesson.checkpoints}
+            initialSourceSeconds={initialSourceSeconds}
+            sourceUrl={MODULE_1.source.url}
           />
           <SourceAttribution
             videoTitle={MODULE_1.source.title}
             creator={MODULE_1.source.creator}
             url={MODULE_1.source.url}
-            chapter={lesson.meta.segment.chapter}
-            chapterTitle={lesson.meta.segment.chapterTitle}
-            start={lesson.meta.segment.start}
-            end={lesson.meta.segment.end}
+            segments={lesson.video.segments.map((s) => ({
+              label: s.label,
+              chapter: s.chapter,
+              start: s.startSeconds,
+              end: s.endSeconds,
+            }))}
           />
         </section>
 
-        {/* ── Lesson goals ── */}
-        <section aria-label="Lesson goals">
-          <h2 className="font-display text-lg font-bold text-ink">What you will learn</h2>
-          <ul className="mt-3 space-y-1.5">
-            {lesson.meta.goals.map((g) => (
-              <li key={g} className="flex items-start gap-2 text-sm text-ink-dim">
-                <span aria-hidden="true" className="mt-1 text-pulse-500">✦</span>
-                {g}
-              </li>
+        {/* ── Checkpoints: the pause-and-think moments from the video ── */}
+        <section aria-label="Lesson checkpoints">
+          <h2 className="font-display text-2xl font-bold text-ink">Checkpoints</h2>
+          <p className="mt-1.5 text-sm text-ink-dim">
+            These pause the video at conceptual transitions. Answer them when they appear during
+            playback - or right here, any time.
+          </p>
+          <div className="mt-5 space-y-4">
+            {lesson.checkpoints.map((cp) => (
+              <CheckpointCard key={cp.id} checkpoint={cp} />
             ))}
-          </ul>
+          </div>
         </section>
 
-        {/* ── Original explanation + checkpoints ── */}
-        {lesson.intro.map((b, i) => (
-          <BlockView key={`intro-${i}`} block={b} />
-        ))}
-        {lesson.blocks.map((b, i) =>
-          b.kind === "checkpoint" ? (
-            <CheckpointCard key={b.checkpoint.id} checkpoint={b.checkpoint} />
-          ) : (
-            <BlockView key={`block-${i}`} block={b} />
-          ),
-        )}
+        {/* ── The Lesson Sheet ── */}
+        <LessonSheetView lesson={lesson} />
 
-        {/* ── Interactive exercise ── */}
+        {/* ── Optional enrichment exercise ── */}
         {lesson.activity && <ActivityCard def={lesson.activity} lessonId={lesson.meta.id} />}
 
-        {/* ── Lesson quiz ── */}
+        {/* ── Lesson quiz: 6 auto-graded + 4 written-reasoning = 10 questions ── */}
         {quiz && (
           <section aria-label="Lesson quiz">
             <div className="rounded-xl border border-void-700/70 bg-void-850 px-5 py-4">
-              <h2 className="font-display text-xl font-bold text-ink">Lesson quiz</h2>
-              <p className="mt-1 text-sm text-ink-dim">
-                {quiz.questions.length} questions, graded on submission with full explanations. Score{" "}
+              <h2 className="font-display text-2xl font-bold text-ink">Lesson Quiz</h2>
+              <p className="mt-1.5 text-sm leading-relaxed text-ink-dim">
+                10 questions: six auto-graded (1–6), four written-reasoning (7–10). Score{" "}
                 {LESSON_MASTERY_THRESHOLD}%+ to master this lesson — 50%+ counts toward completion,
-                and retries never lower your best.
+                and retries never lower your best. The video for this lesson runs{" "}
+                {Math.round(lessonVideoSeconds(lesson.meta.id) / 60)} minutes of source material.
               </p>
             </div>
-            <div className="mt-4">
+            <div className="mt-5">
               <QuizRunner
                 quizId={quiz.id}
                 questions={publicQuestions}
@@ -179,18 +207,18 @@ export default async function LessonPage({
                 masteryThresholdPct={LESSON_MASTERY_THRESHOLD}
               />
             </div>
+            {lesson.freeResponses.length > 0 && (
+              <div className="mt-6">
+                <FreeResponseQuiz lessonId={lesson.meta.id} freeResponses={lesson.freeResponses} />
+              </div>
+            )}
           </section>
-        )}
-
-        {/* ── Free response ── */}
-        {lesson.freeResponse && (
-          <FreeResponseCard lessonId={lesson.meta.id} freeResponse={lesson.freeResponse} />
         )}
 
         {/* ── References ── */}
         <section aria-label="References" className="rounded-xl border border-void-700/70 bg-void-900 px-5 py-5">
-          <h2 className="font-display text-lg font-bold text-ink">References</h2>
-          <ul className="mt-3 space-y-3">
+          <h2 className="font-display text-2xl font-bold text-ink">References</h2>
+          <ul className="mt-3 space-y-4">
             {refs.map((r) => (
               <li key={r.id} className="text-sm">
                 <p className="text-[11px] font-bold uppercase tracking-widest text-ink-faint">{r.label}</p>
@@ -215,9 +243,11 @@ export default async function LessonPage({
               </li>
             ))}
           </ul>
-          <p className="mt-3 text-xs leading-relaxed text-ink-faint">
-            The video is embedded from and remains hosted by its original publisher. Explanations,
-            activities and assessments on this page are original Cognia Quest material. See{" "}
+          <p className="mt-4 text-xs leading-relaxed text-ink-faint">
+            External educational video: embedded from, and remaining hosted by, its original
+            publisher. Cognia Quest lesson material: the lesson sheet, checkpoints, quiz and
+            references on this page are original Cognia Quest material aligned to the cited
+            segments. See{" "}
             <a href="/academy-new/references" className="font-semibold text-pulse-700 underline-offset-2 hover:underline focus-ring dark:text-pulse-300">
               module sources & references
             </a>
@@ -233,7 +263,7 @@ export default async function LessonPage({
           attemptCount={attempts}
         />
 
-        {/* ── AI learning assistant (lazy) ── */}
+        {/* ── Learning assistant (lazy) ── */}
         <TutorPanel lessonId={lesson.meta.id} lessonTitle={lesson.meta.title} />
       </LessonShell>
     </LessonProgressProvider>

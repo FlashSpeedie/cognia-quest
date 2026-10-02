@@ -112,7 +112,7 @@ export default function LandingPage() {
                 Start learning
               </LinkButton>
               <LinkButton href="/academy-new" variant="secondary" size="lg">
-                Explore the Academy
+                Explore Academy (New)
               </LinkButton>
             </div>
             {demo && (

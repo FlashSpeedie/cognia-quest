@@ -170,11 +170,13 @@ ok("demo login disabled in production", demo.status === 404, `status=${demo.stat
   ok("module test page renders", t.status === 200, `status=${t.status}`);
 
   // Free response: the flow whose stack trace surfaced the missing table.
+  // (Payload targets a specific repo-versioned FRQ id for the lesson.)
   const fr = await fetch("http://localhost:3220/api/academy/free-response", {
     method: "POST",
     headers: { "content-type": "application/json", cookie: cookies3 },
     body: JSON.stringify({
       lessonId: "m1-l1",
+      frqId: "fr-m1-l1-1",
       response:
         "A machine learns by finding patterns in examples rather than following rules someone wrote by hand. " +
         "My music app probably learned from data about what I listen to and skip, so it can predict and recommend new songs I will like.",

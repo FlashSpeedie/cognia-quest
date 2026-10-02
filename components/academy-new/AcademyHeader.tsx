@@ -3,25 +3,22 @@ import { BrandLogo } from "@/components/public/BrandLogo";
 import { LinkButton } from "@/components/ui/Button";
 
 /**
- * Academy area header - public, auth-aware. Anonymous visitors get
- * "Start learning"; signed-in students get "Continue learning" pointed at
- * wherever they actually left off.
+ * Public (guest-only) header for the Academy (New) area. Signed-in students
+ * get the normal Cognia Quest application shell instead - see
+ * app/academy-new/layout.tsx.
  */
-export function AcademyHeader({
-  signedIn,
-  resumeHref,
-  activePath,
-}: {
-  signedIn: boolean;
-  resumeHref: string;
-  activePath?: string;
-}) {
+export function AcademyHeader({ resumeHref }: { resumeHref?: string }) {
+  void resumeHref;
   const links = [
-    { href: "/academy-new", label: "Academy" },
+    { href: "/academy-new", label: "Academy (New)" },
     { href: "/academy-new/module/1", label: "Module 1" },
     { href: "/academy-new/references", label: "Sources & references" },
   ];
-  const isActive = (href: string) => activePath === href || (href !== "/academy-new" && activePath?.startsWith(href));
+  const isActive = (href: string) => {
+    if (typeof window === "undefined") return false;
+    const path = window.location.pathname;
+    return path === href || (href !== "/academy-new" && path.startsWith(href));
+  };
 
   return (
     <header className="sticky top-0 z-40 border-b border-void-700/60 bg-void-900/95 backdrop-blur-sm">
@@ -30,16 +27,14 @@ export function AcademyHeader({
           <Link href="/" aria-label="Cognia Quest home" className="shrink-0 focus-ring rounded-lg">
             <BrandLogo size="sm" />
           </Link>
-          <nav aria-label="Academy" className="hidden items-center gap-1 md:flex">
+          <nav aria-label="Academy (New)" className="hidden items-center gap-1 md:flex">
             {links.map((l) => (
               <Link
                 key={l.href}
                 href={l.href}
                 aria-current={isActive(l.href) ? "page" : undefined}
                 className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors focus-ring ${
-                  isActive(l.href)
-                    ? "text-pulse-700 dark:text-pulse-300"
-                    : "text-ink-dim hover:text-ink"
+                  isActive(l.href) ? "text-pulse-700 dark:text-pulse-300" : "text-ink-dim hover:text-ink"
                 }`}
               >
                 {l.label}
@@ -48,44 +43,28 @@ export function AcademyHeader({
           </nav>
         </div>
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-          {signedIn ? (
-            <>
-              <Link
-                href="/dashboard"
-                className="hidden rounded-lg px-3 py-2 text-sm font-medium text-ink-dim transition-colors hover:text-ink focus-ring sm:block"
-              >
-                My dashboard
-              </Link>
-              <LinkButton href={resumeHref} size="sm">
-                Continue learning
-              </LinkButton>
-            </>
-          ) : (
-            <>
-              <Link
-                href="/login"
-                className="rounded-lg px-3 py-2 text-sm font-semibold text-ink-dim transition-colors hover:text-ink focus-ring"
-              >
-                Log in
-              </Link>
-              <LinkButton href="/register" size="sm">
-                Start learning
-              </LinkButton>
-            </>
-          )}
+          <Link
+            href="/login"
+            className="rounded-lg px-3 py-2 text-sm font-semibold text-ink-dim transition-colors hover:text-ink focus-ring"
+          >
+            Log in
+          </Link>
+          <LinkButton href="/register" size="sm">
+            Start learning
+          </LinkButton>
         </div>
       </div>
     </header>
   );
 }
 
-/** Slim footer for the Academy area, with honest source attribution. */
+/** Slim footer for the Academy (New) area, with honest source attribution. */
 export function AcademyFooter() {
   return (
     <footer className="mt-16 border-t border-void-700/60 py-10">
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-5 px-4 sm:flex-row">
-        <p className="text-sm font-semibold text-ink-dim">Cognia Quest Academy</p>
-        <nav className="flex flex-wrap justify-center gap-5 text-sm" aria-label="Academy footer">
+        <p className="text-sm font-semibold text-ink-dim">Cognia Quest Academy (New)</p>
+        <nav className="flex flex-wrap justify-center gap-5 text-sm" aria-label="Academy (New) footer">
           <Link className="font-medium text-ink-dim hover:text-ink focus-ring rounded" href="/">Home</Link>
           <Link className="font-medium text-ink-dim hover:text-ink focus-ring rounded" href="/about">About</Link>
           <Link className="font-medium text-ink-dim hover:text-ink focus-ring rounded" href="/academy-new/references">Sources & references</Link>

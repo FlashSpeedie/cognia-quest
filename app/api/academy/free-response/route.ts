@@ -16,29 +16,32 @@ import {
 import { callGemini, aiConfigured } from "@/server/ai/provider";
 
 /**
- * Free-response submission with AI rubric feedback.
+ * Free-response submission with AI rubric feedback. Each lesson quiz ends
+ * with reasoning questions; every one is a deterministic, repo-versioned
+ * FRQ whose id doubles as the persistable lesson step.
  *
- * POST /api/academy/free-response  { lessonId, response }
+ * POST /api/academy/free-response  { lessonId, frqId, response }
  *
  * The deterministic keyword-coverage check always runs; Gemini (server-side
  * only) adds strengths/improvements when available. If Gemini is missing,
- * slow or malformed, the student still gets the deterministic feedback and
- * - when signed in - the step still counts. Anonymous visitors get feedback
+ * slow or malformed, the student still gets the deterministic feedback and -
+ * when signed in - the step still counts. Anonymous visitors get feedback
  * only (stricter IP rate limit, nothing persisted).
  */
 const schema = z.object({
   lessonId: z.string().min(1).max(40),
+  frqId: z.string().min(1).max(40),
   response: z.string().min(1).max(4000),
 });
 
 export async function POST(req: Request) {
   const parsed = await parseBody(req, schema);
   if (!parsed.ok) return parsed.response;
-  const { lessonId } = parsed.data;
+  const { lessonId, frqId } = parsed.data;
 
   const lesson = lessonById(lessonId);
-  const fr = lesson?.freeResponse ?? null;
-  if (!lesson || !fr) return json({ error: "Unknown lesson" }, 404);
+  const fr = lesson?.freeResponses.find((f) => f.id === frqId) ?? null;
+  if (!lesson || !fr) return json({ error: "Unknown question" }, 404);
 
   const response = parsed.data.response.trim();
   if (response.length < fr.minLength) {
@@ -51,11 +54,11 @@ export async function POST(req: Request) {
   // Rate limits: per-user when signed in, tighter IP limit for guests.
   const user = await getSessionUser();
   if (user) {
-    if (!rateLimit(`academy-freeresponse:u:${user.id}`, 6, 60_000).ok) {
+    if (!rateLimit(`academy-freeresponse:u:${user.id}`, 10, 60_000).ok) {
       return json({ error: "That's a few too many submissions in a minute - try again shortly." }, 429);
     }
   } else {
-    const limited = throttle(req, "academy-freeresponse-guest", 3, 60_000);
+    const limited = throttle(req, "academy-freeresponse-guest", 4, 60_000);
     if (limited) return limited;
   }
 
@@ -103,7 +106,7 @@ export async function POST(req: Request) {
   if (user) {
     guest = false;
     const db = await getDb();
-    const saved = await recordAcademySection(db, user, lesson.meta.id, `${lesson.meta.id}-freeresponse`);
+    const saved = await recordAcademySection(db, user, lesson.meta.id, fr.id);
     if (!saved.ok) {
       return json({ error: "Your feedback is below - but we couldn't save this step. Try again in a moment." }, 502);
     }

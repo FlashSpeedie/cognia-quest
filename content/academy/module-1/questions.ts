@@ -99,6 +99,24 @@ export const LESSON_QUIZZES: AcademyQuiz[] = [
         explanation:
           "The real world keeps producing situations nobody anticipated in a rulebook. A model trained on many examples generalizes to new cases - though note the word \"often\": learned models can still be wrong, which is why evaluation (Lesson 5) matters.",
       },
+      {
+        id: "q-m1-l1-6",
+        kind: "mcq",
+        concept: "Real-world ML applications",
+        difficulty: "application",
+        chapter: 1,
+        prompt:
+          "A streaming service studies what its users watch, how long they watch, and what they skip - then fills each home page with \"Because you watched...\" rows. Which application is this?",
+        options: [
+          "Fraud detection",
+          "Recommendation system",
+          "Autonomous driving",
+          "Medical diagnosis",
+        ],
+        correct: 1,
+        explanation:
+          "This is a recommendation system: a model learned from examples of viewing behavior to predict what each person will enjoy next. The same learn-preferences-and-predict pattern powers music, shopping and social feeds.",
+      },
     ],
   },
 
@@ -447,23 +465,6 @@ export const LESSON_QUIZZES: AcademyQuiz[] = [
     title: "Lesson 5 quiz - Evaluation metrics",
     lessonId: "m1-l5",
     questions: [
-      {
-        id: "q-m1-l5-1",
-        kind: "mcq",
-        concept: "Why metrics exist",
-        difficulty: "easy",
-        chapter: 3,
-        prompt: "What is the job of an evaluation metric?",
-        options: [
-          "To make models train faster",
-          "To turn a model's performance into a standard, comparable, honest number",
-          "To replace the need for test data",
-          "To prove a model is legally compliant",
-        ],
-        correct: 1,
-        explanation:
-          "Metrics turn \"it seems to work\" into a number others can trust and compare. Different metrics answer different questions - the skill is matching the metric to what a mistake costs.",
-      },
       {
         id: "q-m1-l5-2",
         kind: "mcq",
@@ -870,24 +871,6 @@ export const LESSON_QUIZZES: AcademyQuiz[] = [
         correct: [0, 1, 2, 3],
         explanation:
           "Simplicity, more data, regularization and early stopping all make memorizing noise harder or less rewarding. Training longer on the same data just gives the model more opportunity to memorize.",
-      },
-      {
-        id: "q-m1-l8-5",
-        kind: "mcq",
-        concept: "Diagnosing scenarios",
-        difficulty: "application",
-        chapter: 5,
-        prompt:
-          "A disease-screening model scores 98% on its training data and 58% on the test set. What is the best diagnosis and first fix?",
-        options: [
-          "Underfitting - make the model much more flexible",
-          "Overfitting - reduce flexibility (or add regularization / more data)",
-          "Healthy performance - ship it",
-          "The test set is broken - ignore it",
-        ],
-        correct: 1,
-        explanation:
-          "The 40-point gap is a textbook overfitting signature. The cures are the anti-memorization toolkit: simpler model, regularization, more data, early stopping - not more flexibility, which would make it worse.",
       },
       {
         id: "q-m1-l8-6",

@@ -1,13 +1,84 @@
-import type { AcademyModule } from "../types";
+import type { AcademyModule, VideoSegment } from "../types";
 
 /**
  * Module 1 - AI & Machine Learning Foundations.
  *
  * Educational structure and teaching copy are original to Cognia Quest.
- * Each lesson is aligned to an exact segment of the external source video
- * (hosted by the original publisher on YouTube); lessons cite that segment
+ * Each lesson plays one or more exact segments of the external source video
+ * (hosted by the original publisher on YouTube); lessons cite those segments
  * for attribution and never re-host or reproduce the video or transcript.
  */
+
+const VID = "0oyDqO8PjIg";
+
+function seg(
+  id: string,
+  startSeconds: number,
+  endSeconds: number,
+  chapter: string,
+  label: string,
+): VideoSegment {
+  return { id, videoId: VID, startSeconds, endSeconds, chapter, label };
+}
+
+/** Lesson 1 starts at the conceptual material (09:09), skipping the intro/sales portion. */
+const L1_SEGMENTS = [
+  seg("m1-l1-s1", 549, 1043, "Machine Learning Roadmap", "What is Machine Learning?"),
+];
+
+/** Lesson 2 walks the five foundational skill areas as a segment playlist. */
+const L2_SEGMENTS = [
+  seg("m1-l2-s1", 1043, 1335, "Machine Learning Roadmap", "Mathematics foundation"),
+  seg("m1-l2-s2", 1335, 1566, "Machine Learning Roadmap", "Statistics foundation"),
+  seg("m1-l2-s3", 1566, 1833, "Machine Learning Roadmap", "Machine learning fundamentals"),
+  seg("m1-l2-s4", 1833, 2082, "Machine Learning Roadmap", "Python foundation"),
+  seg("m1-l2-s5", 2082, 2187, "Machine Learning Roadmap", "Introductory NLP"),
+];
+
+const L3_SEGMENTS = [
+  seg("m1-l3-s1", 3001, 3143, "ML Basics", "Supervised vs. Unsupervised Learning"),
+];
+
+const L4_SEGMENTS = [
+  seg("m1-l4-s1", 3143, 3282, "ML Basics", "Regression vs. Classification"),
+];
+
+const L5_SEGMENTS = [
+  seg("m1-l5-s1", 3282, 3702, "ML Basics", "Evaluating Model Performance"),
+];
+
+const L6_SEGMENTS = [
+  seg("m1-l6-s1", 3702, 3907, "ML Basics", "Training, Validation & Testing"),
+];
+
+const L7_SEGMENTS = [
+  seg("m1-l7-s1", 3915, 4341, "Bias-Variance Trade-off", "Bias & Variance"),
+];
+
+/** Final Module 1 video segment: stops before Chapter 6 (Linear Regression, 1:41:12). */
+const L8_SEGMENTS = [
+  seg("m1-l8-s1", 4349, 6063, "Overfitting & Regularization", "Overfitting & Generalization"),
+];
+
+export const LESSON_SEGMENTS: Record<string, VideoSegment[]> = {
+  "m1-l1": L1_SEGMENTS,
+  "m1-l2": L2_SEGMENTS,
+  "m1-l3": L3_SEGMENTS,
+  "m1-l4": L4_SEGMENTS,
+  "m1-l5": L5_SEGMENTS,
+  "m1-l6": L6_SEGMENTS,
+  "m1-l7": L7_SEGMENTS,
+  "m1-l8": L8_SEGMENTS,
+};
+
+/** Total lesson-local playback seconds for a lesson's segment playlist. */
+export function lessonVideoSeconds(lessonId: string): number {
+  return (LESSON_SEGMENTS[lessonId] ?? []).reduce(
+    (sum, s) => sum + (s.endSeconds - s.startSeconds),
+    0,
+  );
+}
+
 export const MODULE_1: AcademyModule = {
   id: "module-1",
   number: 1,
@@ -17,7 +88,7 @@ export const MODULE_1: AcademyModule = {
   description:
     "Eight lessons that build a working mental model of machine learning: what it is, the shapes learning problems take, how models are measured, and why models that look brilliant can still fail in the real world.",
   source: {
-    videoId: "0oyDqO8PjIg",
+    videoId: VID,
     title: "AI Foundations Course – Python, Machine Learning, Deep Learning, Data Science",
     creator: "LunarTech",
     platform: "YouTube",
@@ -30,12 +101,6 @@ export const MODULE_1: AcademyModule = {
       order: 1,
       title: "Welcome to Machine Learning",
       minutes: 20,
-      segment: {
-        chapter: 1,
-        chapterTitle: "Introduction",
-        start: 0,
-        end: 1043,
-      },
       summary:
         "What machine learning actually is, how it differs from classic rule-based AI, and where it quietly shows up in everyday products.",
       goals: [
@@ -49,15 +114,9 @@ export const MODULE_1: AcademyModule = {
       slug: "the-ml-roadmap",
       order: 2,
       title: "The Machine Learning Roadmap",
-      minutes: 15,
-      segment: {
-        chapter: 2,
-        chapterTitle: "Machine Learning Roadmap",
-        start: 1043,
-        end: 1566,
-      },
+      minutes: 30,
       summary:
-        "The broad skill areas behind practical machine learning - and how they stack on top of each other, one layer at a time.",
+        "The broad skill areas behind practical machine learning - mathematics, statistics, ML, Python and introductory NLP - and how they stack on top of each other.",
       goals: [
         "Name the skill areas that make up practical machine learning",
         "Explain the learning stack from data to applications",
@@ -70,12 +129,6 @@ export const MODULE_1: AcademyModule = {
       order: 3,
       title: "Supervised vs. Unsupervised Learning",
       minutes: 20,
-      segment: {
-        chapter: 3,
-        chapterTitle: "ML Basics",
-        start: 3001,
-        end: 3143,
-      },
       summary:
         "The first big fork in the road: learning with an answer key (supervised) versus finding hidden structure without one (unsupervised).",
       goals: [
@@ -91,12 +144,6 @@ export const MODULE_1: AcademyModule = {
       order: 4,
       title: "Regression vs. Classification",
       minutes: 15,
-      segment: {
-        chapter: 3,
-        chapterTitle: "ML Basics",
-        start: 3143,
-        end: 3282,
-      },
       summary:
         "Supervised learning splits into two flavors: predicting a number (regression) or predicting a category (classification).",
       goals: [
@@ -111,12 +158,6 @@ export const MODULE_1: AcademyModule = {
       order: 5,
       title: "How Do We Know a Model Is Working?",
       minutes: 25,
-      segment: {
-        chapter: 3,
-        chapterTitle: "ML Basics",
-        start: 3282,
-        end: 3702,
-      },
       summary:
         "Metrics are the scoreboard. Learn what accuracy, precision, recall, F1, RMSE, MAE and clustering scores are actually asking.",
       goals: [
@@ -133,12 +174,6 @@ export const MODULE_1: AcademyModule = {
       order: 6,
       title: "Training, Validation, and Testing",
       minutes: 15,
-      segment: {
-        chapter: 3,
-        chapterTitle: "ML Basics",
-        start: 3702,
-        end: 3907,
-      },
       summary:
         "A model graded on the questions it memorized will always look smart. Data splits exist to keep us honest.",
       goals: [
@@ -153,12 +188,6 @@ export const MODULE_1: AcademyModule = {
       order: 7,
       title: "Bias and Variance",
       minutes: 20,
-      segment: {
-        chapter: 4,
-        chapterTitle: "Bias-Variance Trade-off",
-        start: 3915,
-        end: 4341,
-      },
       summary:
         "Two ways a model can be wrong: missing the real pattern (bias) or chasing the noise in one particular dataset (variance).",
       goals: [
@@ -173,13 +202,7 @@ export const MODULE_1: AcademyModule = {
       slug: "overfitting-and-generalization",
       order: 8,
       title: "Overfitting and Generalization",
-      minutes: 25,
-      segment: {
-        chapter: 5,
-        chapterTitle: "Overfitting & Regularization",
-        start: 4349,
-        end: 6063,
-      },
+      minutes: 30,
       summary:
         "The most common way real ML projects fail: a model that aces its practice questions and flunks the real exam.",
       goals: [
@@ -205,3 +228,5 @@ export function lessonMetaBySlug(slug: string) {
 export function lessonMetaById(id: string) {
   return MODULE_1.lessons.find((l) => l.id === id) ?? null;
 }
+
+export const MODULE_1_SOURCE_VIDEO_TITLE = "AI Foundations Course – Python, Machine Learning, Deep Learning, Data Science";

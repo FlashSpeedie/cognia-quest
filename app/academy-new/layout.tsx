@@ -3,36 +3,60 @@ import { getSessionUser } from "@/server/auth/session";
 import { getDb } from "@/server/db/db";
 import { getAcademyModuleState, resumeLessonId } from "@/server/services/academyProgress";
 import { LESSONS } from "@/content/academy";
+import { AppShell } from "@/components/shell/AppShell";
 import { AcademyHeader, AcademyFooter } from "@/components/academy-new/AcademyHeader";
 
 /**
- * Public Academy shell. No auth gate: every lesson, activity and the module
- * test are usable anonymously. Signing in adds saved progress, XP and
- * personalized resume - the header simply reflects which mode you're in.
+ * Academy (New) shell.
+ *
+ * - Authenticated students get the normal Cognia Quest application shell
+ *   (global sidebar + top bar), with the course navigation living inside
+ *   the lesson pages - exactly like the rest of the authenticated app.
+ * - Anonymous visitors keep the public Academy header/footer: every lesson,
+ *   checkpoint, quiz and the module test work without an account.
+ *
+ * No auth gate either way - signing in only adds saved progress and XP.
  */
 export default async function AcademyLayout({ children }: { children: ReactNode }) {
   const user = await getSessionUser();
-  let resumeHref = "/academy-new/module/1";
 
   if (user) {
-    try {
-      const db = await getDb();
-      const state = await getAcademyModuleState(db, user.id);
-      const resumeId = resumeLessonId(state);
-      const resumeLesson = resumeId ? LESSONS.find((l) => l.meta.id === resumeId) : null;
-      resumeHref = resumeLesson
-        ? `/academy-new/module/1/lesson/${resumeLesson.meta.slug}`
-        : state.moduleResult?.passed
-          ? "/academy-new/module/1"
-          : "/academy-new/module/1";
-    } catch {
-      // resume is a convenience - fall back to the module page
-    }
+    const db = await getDb();
+    const [unread, state] = await Promise.all([
+      db.table("notifications").find({ userId: user.id, read: false }).then((rows) => rows.length),
+      getAcademyModuleState(db, user.id).catch(() => null),
+    ]);
+    const resumeId = state ? resumeLessonId(state) : null;
+    const resumeLesson = resumeId ? LESSONS.find((l) => l.meta.id === resumeId) : null;
+    const resumeHref = resumeLesson
+      ? `/academy-new/module/1/lesson/${resumeLesson.meta.slug}`
+      : "/academy-new/module/1";
+
+    return (
+      <AppShell
+        user={{
+          id: user.id,
+          displayName: user.displayName,
+          title: user.title,
+          avatarId: user.avatarId,
+          xpTotal: user.xpTotal,
+          role: user.role,
+          preferences: user.preferences,
+        }}
+        unreadCount={unread}
+      >
+        <p className="sr-only">
+          You are in Academy (New): the Module 1 course area. The Academy (New) sidebar entry stays
+          highlighted while you learn here.
+        </p>
+        {children}
+      </AppShell>
+    );
   }
 
   return (
     <div className="app-backdrop min-h-screen">
-      <AcademyHeader signedIn={!!user} resumeHref={resumeHref} />
+      <AcademyHeader />
       <main id="main" className="mx-auto max-w-6xl px-4 pb-8 pt-8 sm:px-6">
         {children}
       </main>

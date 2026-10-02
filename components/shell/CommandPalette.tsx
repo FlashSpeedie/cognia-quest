@@ -13,7 +13,8 @@ interface Hit {
 
 const COMMANDS = [
   { label: "Open Dashboard", href: "/dashboard" },
-  { label: "Open Academy", href: "/academy-new" },
+  { label: "Open Academy", href: "/academy" },
+  { label: "Open Academy (New)", href: "/academy-new" },
   { label: "Open AI Lab", href: "/lab" },
   { label: "Open AI Detective", href: "/detective" },
   { label: "Open Ethics Center", href: "/ethics" },

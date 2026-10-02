@@ -114,3 +114,79 @@ export const MASTERY_LABELS: Record<LessonMasteryState, string> = {
   practicing: "Practicing",
   mastered: "Mastered",
 };
+
+/** "8m 14s" - human-friendly segment/lesson duration. */
+export function formatDuration(totalSeconds: number): string {
+  const s = Math.max(0, Math.round(totalSeconds));
+  const m = Math.floor(s / 60);
+  const sec = s % 60;
+  if (m === 0) return `${sec}s`;
+  return `${m}m ${sec}s`;
+}
+
+/** "00:48" / "02:22" - player timeline clock. */
+export function formatClock(seconds: number): string {
+  const s = Math.max(0, Math.floor(seconds));
+  const m = Math.floor(s / 60);
+  return `${String(m).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
+}
+
+// -- Segment playlist timing (lesson-local timeline <-> source positions) --
+
+export interface SegmentTiming {
+  id: string;
+  startSeconds: number; // absolute source position
+  endSeconds: number;
+  localStart: number; // position on the lesson timeline
+  localDuration: number;
+}
+
+/**
+ * Precompute the lesson-local timeline for a segment playlist. The Cognia
+ * player always shows LESSON time, never the source video's full duration.
+ */
+export function segmentTimings(
+  segments: { id: string; startSeconds: number; endSeconds: number }[],
+): SegmentTiming[] {
+  let cursor = 0;
+  return segments.map((s) => {
+    const timing: SegmentTiming = {
+      id: s.id,
+      startSeconds: s.startSeconds,
+      endSeconds: s.endSeconds,
+      localStart: cursor,
+      localDuration: s.endSeconds - s.startSeconds,
+    };
+    cursor += timing.localDuration;
+    return timing;
+  });
+}
+
+/** Total lesson-local playback seconds. */
+export function totalLessonSeconds(timings: SegmentTiming[]): number {
+  const last = timings[timings.length - 1];
+  return last ? last.localStart + last.localDuration : 0;
+}
+
+/** Map a source-video position to the lesson timeline (null if outside all segments). */
+export function sourceToLocal(timings: SegmentTiming[], sourceSeconds: number): number | null {
+  for (const t of timings) {
+    if (sourceSeconds >= t.startSeconds && sourceSeconds < t.endSeconds) {
+      return t.localStart + (sourceSeconds - t.startSeconds);
+    }
+  }
+  return null;
+}
+
+/** Map a lesson-local position back to the source video. */
+export function localToSource(
+  timings: SegmentTiming[],
+  localSeconds: number,
+): { timing: SegmentTiming; sourceSeconds: number } | null {
+  for (const t of timings) {
+    if (localSeconds >= t.localStart && localSeconds < t.localStart + t.localDuration) {
+      return { timing: t, sourceSeconds: t.startSeconds + (localSeconds - t.localStart) };
+    }
+  }
+  return null;
+}

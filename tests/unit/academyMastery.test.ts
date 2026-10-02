@@ -117,17 +117,20 @@ describe("public question stripping", () => {
 });
 
 describe("content invariants", () => {
-  it("every lesson's required steps are unique and cover checkpoints + activity + quiz + free response", () => {
+  it("every lesson's required steps are unique and cover checkpoints + quiz + all four FRQs", () => {
     for (const l of LESSONS) {
       const ids = l.requiredSectionIds;
       expect(new Set(ids).size).toBe(ids.length);
-      expect(ids).toContain(`${l.meta.id}-activity`);
       expect(ids).toContain(`${l.meta.id}-quiz`);
-      expect(ids).toContain(`${l.meta.id}-freeresponse`);
-      const checkpointIds = l.blocks
-        .filter((b) => b.kind === "checkpoint")
-        .map((b) => (b as { checkpoint: { id: string } }).checkpoint.id);
-      for (const c of checkpointIds) expect(ids).toContain(c);
+      for (const cp of l.checkpoints) expect(ids).toContain(cp.id);
+      for (const frq of l.freeResponses) expect(ids).toContain(frq.id);
+      // The quiz is exactly 10 questions: 6 auto-graded + 4 written-reasoning.
+      expect(l.freeResponses).toHaveLength(4);
+      // The activity is enrichment only - never a completion gate.
+      if (l.activity) {
+        expect(ids).not.toContain(`${l.meta.id}-activity`);
+        expect(l.optionalSectionIds).toContain(`${l.meta.id}-activity`);
+      }
     }
   });
 
@@ -136,21 +139,57 @@ describe("content invariants", () => {
     for (const l of LESSONS) expect(ids.has(l.quizId)).toBe(true);
   });
 
-  it("every lesson segment matches its intended chapter range", () => {
-    const expectRange = [
-      [0, 1043],
-      [1043, 1566],
-      [3001, 3143],
-      [3143, 3282],
-      [3282, 3702],
-      [3702, 3907],
-      [3915, 4341],
-      [4349, 6063],
-    ] as const;
-    LESSONS.forEach((l, i) => {
-      expect(l.meta.segment.start).toBe(expectRange[i]![0]);
-      expect(l.meta.segment.end).toBe(expectRange[i]![1]);
-    });
+  it("every lesson quiz is exactly 6 auto-graded questions", () => {
+    for (const q of LESSON_QUIZZES) expect(q.questions).toHaveLength(6);
+  });
+
+  it("every checkpoint is anchored to a real segment at a valid lesson-local timestamp", () => {
+    for (const l of LESSONS) {
+      const segmentIds = new Set(l.video.segments.map((s) => s.id));
+      const total = l.video.segments.reduce((sum, s) => sum + (s.endSeconds - s.startSeconds), 0);
+      for (const cp of l.checkpoints) {
+        expect(segmentIds.has(cp.segmentId)).toBe(true);
+        expect(cp.timestampSeconds).toBeGreaterThan(0);
+        expect(cp.timestampSeconds).toBeLessThan(total);
+      }
+    }
+  });
+
+  it("uses the exact source segment boundaries - never the full source video", () => {
+    // Lesson 1 deliberately starts at the conceptual material (09:09),
+    // skipping the source's intro/career portion.
+    const expected: [string, [number, number][]][] = [
+      ["m1-l1", [[549, 1043]]],
+      // Lesson 2 is a five-segment roadmap playlist (17:23 - 36:27).
+      [
+        "m1-l2",
+        [
+          [1043, 1335],
+          [1335, 1566],
+          [1566, 1833],
+          [1833, 2082],
+          [2082, 2187],
+        ],
+      ],
+      ["m1-l3", [[3001, 3143]]],
+      ["m1-l4", [[3143, 3282]]],
+      ["m1-l5", [[3282, 3702]]],
+      ["m1-l6", [[3702, 3907]]],
+      ["m1-l7", [[3915, 4341]]],
+      ["m1-l8", [[4349, 6063]]],
+    ];
+    for (const [lessonId, ranges] of expected) {
+      const lesson = LESSONS.find((l) => l.meta.id === lessonId)!;
+      expect(lesson.video.segments.map((s) => [s.startSeconds, s.endSeconds])).toEqual(ranges);
+    }
+    // No segment ever starts at the very beginning of the 11-hour source,
+    // and Module 1 video content stops before Chapter 6 (1:41:12 = 6072s).
+    for (const l of LESSONS) {
+      for (const s of l.video.segments) {
+        expect(s.startSeconds).toBeGreaterThan(0);
+        expect(s.endSeconds).toBeLessThan(6072);
+      }
+    }
   });
 
   it("XP constants stay in sync with the rules economy", () => {

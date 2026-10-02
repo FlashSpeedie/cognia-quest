@@ -46,6 +46,18 @@ test.describe("forging with a valid student session", () => {
   });
 
   test("profile PATCH cannot change role or XP", async ({ request }) => {
+    // Use a dedicated throwaway student: the shared demo account is mutated
+    // by other parallel specs (e.g. the lab's simulation XP), which would
+    // race with the before/after XP snapshot below. The assertion itself is
+    // unchanged - a client PATCH must not touch role or XP.
+    const reg = await request.post("/api/auth/register", {
+      data: {
+        email: `sec-isolated-${Date.now()}@test.dev`,
+        displayName: "Sec Isolated",
+        password: "password123",
+      },
+    });
+    expect(reg.ok()).toBeTruthy();
     const before = await (await request.fetch("/api/me")).json();
     const res = await request.fetch("/api/profile", {
       method: "PATCH",
@@ -55,6 +67,7 @@ test.describe("forging with a valid student session", () => {
     const after = await (await request.fetch("/api/me")).json();
     expect(after.user.role).toBe("student");
     expect(after.user.xpTotal).toBe(before.user.xpTotal);
+    expect(after.user.xpTotal).toBe(0); // fresh student: no XP to inflate
   });
 
   test("quiz rejects malformed payloads", async ({ request }) => {

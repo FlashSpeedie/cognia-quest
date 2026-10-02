@@ -44,7 +44,8 @@ function usePreferenceSync(prefs: ShellUser["preferences"]) {
 
 const NAV: { href: string; label: string; icon: IconName }[] = [
   { href: "/dashboard", label: "Dashboard", icon: "home" },
-  { href: "/academy-new", label: "Academy", icon: "academy" },
+  { href: "/academy", label: "Academy", icon: "academy" },
+  { href: "/academy-new", label: "Academy (New)", icon: "spark" },
   { href: "/lab", label: "AI Lab", icon: "lab" },
   { href: "/detective", label: "Detective", icon: "detective" },
   { href: "/ethics", label: "Ethics", icon: "scale" },
@@ -57,7 +58,9 @@ const NAV: { href: string; label: string; icon: IconName }[] = [
   { href: "/map", label: "Quest Map", icon: "network" },
 ];
 
-const MOBILE_NAV = NAV.filter((n) => ["/dashboard", "/academy-new", "/lab", "/detective", "/missions"].includes(n.href));
+const MOBILE_NAV = NAV.filter((n) =>
+  ["/dashboard", "/academy", "/academy-new", "/lab", "/detective", "/missions"].includes(n.href),
+);
 
 export function AppShell({
   user,

@@ -40,6 +40,10 @@ interface LessonProgressContextValue {
    * ignored by the deterministic XP pipeline anyway.
    */
   reportLessonXp: (xp: AcademyLessonXP | null | undefined) => void;
+  /** shared checkpoint results: the video overlay and the sheet cards agree */
+  checkpointResults: Readonly<Record<string, { answered: boolean; correct: boolean }>>;
+  /** record a checkpoint answer (marks the step done + shares the result) */
+  recordCheckpoint: (checkpointId: string, correct: boolean) => void;
   markDone: (sectionId: string) => void;
   /**
    * Update local state for a step the SERVER has already persisted (e.g. the
@@ -75,6 +79,9 @@ export function LessonProgressProvider({
   const [done, setDone] = useState<Set<string>>(() => new Set(initialDone));
   const [lessonXpAwarded, setLessonXpAwarded] = useState<AcademyLessonXP | null>(null);
   const [quizBest, setQuizBestState] = useState<number | null>(initialQuizBest ?? null);
+  const [checkpointResults, setCheckpointResults] = useState<
+    Record<string, { answered: boolean; correct: boolean }>
+  >({});
   const { push } = useToast();
 
   const setQuizBest = useCallback((pct: number) => {
@@ -150,6 +157,14 @@ export function LessonProgressProvider({
     });
   }, []);
 
+  const recordCheckpoint = useCallback(
+    (checkpointId: string, correct: boolean) => {
+      setCheckpointResults((prev) => ({ ...prev, [checkpointId]: { answered: true, correct } }));
+      markDone(checkpointId);
+    },
+    [markDone],
+  );
+
   const value = useMemo<LessonProgressContextValue>(() => {
     const required = requiredIds.filter((id) => done.has(id)).length;
     return {
@@ -163,11 +178,13 @@ export function LessonProgressProvider({
       quizBest,
       setQuizBest,
       reportLessonXp,
+      checkpointResults,
+      recordCheckpoint,
       markDone,
       syncLocal,
       isDone: (sectionId: string) => done.has(sectionId),
     };
-  }, [lessonId, signedIn, done, requiredIds, lessonXpAwarded, quizBest, markDone, syncLocal, setQuizBest, reportLessonXp]);
+  }, [lessonId, signedIn, done, requiredIds, lessonXpAwarded, quizBest, markDone, syncLocal, setQuizBest, reportLessonXp, checkpointResults, recordCheckpoint]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

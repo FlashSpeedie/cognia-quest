@@ -1,6 +1,6 @@
 import type { Db } from "@/server/db/db";
 import type { AcademyQuiz, AcademyQuestion } from "@/content/academy/types";
-import { LESSONS, LESSON_QUIZZES, MODULE_TEST, lessonById } from "@/content/academy";
+import { LESSONS, LESSON_QUIZZES, MODULE_TEST, lessonById, markableStepIds } from "@/content/academy";
 import { MODULE_TEST_PASS_THRESHOLD } from "@/content/academy/module-1/module";
 import type { User, LessonProgress, AcademyModuleResult, QuizAttempt } from "@/lib/types";
 import { newId } from "@/server/db/db";
@@ -140,9 +140,10 @@ export interface AcademyActionResult {
 }
 
 /**
- * Mark one of a lesson's required steps done (checkpoint answered, activity
- * completed, free response submitted). Section ids are validated against the
- * lesson's own required list, so the client can't store arbitrary markers.
+ * Mark one of a lesson's steps done (checkpoint answered, quiz passed,
+ * free response submitted, or an optional enrichment activity completed).
+ * Step ids are validated against the lesson's own markable list, so the
+ * client can't store arbitrary markers.
  */
 export async function recordAcademySection(
   db: Db,
@@ -151,7 +152,7 @@ export async function recordAcademySection(
   sectionId: string,
 ): Promise<AcademyActionResult> {
   const lesson = lessonById(lessonId);
-  if (!lesson || !lesson.requiredSectionIds.includes(sectionId)) {
+  if (!lesson || !markableStepIds(lesson).includes(sectionId)) {
     return { ok: false, error: "Unknown lesson step" };
   }
 

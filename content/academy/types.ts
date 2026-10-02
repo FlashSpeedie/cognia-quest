@@ -1,5 +1,5 @@
 /**
- * Content model for the Academy learning experience.
+ * Content model for the Academy (New) learning experience.
  *
  * All files under content/academy/ are server-side source material:
  * lesson pages and API routes read them on the server and pass plain
@@ -18,12 +18,18 @@ export interface SourceVideo {
   url: string;
 }
 
-/** The exact slice of the source video a lesson is built from. */
-export interface LessonSegment {
-  chapter: number;
-  chapterTitle: string;
-  start: number; // seconds from video start
-  end: number; // seconds from video start
+/**
+ * One focused slice of the (very long) external source video.
+ * Lessons NEVER embed the full video; they play a playlist of segments,
+ * each anchored to an exact chapter boundary from the source.
+ */
+export interface VideoSegment {
+  id: string;
+  videoId: string;
+  startSeconds: number; // absolute position in the source video
+  endSeconds: number; // absolute position in the source video
+  chapter: string; // source chapter the slice belongs to
+  label: string; // what this slice teaches
 }
 
 // ── Module & lesson metadata ──────────────────────────────────────────────
@@ -32,8 +38,7 @@ export interface AcademyLessonMeta {
   slug: string; // url segment
   order: number;
   title: string;
-  minutes: number; // estimated learning time (video + reading + practice)
-  segment: LessonSegment;
+  minutes: number; // estimated learning time (video + sheet + practice)
   summary: string;
   goals: string[];
 }
@@ -48,14 +53,7 @@ export interface AcademyModule {
   lessons: AcademyLessonMeta[];
 }
 
-// ── Explanation blocks (original Cognia Quest teaching copy) ───────────────
-export type ExplanationBlock =
-  | { kind: "text"; heading?: string; paragraphs: string[] }
-  | { kind: "callout"; variant: "info" | "warning" | "tip" | "think"; title: string; body: string }
-  | { kind: "definition"; term: string; body: string }
-  | { kind: "example"; title: string; body: string[] }
-  | { kind: "diagram"; id: DiagramId; caption?: string };
-
+// ── Lesson Sheet (the study material below the video) ─────────────────────
 export type DiagramId =
   | "ml-in-products"
   | "learning-stack"
@@ -66,10 +64,42 @@ export type DiagramId =
   | "bias-variance-spectrum"
   | "overfitting-curves";
 
-// ── Checkpoints (ungraded practice woven through the explanation) ──────────
+export interface VocabularyCard {
+  term: string;
+  body: string;
+}
+
+export interface ConceptSection {
+  title: string;
+  body: string[];
+  diagramId?: DiagramId;
+}
+
+export interface LessonSheet {
+  /** the one core idea, in plain language */
+  coreIdea: string[];
+  vocabulary: VocabularyCard[];
+  /** numbered "Concepts to Remember" sections */
+  concepts: ConceptSection[];
+  example: { title: string; body: string[] } | null;
+  /** the mix-up students commonly make with this material */
+  commonConfusion: { title: string; body: string } | null;
+  /** one short reasoning prompt ("Think About It") */
+  thinkAboutIt: string;
+  /** 3-6 concise takeaways */
+  keyTakeaways: string[];
+  /** ties the sheet back to the exact source segments */
+  sourceConnection: string;
+}
+
+// ── Checkpoints (video-tied practice) ────────────────────────────────────
 export type Checkpoint =
   | {
       id: string;
+      /** which source segment this checkpoint belongs to */
+      segmentId: string;
+      /** lesson-local time (seconds into the segment playlist) when it fires */
+      timestampSeconds: number;
       type: "choice";
       concept: string;
       scenario?: string;
@@ -80,6 +110,8 @@ export type Checkpoint =
     }
   | {
       id: string;
+      segmentId: string;
+      timestampSeconds: number;
       type: "multi";
       concept: string;
       scenario?: string;
@@ -90,6 +122,8 @@ export type Checkpoint =
     }
   | {
       id: string;
+      segmentId: string;
+      timestampSeconds: number;
       type: "order";
       concept: string;
       scenario?: string;
@@ -101,6 +135,8 @@ export type Checkpoint =
     }
   | {
       id: string;
+      segmentId: string;
+      timestampSeconds: number;
       type: "match";
       concept: string;
       scenario?: string;
@@ -112,7 +148,7 @@ export type Checkpoint =
       explanation: string;
     };
 
-// ── Interactive activities ───────────────────────────────────────────────
+// ── Interactive activities (optional enrichment, not required) ────────────
 export type ActivityKind =
   | "applications-spotter"
   | "roadmap-builder"
@@ -160,6 +196,7 @@ export type AcademyQuestion =
       correct: number[];
     });
 
+/** The auto-graded half of a lesson quiz: exactly 6 questions per lesson. */
 export interface AcademyQuiz {
   id: string;
   title: string;
@@ -167,9 +204,9 @@ export interface AcademyQuiz {
   questions: AcademyQuestion[];
 }
 
-// ── Free response (AI-assisted rubric feedback) ───────────────────────────
+// ── Free response (the reasoning half of the quiz: 4 per lesson) ─────────
 export interface FreeResponseDef {
-  id: string;
+  id: string; // doubles as the persistable step id, e.g. "fr-m1-l3-2"
   prompt: string;
   guidance: string;
   /** ideas a strong answer should touch - drives the deterministic check */
@@ -183,15 +220,20 @@ export interface FreeResponseDef {
 export interface AcademyLesson {
   meta: AcademyLessonMeta;
   moduleId: string;
-  /** explanation blocks rendered before the checkpoints */
-  intro: ExplanationBlock[];
-  /** interleaved explanation + checkpoint flow after the video */
-  blocks: (ExplanationBlock | { kind: "checkpoint"; checkpoint: Checkpoint })[];
+  /** the focused source-segment playlist for this lesson */
+  video: { segments: VideoSegment[] };
+  sheet: LessonSheet;
+  /** pause-and-think moments tied to video timestamps */
+  checkpoints: Checkpoint[];
   activity: ActivityDef | null;
+  /** the 6 auto-graded questions */
   quizId: string;
-  freeResponse: FreeResponseDef | null;
-  /** ids the server treats as "required steps" for lesson completion */
+  /** the 4 reasoning/free-response questions */
+  freeResponses: FreeResponseDef[];
+  /** steps that must ALL be done for lesson completion */
   requiredSectionIds: string[];
+  /** genuine interactions that are enrichment only (never block completion) */
+  optionalSectionIds: string[];
 }
 
 // ── References ────────────────────────────────────────────────────────────

@@ -9,7 +9,7 @@ import { Icon } from "@/components/ui/Icon";
  * - retrieves only relevant Module 1 knowledge chunks per question
  * - refuses to answer active graded assessment questions
  * - returns the answer plus lesson source references, rendered here as
- *   "Jump to lesson" links.
+ *   clickable links that open the lesson at the exact source segment (?t=).
  */
 
 interface TutorSource {
@@ -30,11 +30,10 @@ interface Turn {
 const MAX_QUESTION = 600;
 
 const SUGGESTIONS = [
-  "Explain this more simply",
+  "Explain this simply",
   "Give me an example",
-  "What's the difference between these two ideas?",
-  "What should I remember for the quiz?",
-  "Connect this idea to a real-world example",
+  "What's the difference?",
+  "Help me review",
 ];
 
 export function TutorChat({ lessonId, lessonTitle }: { lessonId: string; lessonTitle: string }) {
@@ -97,13 +96,13 @@ export function TutorChat({ lessonId, lessonTitle }: { lessonId: string; lessonT
     void ask(question);
   }
 
-  const LESSON_LINK = (lessonId: string) => `/academy-new/module/1/lesson/${LESSON_SLUGS[lessonId] ?? ""}`;
-
   return (
-    <div>
+    <div className="flex min-h-0 flex-1 flex-col">
       {turns.length === 0 && (
         <div className="px-5 pt-4">
-          <p className="text-sm text-ink-dim">Get help using the concepts covered in this module.</p>
+          <p className="text-sm text-ink-dim">
+            Ask anything about this lesson: {lessonTitle}. The tutor only uses what Module 1 teaches.
+          </p>
           <p className="mt-3 text-[11px] font-bold uppercase tracking-widest text-ink-faint">Try asking</p>
           <div className="mt-2 flex flex-wrap gap-2">
             {SUGGESTIONS.map((s) => (
@@ -121,7 +120,11 @@ export function TutorChat({ lessonId, lessonTitle }: { lessonId: string; lessonT
         </div>
       )}
 
-      <div ref={listRef} className="max-h-[420px] space-y-3 overflow-y-auto px-5 py-4" aria-live="polite">
+      <div
+        ref={listRef}
+        className="min-h-0 flex-1 space-y-3 overflow-y-auto px-5 py-4"
+        aria-live="polite"
+      >
         {turns.map((t, i) =>
           t.role === "student" ? (
             <div key={i} className="flex justify-end">
@@ -146,13 +149,13 @@ export function TutorChat({ lessonId, lessonTitle }: { lessonId: string; lessonT
                       {t.sources.slice(0, 2).map((s) => (
                         <li key={`${s.lessonId}-${s.start}`}>
                           <a
-                            href={LESSON_LINK(s.lessonId)}
+                            href={`/academy-new/module/1/lesson/${LESSON_SLUGS[s.lessonId] ?? ""}?t=${s.start}`}
                             className="text-xs font-semibold text-pulse-700 underline-offset-2 hover:underline focus-ring dark:text-pulse-300"
                           >
                             {LESSON_TITLES[s.lessonId] ?? s.lessonId}
                           </a>
                           <span className="ml-1.5 font-mono text-[11px] text-ink-faint">
-                            · segment {formatSeg(s.start)}–{formatSeg(s.end)}
+                            · source {formatSeg(s.start)}–{formatSeg(s.end)}
                           </span>
                         </li>
                       ))}
@@ -171,7 +174,11 @@ export function TutorChat({ lessonId, lessonTitle }: { lessonId: string; lessonT
       </div>
 
       <form onSubmit={onSubmit} className="border-t border-void-700/60 px-5 py-3.5">
-        {error && <p role="alert" className="mb-2 text-xs text-rose-600 dark:text-rose-400">{error}</p>}
+        {error && (
+          <p role="alert" className="mb-2 text-xs text-rose-600 dark:text-rose-400">
+            {error}
+          </p>
+        )}
         <div className="flex items-end gap-2">
           <label htmlFor="tutor-question" className="sr-only">
             Your question about {lessonTitle}
@@ -187,7 +194,7 @@ export function TutorChat({ lessonId, lessonTitle }: { lessonId: string; lessonT
               }
             }}
             rows={2}
-            placeholder="Ask anything about this lesson's ideas..."
+            placeholder="Ask anything about this lesson..."
             className="min-h-11 flex-1 resize-none rounded-lg border border-void-700 bg-void-850 px-3.5 py-2.5 text-sm text-ink placeholder:text-ink-faint focus-ring"
           />
           <button
@@ -200,7 +207,7 @@ export function TutorChat({ lessonId, lessonTitle }: { lessonId: string; lessonT
           </button>
         </div>
         <p className="mt-1.5 text-[11px] text-ink-faint">
-          Answers stay inside the Module 1 material. The tutor never shares graded quiz or test answers.
+          Answers stay inside Module 1, and the tutor never shares graded quiz or test answers.
         </p>
       </form>
     </div>

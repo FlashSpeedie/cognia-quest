@@ -492,7 +492,7 @@ function ModuleTestResult({
                   href="/academy-new"
                   className="inline-flex items-center gap-2 rounded-lg bg-pulse-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-pulse-700 focus-ring"
                 >
-                  Back to the Academy
+                  Back to Academy (New)
                   <Icon name="arrow-right" size={15} aria-hidden="true" />
                 </a>
                 <a
