@@ -91,7 +91,7 @@ export const lesson7: AcademyLesson = {
       "Bias and variance are reducible; noise in the world is the irreducible floor.",
     ],
     sourceConnection:
-      "This lesson plays the source segment 1:05:15\u20131:12:21 (Chapter 4 — Bias-Variance Trade-off), where LunarTech explains how model flexibility drives bias, variance and the expected test error relationship.",
+      "This lesson plays the source segment 1:05:15\u20131:12:21 (Chapter 4 - Bias-Variance Trade-off), where LunarTech explains how model flexibility drives bias, variance and the expected test error relationship.",
   },
   checkpoints: [
     {
@@ -152,7 +152,7 @@ export const lesson7: AcademyLesson = {
   ],
   activity: {
     kind: "flexibility-slider",
-    heading: "Optional exercise — Model flexibility explorer",
+    heading: "Optional exercise - Model flexibility explorer",
     intro:
       "Drag the slider from a rigid model to an extremely flexible one and watch bias, variance and noise-sensitivity shift. A conceptual visualization - not an exact simulation.",
   },
@@ -220,6 +220,8 @@ export const lesson7: AcademyLesson = {
     "m1-l7-cp1",
     "m1-l7-cp2",
     "m1-l7-cp3",
+    "m1-l7-sheet",
+    "m1-l7-refs",
     "m1-l7-quiz",
     "fr-m1-l7-1",
     "fr-m1-l7-2",

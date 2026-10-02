@@ -6,16 +6,16 @@ import { Button } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
 import { useToast } from "@/components/ui/Toast";
 import { ChoiceGroup, OrderGroup, MatchGroup } from "./QuestionControls";
-import { useLessonProgress, SignInToSaveNotice } from "./LessonProgressContext";
+import { SignInToSaveNotice } from "./LessonProgressContext";
 
 /**
- * Shared quiz/test runner for the Academy.
+ * Shared runner for the Module 1 test (the lesson quizzes use the
+ * sequential LessonQuizFlow instead).
  *
  * - Questions arrive WITHOUT answers (server strips correct/explanation);
  *   graded feedback comes only from the POST /api/academy/quiz response.
- * - Lesson mode: score, best-score tracking, retry, and progress marking.
- * - Module-test mode: adds the pass threshold verdict, missed-topic review
- *   and the module completion state.
+ * - Module-test mode: pass threshold verdict, missed-topic review and the
+ *   module completion state.
  * - Guest mode: full graded feedback, honest notice that nothing was saved.
  */
 
@@ -51,16 +51,10 @@ const DIFFICULTY_LABEL: Record<string, string> = {
   reasoning: "Reason it out",
 };
 
-/** quizId "quiz-m1-l3" -> lessonId "m1-l3" (quiz ids follow this one convention). */
-function lessonIdFromQuiz(quizId: string): string {
-  return quizId.startsWith("quiz-") ? quizId.slice(5) : quizId;
-}
-
 export function QuizRunner({
   quizId,
   questions,
   signedIn,
-  mode,
   initialBest,
   initialAttempts,
   passThreshold,
@@ -69,13 +63,11 @@ export function QuizRunner({
   quizId: string;
   questions: PublicAcademyQuestion[];
   signedIn: boolean;
-  mode: "lesson" | "module-test";
   initialBest?: number | null;
   initialAttempts?: number;
   passThreshold?: number;
   masteryThresholdPct?: number;
 }) {
-  const { syncLocal, setQuizBest, reportLessonXp } = useLessonProgress();
   const { push } = useToast();
 
   // Per-question answer state, keyed by question index.
@@ -143,28 +135,22 @@ export function QuizRunner({
       if (typeof data.quizBest === "number") setBest(data.quizBest);
       else if (!data.guest) setBest((b) => Math.max(b ?? 0, data.pct));
       if (typeof data.attempts === "number") setAttempts(data.attempts);
-      if (!data.guest) setQuizBest(Math.max(best ?? 0, data.pct));
 
       if (!data.guest) {
         if (data.xp && data.xp.awarded > 0) {
           push({
             kind: "xp",
             title: `+${data.xp.awarded} XP`,
-            body: mode === "lesson" ? `Quiz scored ${data.score}/${data.total}` : `Module test: ${data.pct}%`,
+            body: `Module test: ${data.pct}%`,
           });
         }
-        if (data.lessonXp && data.lessonXp.awarded > 0) {
-          reportLessonXp(data.lessonXp);
-        }
-        const xp = data.xp ?? data.lessonXp;
+        const xp = data.xp;
         if (xp?.leveledUp) {
           push({ kind: "success", title: "Level up!", body: `You're now ${xp.leveledUp.to} (Level ${xp.leveledUp.level}).` });
         }
         for (const b of data.badges ?? []) {
           push({ kind: "badge", title: `Badge unlocked: ${b.title}`, body: "See it in your trophy room." });
         }
-        // The server persisted the quiz step (when score >= 50%); sync the bar.
-        if (mode === "lesson" && data.pct >= 50) syncLocal(`${lessonIdFromQuiz(quizId)}-quiz`);
       }
     } catch {
       setError("Network hiccup - your answers weren't submitted. Try again.");
@@ -290,7 +276,7 @@ export function QuizRunner({
       {!result && (
         <div className="mt-5 flex flex-wrap items-center gap-3">
           <Button onClick={submit} disabled={!answeredAll} loading={submitting} size="lg">
-            Submit {mode === "lesson" ? "quiz" : "test"}
+            Submit test
           </Button>
           {!answeredAll && (
             <span className="text-xs text-ink-faint">Answer every question to submit.</span>
@@ -301,26 +287,16 @@ export function QuizRunner({
       {/* Result */}
       {result && (
         <div aria-live="polite" className="mt-5">
-          {mode === "module-test" ? (
-            <ModuleTestResult
-              result={result}
-              passThreshold={passThreshold ?? 80}
-              missedTopics={missedTopics}
-              signedIn={signedIn}
-              best={best}
-              attempts={attempts}
-              masteryThresholdPct={masteryThresholdPct}
-              onRetry={retry}
-            />
-          ) : (
-            <LessonQuizResult
-              result={result}
-              signedIn={signedIn}
-              best={best}
-              attempts={attempts}
-              onRetry={retry}
-            />
-          )}
+          <ModuleTestResult
+            result={result}
+            passThreshold={passThreshold ?? 80}
+            missedTopics={missedTopics}
+            signedIn={signedIn}
+            best={best}
+            attempts={attempts}
+            masteryThresholdPct={masteryThresholdPct}
+            onRetry={retry}
+          />
         </div>
       )}
 
@@ -328,76 +304,6 @@ export function QuizRunner({
         <div className="mt-4">
           <SignInToSaveNotice body="You're browsing as a guest - sign in to record scores and earn XP when you submit." />
         </div>
-      )}
-
-      {/* Lesson quiz counts for lesson completion when signed in. */}
-      {mode === "lesson" && signedIn && result && !result.guest && best !== null && best >= 50 && (
-        <p className="sr-only" aria-live="polite">
-          Quiz submitted. Best score {best} percent.
-        </p>
-      )}
-    </div>
-  );
-}
-
-function LessonQuizResult({
-  result,
-  signedIn,
-  best,
-  attempts,
-  onRetry,
-}: {
-  result: QuizResponse;
-  signedIn: boolean;
-  best: number | null;
-  attempts: number;
-  onRetry: () => void;
-}) {
-  const perfect = result.score === result.total;
-  const pct = result.pct;
-  return (
-    <div className="rounded-xl border border-void-700/70 bg-void-900 p-5 shadow-card">
-      <div className="flex flex-wrap items-center gap-4">
-        <div
-          aria-hidden="true"
-          className={`flex h-12 w-12 items-center justify-center rounded-xl ${
-            pct >= 80 ? "bg-mint-500/15 text-mint-600" : pct >= 50 ? "bg-pulse-500/15 text-pulse-600" : "bg-amber-500/15 text-amber-600"
-          }`}
-        >
-          <Icon name={pct >= 50 ? "trophy" : "brain"} size={24} />
-        </div>
-        <div className="min-w-0 flex-1">
-          <p className="font-display text-lg font-bold text-ink">
-            {result.score}/{result.total} correct —{" "}
-            {perfect ? "flawless." : pct >= 80 ? "mastered." : pct >= 50 ? "passed." : "keep practicing."}
-          </p>
-          <p className="mt-0.5 text-sm text-ink-dim">
-            {result.guest ? (
-              <>Guest attempt — not saved. <a href="/login" className="font-semibold text-pulse-700 underline-offset-2 hover:underline focus-ring dark:text-pulse-300">Sign in</a> to record it.</>
-            ) : (
-              <>
-                Best: <span className="font-semibold text-ink">{best}%</span>
-                {attempts > 1 ? <> · {attempts} attempts</> : null}
-                {result.xp && result.xp.awarded > 0 ? <> · +{result.xp.awarded} XP earned</> : null}
-              </>
-            )}
-          </p>
-        </div>
-      </div>
-      {!perfect && (
-        <Button variant="secondary" size="sm" className="mt-4" onClick={onRetry}>
-          Try again
-        </Button>
-      )}
-      {perfect && (
-        <Button variant="ghost" size="sm" className="mt-4" onClick={onRetry}>
-          Retake for practice
-        </Button>
-      )}
-      {signedIn && pct < 80 && (
-        <p className="mt-3 text-xs text-ink-faint">
-          Score 80% or higher to mark this lesson as mastered. Retries never lower your best score.
-        </p>
       )}
     </div>
   );
@@ -440,10 +346,10 @@ function ModuleTestResult({
         </div>
         <div className="min-w-0 flex-1">
           <p className="font-display text-xl font-bold text-ink">
-            {passed ? "Module test passed." : "Not there yet — and that's fine."}
+            {passed ? "Module test passed." : "Not there yet - and that's fine."}
           </p>
           <p className="mt-1 text-sm text-ink-dim">
-            {result.score}/{result.total} correct — {result.pct}%
+            {result.score}/{result.total} correct - {result.pct}%
             {!result.guest && typeof result.bestScore === "number" && (
               <>
                 {" "}· best {result.bestScore}%
@@ -540,7 +446,7 @@ function ModuleTestResult({
             ))}
           </ul>
           <p className="mt-2 text-xs text-ink-faint">
-            Each question above shows the full explanation — the topics listed here are where to focus.
+            Each question above shows the full explanation - the topics listed here are where to focus.
           </p>
         </div>
       )}

@@ -233,12 +233,12 @@ const LESSON_SLUGS: Record<string, string> = {
 };
 
 const LESSON_TITLES: Record<string, string> = {
-  "m1-l1": "Lesson 1 — Welcome to Machine Learning",
-  "m1-l2": "Lesson 2 — The Machine Learning Roadmap",
-  "m1-l3": "Lesson 3 — Supervised vs. Unsupervised Learning",
-  "m1-l4": "Lesson 4 — Regression vs. Classification",
-  "m1-l5": "Lesson 5 — How Do We Know a Model Is Working?",
-  "m1-l6": "Lesson 6 — Training, Validation, and Testing",
-  "m1-l7": "Lesson 7 — Bias and Variance",
-  "m1-l8": "Lesson 8 — Overfitting and Generalization",
+  "m1-l1": "Lesson 1 - Welcome to Machine Learning",
+  "m1-l2": "Lesson 2 - The Machine Learning Roadmap",
+  "m1-l3": "Lesson 3 - Supervised vs. Unsupervised Learning",
+  "m1-l4": "Lesson 4 - Regression vs. Classification",
+  "m1-l5": "Lesson 5 - How Do We Know a Model Is Working?",
+  "m1-l6": "Lesson 6 - Training, Validation, and Testing",
+  "m1-l7": "Lesson 7 - Bias and Variance",
+  "m1-l8": "Lesson 8 - Overfitting and Generalization",
 };

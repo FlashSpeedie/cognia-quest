@@ -57,7 +57,8 @@ export default async function AcademyLayout({ children }: { children: ReactNode 
   return (
     <div className="app-backdrop min-h-screen">
       <AcademyHeader />
-      <main id="main" className="mx-auto max-w-6xl px-4 pb-8 pt-8 sm:px-6">
+      {/* pb-24 keeps content clear of the fixed bottom-right tutor pill */}
+      <main id="main" className="mx-auto max-w-6xl px-4 pb-24 pt-8 sm:px-6">
         {children}
       </main>
       <AcademyFooter />

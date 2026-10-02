@@ -122,6 +122,9 @@ describe("content invariants", () => {
       const ids = l.requiredSectionIds;
       expect(new Set(ids).size).toBe(ids.length);
       expect(ids).toContain(`${l.meta.id}-quiz`);
+      // The two read-through sections are required steps too.
+      expect(ids).toContain(`${l.meta.id}-sheet`);
+      expect(ids).toContain(`${l.meta.id}-refs`);
       for (const cp of l.checkpoints) expect(ids).toContain(cp.id);
       for (const frq of l.freeResponses) expect(ids).toContain(frq.id);
       // The quiz is exactly 10 questions: 6 auto-graded + 4 written-reasoning.

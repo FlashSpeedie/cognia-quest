@@ -34,7 +34,7 @@ export default function AcademyReferencesPage() {
       {primary && (
         <section aria-labelledby="primary-heading" className="mt-8 rounded-xl border border-pulse-400/40 bg-pulse-400/5 px-5 py-5">
           <h2 id="primary-heading" className="text-[11px] font-bold uppercase tracking-widest text-pulse-700 dark:text-pulse-300">
-            Primary video source — Module 1
+            Primary video source: Module 1
           </h2>
           <p className="mt-2 font-display text-lg font-bold text-ink">{primary.title}</p>
           <dl className="mt-3 space-y-1.5 text-sm text-ink-dim">

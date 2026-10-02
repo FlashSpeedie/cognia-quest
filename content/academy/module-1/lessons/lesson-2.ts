@@ -136,7 +136,7 @@ export const lesson2: AcademyLesson = {
   ],
   activity: {
     kind: "roadmap-builder",
-    heading: "Optional exercise — Build the roadmap",
+    heading: "Optional exercise - Build the roadmap",
     intro: "Assemble the five layers in order. Use the move buttons (or your keyboard) to arrange the stack, then check your work.",
   },
   quizId: "quiz-m1-l2",
@@ -202,6 +202,8 @@ export const lesson2: AcademyLesson = {
     "m1-l2-cp1",
     "m1-l2-cp2",
     "m1-l2-cp3",
+    "m1-l2-sheet",
+    "m1-l2-refs",
     "m1-l2-quiz",
     "fr-m1-l2-1",
     "fr-m1-l2-2",

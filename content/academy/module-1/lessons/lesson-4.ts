@@ -79,7 +79,7 @@ export const lesson4: AcademyLesson = {
       "House prices, temperatures and durations are regression; spam verdicts and diagnoses are classification.",
     ],
     sourceConnection:
-      "This lesson plays the source segment 52:23\u201354:42 (Chapter 3 — ML Basics), where LunarTech separates regression (continuous outputs like house-price prediction) from classification (categorical outputs like spam/not-spam).",
+      "This lesson plays the source segment 52:23\u201354:42 (Chapter 3 - ML Basics), where LunarTech separates regression (continuous outputs like house-price prediction) from classification (categorical outputs like spam/not-spam).",
   },
   checkpoints: [
     {
@@ -142,7 +142,7 @@ export const lesson4: AcademyLesson = {
   ],
   activity: {
     kind: "task-chooser",
-    heading: "Optional exercise — Choose the ML task",
+    heading: "Optional exercise - Choose the ML task",
     intro:
       "Six scenarios. For each, decide whether the right task is regression, classification, or unsupervised learning - then read the reasoning.",
   },
@@ -209,6 +209,8 @@ export const lesson4: AcademyLesson = {
     "m1-l4-cp1",
     "m1-l4-cp2",
     "m1-l4-cp3",
+    "m1-l4-sheet",
+    "m1-l4-refs",
     "m1-l4-quiz",
     "fr-m1-l4-1",
     "fr-m1-l4-2",

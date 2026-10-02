@@ -35,6 +35,13 @@ export const LESSON_XP = 50;
 /** XP awarded the first time a student passes the module test. */
 export const MODULE_TEST_XP = 150;
 
+/**
+ * Quiz score (percent) a lesson requires to count as passed: completing a
+ * lesson (and unlocking the next one) requires this score. Defined here so
+ * client-side section logic and server-side grading share one constant.
+ */
+export const LESSON_MASTERY_THRESHOLD = 80;
+
 // Deterministic mastery buckets for a lesson (percent).
 export const MASTERY_NOT_STARTED = 0;
 export const MASTERY_LEARNING = 40;
@@ -122,6 +129,127 @@ export function formatDuration(totalSeconds: number): string {
   const sec = s % 60;
   if (m === 0) return `${sec}s`;
   return `${m}m ${sec}s`;
+}
+
+// ── Sequential lesson sections ──────────────────────────────────────────────
+
+/** The four sequential sections of every Academy (New) lesson, in order. */
+export const LESSON_SECTION_KEYS = ["video", "lesson", "references", "quiz"] as const;
+export type LessonSectionKey = (typeof LESSON_SECTION_KEYS)[number];
+
+export const LESSON_SECTION_LABELS: Record<LessonSectionKey, string> = {
+  video: "Video",
+  lesson: "Lesson Sheet",
+  references: "References",
+  quiz: "Quiz",
+};
+
+export function isLessonSectionKey(v: string | null | undefined): v is LessonSectionKey {
+  return v != null && (LESSON_SECTION_KEYS as readonly string[]).includes(v);
+}
+
+/** Persistable step ids for the two read-through sections. */
+export function lessonSheetStepId(lessonId: string): string {
+  return `${lessonId}-sheet`;
+}
+export function lessonReferencesStepId(lessonId: string): string {
+  return `${lessonId}-refs`;
+}
+export function lessonQuizStepId(lessonId: string): string {
+  return `${lessonId}-quiz`;
+}
+
+/** Completion state of each sequential section, derived from persisted steps. */
+export interface LessonSectionProgress {
+  videoDone: boolean;
+  sheetDone: boolean;
+  referencesDone: boolean;
+  quizDone: boolean;
+}
+
+/**
+ * Derive per-section completion from the persisted step ids. A lesson whose
+ * row is already "completed" counts as fully done in every section, so
+ * students can review without the UI re-locking older work.
+ */
+export function lessonSectionProgress(input: {
+  lessonCompleted: boolean;
+  checkpointIds: readonly string[];
+  sheetStepId: string;
+  referencesStepId: string;
+  quizStepId: string;
+  quizBest: number | null;
+  done: ReadonlySet<string> | readonly string[];
+}): LessonSectionProgress {
+  if (input.lessonCompleted) {
+    return { videoDone: true, sheetDone: true, referencesDone: true, quizDone: true };
+  }
+  const done = input.done instanceof Set ? input.done : new Set(input.done);
+  const quizDone = done.has(input.quizStepId) && (input.quizBest ?? 0) >= LESSON_MASTERY_THRESHOLD;
+  return {
+    videoDone: input.checkpointIds.every((id) => done.has(id)),
+    sheetDone: done.has(input.sheetStepId),
+    referencesDone: done.has(input.referencesStepId),
+    quizDone,
+  };
+}
+
+/**
+ * Sequential access: Video is always open; the Lesson Sheet needs the video
+ * checkpoints; References needs the sheet; the Quiz needs everything before
+ * it. Completed sections stay open for review.
+ */
+export function lessonSectionUnlocked(key: LessonSectionKey, p: LessonSectionProgress): boolean {
+  switch (key) {
+    case "video":
+      return true;
+    case "lesson":
+      return p.videoDone;
+    case "references":
+      return p.videoDone && p.sheetDone;
+    case "quiz":
+      return p.videoDone && p.sheetDone && p.referencesDone;
+  }
+}
+
+/** Is a section fully complete? */
+export function lessonSectionDone(key: LessonSectionKey, p: LessonSectionProgress): boolean {
+  switch (key) {
+    case "video":
+      return p.videoDone;
+    case "lesson":
+      return p.sheetDone;
+    case "references":
+      return p.referencesDone;
+    case "quiz":
+      return p.quizDone;
+  }
+}
+
+/**
+ * The section a returning student should land on: the first section that is
+ * unlocked but not yet complete. A fully complete lesson lands back on the
+ * video for review.
+ */
+export function defaultLessonSection(p: LessonSectionProgress): LessonSectionKey {
+  for (const key of LESSON_SECTION_KEYS) {
+    if (lessonSectionUnlocked(key, p) && !lessonSectionDone(key, p)) return key;
+  }
+  return "video";
+}
+
+/**
+ * Server-side guard for deep links: a requested section the student has not
+ * unlocked yet falls back to their current (default) section, so locked
+ * content can never be reached by editing the URL.
+ */
+export function clampLessonSection(
+  requested: LessonSectionKey | null,
+  p: LessonSectionProgress,
+): LessonSectionKey {
+  const fallback = defaultLessonSection(p);
+  if (requested == null) return fallback;
+  return lessonSectionUnlocked(requested, p) ? requested : fallback;
 }
 
 /** "00:48" / "02:22" - player timeline clock. */

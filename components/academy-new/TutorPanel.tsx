@@ -10,6 +10,11 @@ import { Icon } from "@/components/ui/Icon";
  * happens only when a question is submitted (server-side, Module 1
  * grounded). Desktop opens a right-side help panel; mobile opens a bottom
  * sheet.
+ *
+ * The entry point is ONE floating pill, anchored to the bottom-right on
+ * every breakpoint: 24px from the edges on desktop; 16px from the right on
+ * mobile, lifted above the app's bottom navigation and safe-area aware so
+ * it never covers the Next button, quiz controls or checkpoint panel.
  */
 const TutorChat = dynamic(() => import("./TutorChat").then((m) => m.TutorChat), {
   ssr: false,
@@ -34,37 +39,14 @@ export function TutorPanel({ lessonId, lessonTitle }: { lessonId: string; lesson
 
   return (
     <>
-      {/* Entry point: sits at the end of the lesson, and as a floating pill */}
-      <section aria-label="Lesson learning assistant" className="mt-4">
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          data-tutor-open
-          className="flex w-full items-center gap-4 rounded-xl border border-volt-400/40 bg-void-900 px-5 py-4 text-left shadow-card transition-colors hover:border-volt-400/70 focus-ring"
-        >
-          <span
-            aria-hidden="true"
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-volt-400/15 text-volt-600 dark:text-volt-300"
-          >
-            <Icon name="chat" size={20} />
-          </span>
-          <span className="min-w-0">
-            <span className="block font-display text-base font-bold text-ink">Need a hand?</span>
-            <span className="mt-0.5 block truncate text-sm text-ink-dim">
-              Ask about the concepts in this lesson.
-            </span>
-          </span>
-          <Icon name="arrow-right" size={16} className="ml-auto shrink-0 text-ink-faint" aria-hidden="true" />
-        </button>
-      </section>
-
-      {/* Floating pill - reachable while reading anywhere on the page */}
+      {/* Floating pill: fixed bottom-right, always reachable while reading */}
       {!open && (
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="fixed bottom-20 right-4 z-40 flex items-center gap-2 rounded-full bg-volt-600 px-4 py-2.5 text-sm font-semibold text-white shadow-pop transition-transform hover:scale-105 focus-ring md:bottom-6 md:right-6 lg:right-[calc(1.5rem+17rem)]"
+          data-tutor-open
           aria-label="Open the learning assistant (Need a hand?)"
+          className="fixed bottom-[calc(4.25rem+env(safe-area-inset-bottom))] right-4 z-40 flex items-center gap-2 rounded-full bg-volt-600 px-4 py-2.5 text-sm font-semibold text-white shadow-pop transition-transform hover:scale-105 focus-ring md:bottom-6 md:right-6"
         >
           <Icon name="chat" size={15} aria-hidden="true" /> Need a hand?
         </button>

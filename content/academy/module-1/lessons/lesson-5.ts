@@ -53,7 +53,7 @@ export const lesson5: AcademyLesson = {
     ],
     concepts: [
       {
-        title: "Regression metrics — measuring the size of a miss",
+        title: "Regression metrics - measuring the size of a miss",
         body: [
           "For regression, judging is simple in principle: compare each prediction with the true value. The difference - predicted minus actual - is the error for that example. A prediction of $310,000 against a real price of $300,000 misses by $10,000. Metrics exist because \"look at all the misses\" doesn't scale - we need one number that summarizes the whole pattern.",
           "MAE takes every miss, ignores its direction, and averages the sizes: \"on average, how far off are we?\" Because it's an average of plain distances, MAE is in the same units as the target - an MAE of $8,000 means the model's typical price estimate is off by about eight thousand dollars. Every dollar of error counts equally.",
@@ -61,7 +61,7 @@ export const lesson5: AcademyLesson = {
         ],
       },
       {
-        title: "Classification metrics — counting kinds of right and wrong",
+        title: "Classification metrics - counting kinds of right and wrong",
         body: [
           "Accuracy is the metric most people know: the share of predictions that were simply correct. It's intuitive, and for balanced problems it's fine. But accuracy hides a dangerous trap.",
           "Suppose 99% of email is legitimate. A \"model\" that just labels everything \"not spam\" - never reading a single message - scores 99% accuracy while catching exactly zero spam. When one category dominates the data, accuracy can look brilliant while the model is useless. The way out is to count the kinds of right and wrong separately.",
@@ -70,7 +70,7 @@ export const lesson5: AcademyLesson = {
         diagramId: "metric-dashboard",
       },
       {
-        title: "Unsupervised metrics — judging structure without an answer key",
+        title: "Unsupervised metrics - judging structure without an answer key",
         body: [
           "How do you grade a model when there was never a correct answer? For clustering, quality metrics take two angles. Homogeneity asks: does each group contain only one kind of thing? Completeness asks: is each kind of thing fully inside one group? The silhouette score takes a different approach: it measures how snugly each example fits its own group compared to the nearest other group - rewarding clusters that are tight inside and well separated from each other. Higher is better.",
           "Don't worry about memorizing formulas - what matters is the idea: even without labels, we can still ask principled questions about whether discovered structure is meaningful.",
@@ -99,7 +99,7 @@ export const lesson5: AcademyLesson = {
       "Choose the metric that matches what a mistake costs.",
     ],
     sourceConnection:
-      "This lesson plays the source segment 54:42\u20131:01:42 (Chapter 3 — ML Basics), where LunarTech walks through the evaluation metrics for regression (RSS, MSE, RMSE, MAE), classification (accuracy, precision, recall, F1) and unsupervised models (homogeneity, silhouette score, completeness).",
+      "This lesson plays the source segment 54:42\u20131:01:42 (Chapter 3 - ML Basics), where LunarTech walks through the evaluation metrics for regression (RSS, MSE, RMSE, MAE), classification (accuracy, precision, recall, F1) and unsupervised models (homogeneity, silhouette score, completeness).",
   },
   checkpoints: [
     {
@@ -168,7 +168,7 @@ export const lesson5: AcademyLesson = {
   ],
   activity: {
     kind: "metric-detective",
-    heading: "Optional exercise — Metric detective",
+    heading: "Optional exercise - Metric detective",
     intro: "Five cases, each with a hidden need. Read the situation, pick the metric that fits, and find out why.",
   },
   quizId: "quiz-m1-l5",
@@ -235,6 +235,8 @@ export const lesson5: AcademyLesson = {
     "m1-l5-cp2",
     "m1-l5-cp3",
     "m1-l5-cp4",
+    "m1-l5-sheet",
+    "m1-l5-refs",
     "m1-l5-quiz",
     "fr-m1-l5-1",
     "fr-m1-l5-2",

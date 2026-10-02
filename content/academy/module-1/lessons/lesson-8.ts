@@ -106,7 +106,7 @@ export const lesson8: AcademyLesson = {
       "Generalization to unseen data is the goal every tool in this lesson serves.",
     ],
     sourceConnection:
-      "This lesson plays the source segment 1:12:29\u20131:41:03 (Chapter 5 — Overfitting & Regularization), where LunarTech covers low training error versus high test error, noise, model complexity, and the approaches for reducing overfitting - including regularization techniques such as ridge (L2) and lasso (L1), whose conceptual purpose (penalizing complexity) this lesson teaches. Module 1's video content ends here, immediately before the source's Chapter 6 on linear regression.",
+      "This lesson plays the source segment 1:12:29\u20131:41:03 (Chapter 5 - Overfitting & Regularization), where LunarTech covers low training error versus high test error, noise, model complexity, and the approaches for reducing overfitting - including regularization techniques such as ridge (L2) and lasso (L1), whose conceptual purpose (penalizing complexity) this lesson teaches. Module 1's video content ends here, immediately before the source's Chapter 6 on linear regression.",
   },
   checkpoints: [
     {
@@ -166,7 +166,7 @@ export const lesson8: AcademyLesson = {
   ],
   activity: {
     kind: "overfitting-detective",
-    heading: "Optional exercise — Overfitting detective",
+    heading: "Optional exercise - Overfitting detective",
     intro:
       "Four model scenarios, each with training and test performance. Classify each as underfitting, a reasonable fit, or overfitting - then read the reasoning.",
   },
@@ -233,6 +233,8 @@ export const lesson8: AcademyLesson = {
     "m1-l8-cp1",
     "m1-l8-cp2",
     "m1-l8-cp3",
+    "m1-l8-sheet",
+    "m1-l8-refs",
     "m1-l8-quiz",
     "fr-m1-l8-1",
     "fr-m1-l8-2",

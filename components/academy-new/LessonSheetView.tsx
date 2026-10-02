@@ -148,9 +148,12 @@ export function LessonSheetView({ lesson }: { lesson: AcademyLesson }) {
         <p className="text-[11px] font-bold uppercase tracking-widest text-ink-faint">Source connection</p>
         <p className="mt-1.5 text-sm leading-relaxed text-ink-dim">{sheet.sourceConnection}</p>
         <p className="mt-2 font-mono text-[11px] text-ink-faint">
-          {segments
-            .map((s) => `${s.label}: ${formatSegment(s.startSeconds, s.endSeconds)}`)
-            .join("  ·  ")}
+          Source segment{segments.length === 1 ? "" : "s"}:{" "}
+          {formatSegment(
+            Math.min(...segments.map((s) => s.startSeconds)),
+            Math.max(...segments.map((s) => s.endSeconds)),
+          )}
+          {" · full citation in the References section of this lesson"}
         </p>
       </div>
     </section>

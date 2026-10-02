@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getSessionUser } from "@/server/auth/session";
 import { getDb } from "@/server/db/db";
-import { getAcademyModuleState, lessonMasteryPcts } from "@/server/services/academyProgress";
+import { getAcademyModuleState, lessonMasteryPcts, lessonNavItems } from "@/server/services/academyProgress";
 import { MODULE_1, MODULE_TEST_PASS_THRESHOLD, LESSON_MASTERY_THRESHOLD } from "@/content/academy/module-1/module";
 import { LESSONS } from "@/content/academy";
 import {
@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: { params: Promise<{ module: s
   const { module: num } = await params;
   if (num !== "1") return { title: "Module" };
   return pageMetadata({
-    title: `Module 1 — ${MODULE_1.title}`,
+    title: `Module 1 - ${MODULE_1.title}`,
     description: MODULE_1.subtitle,
     path: "/academy-new/module/1",
   });
@@ -46,6 +46,8 @@ export default async function ModuleOverviewPage({ params }: { params: Promise<{
   let testPassed = false;
   let testPassedAt: string | null = null;
   let completed = 0;
+  let navUnlocked = new Map<string, boolean>();
+  let testLocked = false;
 
   if (user) {
     const db = await getDb();
@@ -64,6 +66,9 @@ export default async function ModuleOverviewPage({ params }: { params: Promise<{
     testPassedAt = state.moduleResult?.passedAt ?? null;
     masteryPct = moduleMasteryPct(pcts, testBest);
     completed = LESSONS.filter((l) => byLesson.get(l.meta.id)?.status === "completed").length;
+    // Sequential access: a lesson opens once every earlier lesson is done.
+    for (const n of lessonNavItems(state)) navUnlocked.set(n.lessonId, n.unlocked);
+    testLocked = completed < LESSONS.length;
   }
 
   return (
@@ -85,7 +90,7 @@ export default async function ModuleOverviewPage({ params }: { params: Promise<{
         <p className="mt-3 max-w-2xl text-base leading-relaxed text-ink-dim">{MODULE_1.subtitle}</p>
         <p className="mt-3 text-sm text-ink-faint">
           Lesson videos by <span className="font-semibold text-ink-dim">LunarTech</span>, embedded
-          from YouTube — see{" "}
+          from YouTube. See{" "}
           <a href="/academy-new/references" className="font-semibold text-pulse-700 underline-offset-2 hover:underline focus-ring dark:text-pulse-300">
             sources & references
           </a>
@@ -119,7 +124,7 @@ export default async function ModuleOverviewPage({ params }: { params: Promise<{
             </>
           ) : (
             <p className="text-sm text-ink-dim">
-              Browsing as a guest — everything below is fully usable.{" "}
+              Browsing as a guest: everything below is fully usable.{" "}
               <a href="/login" className="font-semibold text-pulse-700 underline-offset-2 hover:underline focus-ring dark:text-pulse-300">
                 Sign in
               </a>{" "}
@@ -150,69 +155,91 @@ export default async function ModuleOverviewPage({ params }: { params: Promise<{
               mInput.requiredSections > 0
                 ? Math.round((mInput.sectionsDone / mInput.requiredSections) * 100)
                 : 0;
+            const unlocked = navUnlocked.get(l.meta.id) ?? true;
             const cta =
               state === "not_started" ? "Start" : state === "mastered" || mInput.completed ? "Review" : "Continue";
+            const isDone = mInput.completed;
             return (
               <li key={l.meta.id}>
-                <a
-                  href={`/academy-new/module/1/lesson/${l.meta.slug}`}
-                  className="flex flex-wrap items-center gap-4 rounded-xl border border-void-700/70 bg-void-900 px-5 py-4 transition-colors hover:border-pulse-400/50 hover:shadow-card focus-ring"
-                >
-                  <span
-                    aria-hidden="true"
-                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl font-mono text-sm font-bold ${STATE_STYLE[row?.status ?? "not_started"]}`}
+                {unlocked ? (
+                  <a
+                    href={`/academy-new/module/1/lesson/${l.meta.slug}`}
+                    className="flex flex-wrap items-center gap-4 rounded-xl border border-void-700/70 bg-void-900 px-5 py-4 transition-colors hover:border-pulse-400/50 hover:shadow-card focus-ring"
                   >
-                    {row?.status === "completed" ? (
-                      <Icon name="check" size={18} />
-                    ) : (
-                      String(l.meta.order).padStart(2, "0")
-                    )}
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block font-display text-base font-bold text-ink">
-                      {l.meta.title}
+                    <span
+                      aria-hidden="true"
+                      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl font-mono text-sm font-bold ${STATE_STYLE[row?.status ?? "not_started"]}`}
+                    >
+                      {isDone ? <Icon name="check" size={18} /> : String(l.meta.order).padStart(2, "0")}
                     </span>
-                    <span className="mt-0.5 block max-w-xl truncate text-sm text-ink-faint">
-                      {l.meta.summary}
-                    </span>
-                    <span className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-ink-faint">
-                      <span>{l.meta.minutes} min</span>
-                      <span className="font-mono">
-                        video{" "}
-                        {l.video.segments.length > 1
-                          ? `${l.video.segments.length} segments`
-                          : formatSegment(l.video.segments[0]?.startSeconds ?? 0, l.video.segments[0]?.endSeconds ?? 0)}
+                    <span className="min-w-0 flex-1">
+                      <span className="block font-display text-base font-bold text-ink">
+                        {l.meta.title}
                       </span>
-                      {user && row && row.sectionsDone.length > 0 && (
-                        <span>
-                          {stepsPct}% of steps
-                          {row.quizBest !== null ? ` · quiz best ${row.quizBest}%` : ""}
+                      <span className="mt-0.5 block max-w-xl truncate text-sm text-ink-faint">
+                        {l.meta.summary}
+                      </span>
+                      <span className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-ink-faint">
+                        <span>{l.meta.minutes} min</span>
+                        <span className="font-mono">
+                          video{" "}
+                          {l.video.segments.length > 1
+                            ? `${l.video.segments.length} segments`
+                            : formatSegment(l.video.segments[0]?.startSeconds ?? 0, l.video.segments[0]?.endSeconds ?? 0)}
+                        </span>
+                        {user && row && row.sectionsDone.length > 0 && (
+                          <span>
+                            {stepsPct}% of steps
+                            {row.quizBest !== null ? ` · quiz best ${row.quizBest}%` : ""}
+                          </span>
+                        )}
+                      </span>
+                    </span>
+                    <span className="flex shrink-0 items-center gap-3">
+                      {user && (
+                        <span className="hidden sm:block">
+                          <span className="sr-only">Mastery {pct}%</span>
+                          <span
+                            className={`rounded-full border px-2.5 py-0.5 text-[11px] font-bold ${
+                              state === "mastered"
+                                ? "border-mint-400/50 bg-mint-400/10 text-mint-700 dark:text-mint-300"
+                                : state === "practicing"
+                                  ? "border-pulse-400/50 bg-pulse-400/10 text-pulse-700 dark:text-pulse-300"
+                                  : state === "learning"
+                                    ? "border-amber-400/50 bg-amber-400/10 text-amber-700 dark:text-amber-300"
+                                    : "border-void-700 bg-void-850 text-ink-faint"
+                            }`}
+                          >
+                            {MASTERY_LABELS[state]}
+                          </span>
                         </span>
                       )}
+                      <span className="text-sm font-semibold text-pulse-700 dark:text-pulse-300">{cta} →</span>
+                    </span>
+                  </a>
+                ) : (
+                  <span
+                    aria-disabled="true"
+                    data-locked-lesson={l.meta.slug}
+                    title="Complete the lessons before this one to unlock it"
+                    className="flex cursor-not-allowed flex-wrap items-center gap-4 rounded-xl border border-void-700/50 bg-void-900/60 px-5 py-4 opacity-60"
+                  >
+                    <span
+                      aria-hidden="true"
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-void-700 text-ink-faint"
+                    >
+                      <Icon name="lock" size={17} />
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block font-display text-base font-bold text-ink-faint">
+                        {l.meta.title}
+                      </span>
+                      <span className="mt-0.5 block text-[11px] text-ink-faint">
+                        Unlocks when the lessons before it are complete
+                      </span>
                     </span>
                   </span>
-                  <span className="flex shrink-0 items-center gap-3">
-                    {user && (
-                      <span className="hidden sm:block">
-                        <span className="sr-only">Mastery {pct}%</span>
-                        <span
-                          className={`rounded-full border px-2.5 py-0.5 text-[11px] font-bold ${
-                            state === "mastered"
-                              ? "border-mint-400/50 bg-mint-400/10 text-mint-700 dark:text-mint-300"
-                              : state === "practicing"
-                                ? "border-pulse-400/50 bg-pulse-400/10 text-pulse-700 dark:text-pulse-300"
-                                : state === "learning"
-                                  ? "border-amber-400/50 bg-amber-400/10 text-amber-700 dark:text-amber-300"
-                                  : "border-void-700 bg-void-850 text-ink-faint"
-                          }`}
-                        >
-                          {MASTERY_LABELS[state]}
-                        </span>
-                      </span>
-                    )}
-                    <span className="text-sm font-semibold text-pulse-700 dark:text-pulse-300">{cta} →</span>
-                  </span>
-                </a>
+                )}
               </li>
             );
           })}
@@ -243,15 +270,26 @@ export default async function ModuleOverviewPage({ params }: { params: Promise<{
                 20 questions across the whole module · pass mark {MODULE_TEST_PASS_THRESHOLD}% ·
                 unlimited retakes, best score counts
                 {testBest !== null ? ` · your best: ${testBest}%` : ""}
+                {user && testLocked ? ` · unlocks after all ${LESSONS.length} lessons` : ""}
               </p>
             </div>
-            <a
-              href="/academy-new/module/1/test"
-              className="inline-flex items-center gap-2 rounded-lg bg-pulse-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-pulse-700 focus-ring"
-            >
-              {testPassed ? "Review the test" : testBest !== null ? "Retake the test" : "Take the test"}
-              <Icon name="arrow-right" size={15} aria-hidden="true" />
-            </a>
+            {user && testLocked ? (
+              <span
+                aria-disabled="true"
+                data-locked-module-test
+                className="inline-flex items-center gap-2 rounded-lg border border-void-700 bg-void-850 px-4 py-2.5 text-sm font-semibold text-ink-faint"
+              >
+                <Icon name="lock" size={14} aria-hidden="true" /> Locked
+              </span>
+            ) : (
+              <a
+                href="/academy-new/module/1/test"
+                className="inline-flex items-center gap-2 rounded-lg bg-pulse-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-pulse-700 focus-ring"
+              >
+                {testPassed ? "Review the test" : testBest !== null ? "Retake the test" : "Take the test"}
+                <Icon name="arrow-right" size={15} aria-hidden="true" />
+              </a>
+            )}
           </div>
         </div>
       </section>

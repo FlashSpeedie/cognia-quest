@@ -13,7 +13,7 @@ const STEPS: ScenarioStep[] = [
       "Regression: the target is a continuous numeric value that could land anywhere along a range of prices.",
   },
   {
-    text: "Decide whether a card transaction is fraudulent — a yes/no verdict for each one.",
+    text: "Decide whether a card transaction is fraudulent - a yes/no verdict for each one.",
     options: OPTIONS,
     correct: 1,
     explanation:
@@ -41,7 +41,7 @@ const STEPS: ScenarioStep[] = [
       "Classification: the model picks one label from a fixed set of categories.",
   },
   {
-    text: "Flag factory sensor readings unlike any normal pattern — no labeled failures to learn from.",
+    text: "Flag factory sensor readings unlike any normal pattern - no labeled failures to learn from.",
     options: OPTIONS,
     correct: 2,
     explanation:

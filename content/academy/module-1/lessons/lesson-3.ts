@@ -89,7 +89,7 @@ export const lesson3: AcademyLesson = {
       "Labels cost human effort; unlabeled data is abundant. Which you have shapes what you can attempt.",
     ],
     sourceConnection:
-      "This lesson plays the source segment 50:01\u201352:23 (Chapter 3 — ML Basics), where LunarTech introduces supervised learning with labeled data and unsupervised learning with unlabeled data, including clustering and outlier detection.",
+      "This lesson plays the source segment 50:01\u201352:23 (Chapter 3 - ML Basics), where LunarTech introduces supervised learning with labeled data and unsupervised learning with unlabeled data, including clustering and outlier detection.",
   },
   checkpoints: [
     {
@@ -150,7 +150,7 @@ export const lesson3: AcademyLesson = {
   ],
   activity: {
     kind: "supervised-sorter",
-    heading: "Optional exercise — Supervised or unsupervised?",
+    heading: "Optional exercise - Supervised or unsupervised?",
     intro:
       "Five real situations. For each one, decide whether it learns from labeled examples or finds structure without labels - then read why.",
   },
@@ -217,6 +217,8 @@ export const lesson3: AcademyLesson = {
     "m1-l3-cp1",
     "m1-l3-cp2",
     "m1-l3-cp3",
+    "m1-l3-sheet",
+    "m1-l3-refs",
     "m1-l3-quiz",
     "fr-m1-l3-1",
     "fr-m1-l3-2",

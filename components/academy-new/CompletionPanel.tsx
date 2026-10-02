@@ -5,9 +5,10 @@ import { Icon } from "@/components/ui/Icon";
 import { useLessonProgress, SignInToSaveNotice } from "./LessonProgressContext";
 
 /**
- * End-of-lesson completion state: quiz result, mastery status, XP earned,
- * next lesson, review and continue actions. XP lines only appear when the
- * server actually banked the award - never fabricated.
+ * The lesson pass screen: shown on the quiz section once every required
+ * step is done and the quiz passed at the mastery threshold. Score,
+ * mastery status and XP (only ever the real, server-banked award), then the
+ * single primary action: the next lesson.
  */
 export function CompletionPanel({
   nextHref,
@@ -22,20 +23,7 @@ export function CompletionPanel({
 }) {
   const { completed, pct, quizBest, lessonXpAwarded, requiredIds, done, signedIn } = useLessonProgress();
 
-  if (!completed) {
-    const remaining = requiredIds.filter((id) => !done.has(id)).length;
-    return (
-      <div className="rounded-xl border border-void-700/70 bg-void-850 px-5 py-4 text-sm text-ink-dim">
-        <p className="font-semibold text-ink">
-          {remaining} step{remaining === 1 ? "" : "s"} left to complete this lesson
-        </p>
-        <p className="mt-1">
-          Answer every checkpoint, finish the exercise, pass the quiz (50%+), and submit the free
-          response to bank the lesson.
-        </p>
-      </div>
-    );
-  }
+  if (!completed) return null;
 
   const masteryPct = lessonMasteryPct({
     sectionsDone: done.size,
@@ -55,17 +43,18 @@ export function CompletionPanel({
   return (
     <div
       aria-live="polite"
+      data-completion-panel
       className="rounded-xl border border-mint-400/50 bg-mint-400/5 px-5 py-5 shadow-card"
     >
       <div className="flex flex-wrap items-center gap-3">
         <span aria-hidden="true" className="flex h-11 w-11 items-center justify-center rounded-xl bg-mint-500/15 text-mint-600">
           <Icon name="trophy" size={22} />
         </span>
-        <div>
+        <div className="min-w-0">
           <p className="font-display text-lg font-bold text-ink">Lesson complete</p>
           <p className="text-sm text-ink-dim">
-            Mastery status: <span className="font-semibold text-ink">{MASTERY_LABELS[state]}</span> ·{" "}
-            {quizBest !== null ? `quiz best ${quizBest}%` : "quiz not attempted"}
+            Mastery: <span className="font-semibold text-ink">{MASTERY_LABELS[state]}</span> ·{" "}
+            {quizBest !== null ? `quiz best ${quizBest}%` : "quiz passed"}
           </p>
         </div>
         <span className="ml-auto rounded-lg border border-void-700 bg-void-900 px-3 py-1.5 font-mono text-xs font-bold text-ink-dim">
@@ -75,23 +64,27 @@ export function CompletionPanel({
 
       <dl className="mt-4 grid gap-3 sm:grid-cols-3">
         <div className="rounded-lg border border-void-700/70 bg-void-900 px-3.5 py-3">
-          <dt className="text-[11px] font-semibold uppercase tracking-wider text-ink-faint">Lesson mastery</dt>
-          <dd className="mt-1 font-display text-xl font-bold text-ink">{masteryPct}%</dd>
+          <dt className="text-[11px] font-semibold uppercase tracking-wider text-ink-faint">Score</dt>
+          <dd className="mt-1 font-display text-xl font-bold text-ink">
+            {quizBest !== null ? `${quizBest}%` : "Passed"}
+          </dd>
+        </div>
+        <div className="rounded-lg border border-void-700/70 bg-void-900 px-3.5 py-3">
+          <dt className="text-[11px] font-semibold uppercase tracking-wider text-ink-faint">Mastery</dt>
+          <dd className="mt-1 font-display text-xl font-bold text-ink">
+            {masteryPct >= 100 ? "Achieved" : MASTERY_LABELS[state]}
+          </dd>
         </div>
         <div className="rounded-lg border border-void-700/70 bg-void-900 px-3.5 py-3">
           <dt className="text-[11px] font-semibold uppercase tracking-wider text-ink-faint">XP earned</dt>
           <dd className="mt-1 font-display text-xl font-bold text-ink">
-            {signedIn ? (alreadyBanked || lessonXpAwarded ? `+${LESSON_XP}` : "—") : "Sign in"}
+            {signedIn ? (alreadyBanked || lessonXpAwarded ? `+${LESSON_XP} XP` : "Pending") : "Sign in"}
           </dd>
-        </div>
-        <div className="rounded-lg border border-void-700/70 bg-void-900 px-3.5 py-3">
-          <dt className="text-[11px] font-semibold uppercase tracking-wider text-ink-faint">Quiz best</dt>
-          <dd className="mt-1 font-display text-xl font-bold text-ink">{quizBest !== null ? `${quizBest}%` : "—"}</dd>
         </div>
       </dl>
       <p className="mt-3 text-xs leading-relaxed text-ink-faint">
-        How mastery works: 40% while learning, 55% once practicing, 70% when the lesson
-        is completed, 100% when your best quiz score reaches 80%.
+        Lesson mastery reaches 100% when your best quiz score hits the pass mark. The next lesson is
+        now unlocked.
       </p>
 
       <div className="mt-4 flex flex-wrap items-center gap-3">
@@ -100,7 +93,7 @@ export function CompletionPanel({
             href={nextHref}
             className="inline-flex items-center gap-2 rounded-lg bg-pulse-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-pulse-700 focus-ring"
           >
-            Continue: {nextLessonTitle}
+            Next lesson: {nextLessonTitle}
             <Icon name="arrow-right" size={15} aria-hidden="true" />
           </a>
         ) : (

@@ -3,13 +3,13 @@
 import { useState } from "react";
 import type { FreeResponseDef } from "@/content/academy/types";
 import { Button } from "@/components/ui/Button";
-import { useLessonProgress, SignInToSaveNotice } from "./LessonProgressContext";
+import { useLessonProgress } from "./LessonProgressContext";
 
 /**
- * The reasoning half of the lesson quiz: four written free-response
- * questions (7-10). Each is a deterministic, repo-versioned FRQ; the server
- * always runs a keyword rubric check and adds AI feedback when Gemini is
- * configured. A genuine attempt marks that FRQ's step done.
+ * One written-reasoning question (7-10 of the lesson quiz). Each is a
+ * deterministic, repo-versioned FRQ; the server always runs a keyword
+ * rubric check and adds AI feedback when Gemini is configured. A genuine
+ * attempt marks that FRQ's step done - for guests too (in-session).
  */
 interface Feedback {
   score: number;
@@ -20,77 +20,17 @@ interface Feedback {
   aiGenerated: boolean;
 }
 
-export function FreeResponseQuiz({
+export function FreeResponseItem({
   lessonId,
-  freeResponses,
+  fr,
+  questionNumber,
+  totalQuestions,
 }: {
   lessonId: string;
-  freeResponses: FreeResponseDef[];
+  fr: FreeResponseDef;
+  questionNumber: number;
+  totalQuestions: number;
 }) {
-  const { signedIn } = useLessonProgress();
-  const [index, setIndex] = useState(0);
-  const fr = freeResponses[index] ?? null;
-
-  return (
-    <section
-      aria-label="Written reasoning questions"
-      className="rounded-xl border border-void-700/70 bg-void-900 px-5 py-5 shadow-card"
-    >
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="rounded-md bg-volt-400/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-volt-700 dark:text-volt-300">
-          Written reasoning
-        </span>
-        <span className="text-[11px] font-medium text-ink-faint">
-          Questions 7–10 of the lesson quiz · feedback, not just grades
-        </span>
-      </div>
-
-      {fr && (
-        <>
-          <div className="mt-4 flex items-center gap-1.5" aria-hidden="true">
-            {freeResponses.map((f, i) => (
-              <span
-                key={f.id}
-                className={`h-1.5 flex-1 rounded-full transition-colors ${
-                  i < index ? "bg-mint-500" : i === index ? "bg-volt-500" : "bg-void-700"
-                }`}
-              />
-            ))}
-          </div>
-          <p className="mt-2 text-[11px] font-semibold text-ink-faint">
-            Question {index + 7} of 10
-          </p>
-          <FreeResponseItem key={fr.id} lessonId={lessonId} fr={fr} />
-          <div className="mt-5 flex items-center justify-between gap-3 border-t border-void-700/60 pt-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              disabled={index === 0}
-              onClick={() => setIndex((i) => Math.max(0, i - 1))}
-            >
-              Previous question
-            </Button>
-            {index < freeResponses.length - 1 ? (
-              <Button size="sm" onClick={() => setIndex((i) => i + 1)}>
-                Next question
-              </Button>
-            ) : (
-              <span className="text-xs text-ink-faint">Last question — review your feedback above.</span>
-            )}
-          </div>
-        </>
-      )}
-
-      {!signedIn && (
-        <div className="mt-5">
-          <SignInToSaveNotice body="Signed-in students keep these answers saved across sessions - guests get the feedback, not the record." />
-        </div>
-      )}
-    </section>
-  );
-}
-
-function FreeResponseItem({ lessonId, fr }: { lessonId: string; fr: FreeResponseDef }) {
   const { markDone, reportLessonXp } = useLessonProgress();
   const [text, setText] = useState("");
   const [feedback, setFeedback] = useState<Feedback | null>(null);
@@ -128,12 +68,12 @@ function FreeResponseItem({ lessonId, fr }: { lessonId: string; fr: FreeResponse
   }
 
   return (
-    <div className="mt-3">
+    <div>
       <p className="text-[15px] font-semibold leading-snug text-ink">{fr.prompt}</p>
       <p className="mt-1.5 text-sm text-ink-faint">{fr.guidance}</p>
 
       <label htmlFor={`fr-${fr.id}`} className="sr-only">
-        Your answer
+        Your answer to question {questionNumber} of {totalQuestions}
       </label>
       <textarea
         id={`fr-${fr.id}`}

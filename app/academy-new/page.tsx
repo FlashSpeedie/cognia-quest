@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getSessionUser } from "@/server/auth/session";
 import { getDb } from "@/server/db/db";
-import { getAcademyModuleState, resumeLessonId, lessonMasteryPcts } from "@/server/services/academyProgress";
+import { getAcademyModuleState, resumeLessonId, lessonMasteryPcts, lessonNavItems } from "@/server/services/academyProgress";
 import { MODULE_1, MODULE_TEST_PASS_THRESHOLD, LESSON_MASTERY_THRESHOLD } from "@/content/academy/module-1/module";
 import { LESSONS } from "@/content/academy";
 import { moduleMasteryPct } from "@/lib/academy";
@@ -13,7 +13,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Academy — Learn AI and Machine Learning",
+  title: "Academy - Learn AI and Machine Learning",
   description:
     "A free, interactive AI course: start with Module 1 and build a working understanding of machine learning - how it learns, how problems are categorized, and how to tell whether a model actually works.",
   path: "/academy-new",
@@ -30,6 +30,7 @@ export default async function AcademyHome() {
   let masteryPct: number | null = null;
   let testBest: number | null = null;
   let testPassed = false;
+  let unlockedIds = new Set<string>(LESSONS.map((l) => l.meta.id));
   if (user) {
     const db = await getDb();
     const [state, pcts] = await Promise.all([
@@ -42,6 +43,10 @@ export default async function AcademyHome() {
     testBest = state.moduleResult?.bestScore ?? null;
     testPassed = state.moduleResult?.passed ?? false;
     masteryPct = moduleMasteryPct(pcts, testBest);
+    // Sequential rule: a lesson opens once every earlier lesson is done.
+    unlockedIds = new Set(
+      lessonNavItems(state).filter((n) => n.unlocked || n.completed).map((n) => n.lessonId),
+    );
   }
 
   const resumeLesson = inProgressId ? LESSONS.find((l) => l.meta.id === inProgressId) : null;
@@ -73,7 +78,7 @@ export default async function AcademyHome() {
           these systems thoughtfully.
         </p>
         <p className="mt-3 max-w-2xl text-sm text-ink-faint">
-          Every lesson, activity and quiz works without an account — sign in to save progress and
+          Every lesson, activity and quiz works without an account - sign in to save progress and
           earn XP.
         </p>
 
@@ -83,11 +88,11 @@ export default async function AcademyHome() {
             <div className="min-w-0 flex-1">
               <p className="font-display text-base font-bold text-ink">
                 {resumeLesson
-                  ? `Continue where you left off — ${resumeLesson.meta.title}`
+                  ? `Continue where you left off - ${resumeLesson.meta.title}`
                   : testPassed
-                    ? "Module 1 complete — review any time"
+                    ? "Module 1 complete - review any time"
                     : completed === LESSONS.length
-                      ? "All lessons complete — take the module test"
+                      ? "All lessons complete - take the module test"
                       : "Start Module 1"}
               </p>
               <p className="mt-0.5 text-sm text-ink-dim">
@@ -162,23 +167,44 @@ export default async function AcademyHome() {
           </dl>
 
           <ul className="mt-6 grid gap-2 sm:grid-cols-2">
-            {LESSONS.map((l) => (
-              <li key={l.meta.id}>
-                <a
-                  href={`/academy-new/module/1/lesson/${l.meta.slug}`}
-                  className="flex items-center gap-3 rounded-lg border border-void-700/60 bg-void-850 px-3.5 py-3 transition-colors hover:border-pulse-400/50 hover:bg-pulse-50 focus-ring dark:hover:bg-pulse-950/30"
-                >
-                  <span className="font-mono text-xs font-bold text-ink-faint">
-                    {String(l.meta.order).padStart(2, "0")}
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate text-sm font-semibold text-ink">{l.meta.title}</span>
-                    <span className="block text-[11px] text-ink-faint">{l.meta.minutes} min</span>
-                  </span>
-                  <Icon name="arrow-right" size={14} className="shrink-0 text-ink-faint" aria-hidden="true" />
-                </a>
-              </li>
-            ))}
+            {LESSONS.map((l) => {
+              const unlocked = unlockedIds.has(l.meta.id);
+              return (
+                <li key={l.meta.id}>
+                  {unlocked ? (
+                    <a
+                      href={`/academy-new/module/1/lesson/${l.meta.slug}`}
+                      className="flex items-center gap-3 rounded-lg border border-void-700/60 bg-void-850 px-3.5 py-3 transition-colors hover:border-pulse-400/50 hover:bg-pulse-50 focus-ring dark:hover:bg-pulse-950/30"
+                    >
+                      <span className="font-mono text-xs font-bold text-ink-faint">
+                        {String(l.meta.order).padStart(2, "0")}
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-sm font-semibold text-ink">{l.meta.title}</span>
+                        <span className="block text-[11px] text-ink-faint">{l.meta.minutes} min</span>
+                      </span>
+                      <Icon name="arrow-right" size={14} className="shrink-0 text-ink-faint" aria-hidden="true" />
+                    </a>
+                  ) : (
+                    <span
+                      aria-disabled="true"
+                      data-locked-lesson={l.meta.slug}
+                      title="Complete the lessons before this one to unlock it"
+                      className="flex cursor-not-allowed items-center gap-3 rounded-lg border border-void-700/40 bg-void-850/60 px-3.5 py-3 opacity-60"
+                    >
+                      <span className="font-mono text-xs font-bold text-ink-faint">
+                        {String(l.meta.order).padStart(2, "0")}
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-sm font-semibold text-ink-faint">{l.meta.title}</span>
+                        <span className="block text-[11px] text-ink-faint">{l.meta.minutes} min</span>
+                      </span>
+                      <Icon name="lock" size={14} className="shrink-0 text-ink-faint" aria-hidden="true" />
+                    </span>
+                  )}
+                </li>
+              );
+            })}
           </ul>
 
           <div className="mt-6 flex flex-wrap items-center gap-3">
@@ -196,7 +222,7 @@ export default async function AcademyHome() {
               Module test
             </a>
             <span className="text-xs text-ink-faint">
-              Lesson videos by LunarTech — credited on every lesson.
+              Lesson videos by LunarTech - credited on every lesson.
             </span>
           </div>
         </div>

@@ -49,12 +49,12 @@ export function ModuleTestRunner({
         <ul className="mt-4 space-y-2 text-sm text-ink-dim">
           <li className="flex gap-2.5">
             <Icon name="check" size={15} className="mt-0.5 shrink-0 text-pulse-500" aria-hidden="true" />
-            Pass mark: <span className="font-semibold text-ink">{passThreshold}%</span> — passing marks
+            Pass mark: <span className="font-semibold text-ink">{passThreshold}%</span> - passing marks
             the module complete.
           </li>
           <li className="flex gap-2.5">
             <Icon name="check" size={15} className="mt-0.5 shrink-0 text-pulse-500" aria-hidden="true" />
-            Retakes are always allowed and never punished — your best score is what counts.
+            Retakes are always allowed and never punished - your best score is what counts.
           </li>
           <li className="flex gap-2.5">
             <Icon name="check" size={15} className="mt-0.5 shrink-0 text-pulse-500" aria-hidden="true" />
@@ -63,7 +63,7 @@ export function ModuleTestRunner({
           </li>
           <li className="flex gap-2.5">
             <Icon name="check" size={15} className="mt-0.5 shrink-0 text-pulse-500" aria-hidden="true" />
-            The learning assistant will not give you active test answers — but reviewing any lesson first
+            The learning assistant will not give you active test answers - but reviewing any lesson first
             is always allowed.
           </li>
         </ul>
@@ -82,12 +82,12 @@ export function ModuleTestRunner({
                 <span>{" "}· lessons completed: {lessonsCompleted}/8</span>
               </>
             ) : (
-              <>First attempt. Lessons completed so far: {lessonsCompleted} of 8 — finishing them all first is the surest path.</>
+              <>First attempt. Lessons completed so far: {lessonsCompleted} of 8 - finishing them all first is the surest path.</>
             )}
           </div>
         ) : (
           <div className="mt-5 rounded-lg border border-amber-400/40 bg-amber-400/10 px-4 py-3 text-sm text-ink-dim">
-            Browsing as a guest — you can take the test and see full feedback, but attempts
+            Browsing as a guest - you can take the test and see full feedback, but attempts
             are not recorded.{" "}
             <a href="/login" className="font-semibold text-amber-700 underline-offset-2 hover:underline focus-ring dark:text-amber-300">
               Sign in
@@ -110,7 +110,6 @@ export function ModuleTestRunner({
         quizId="m1-module-test"
         questions={questions}
         signedIn={signedIn}
-        mode="module-test"
         initialBest={bestScore}
         initialAttempts={attempts}
         passThreshold={passThreshold}

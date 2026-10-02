@@ -26,13 +26,21 @@ import { useLessonProgress } from "./LessonProgressContext";
  * load), wrapped in a Cognia learning shell:
  *   - custom play/pause, ±10s, prev/next segment, speed, mute, fullscreen
  *   - a lesson-local timeline (segment-mapped, never the source duration)
- *   - authored checkpoints pause playback at conceptual transitions
+ *   - authored checkpoints pause playback at conceptual transitions and
+ *     live INSIDE the video: the overlay pauses the video, the student
+ *     answers, sees feedback, and can rewatch the segment or try again
+ *     before continuing
+ *   - a compact checkpoint strip (progress + one-tap review access), never
+ *     a duplicate checkpoint list below the video
  *
  * The official embed (and its required attribution) stay intact underneath;
  * standard YouTube controls are disabled via the official playerVars API.
  */
 
 const SPEEDS = [0.75, 1, 1.25, 1.5, 1.75, 2];
+
+/** How many seconds before the checkpoint timestamp "Rewatch segment" rewinds to. */
+const REWATCH_WINDOW_SECONDS = 45;
 
 export interface PlayerSegment {
   id: string;
@@ -106,9 +114,13 @@ export function LessonVideo({
   const timings = useMemo<SegmentTiming[]>(() => segmentTimings(segments), [segments]);
   const total = useMemo(() => totalLessonSeconds(timings), [timings]);
 
-  const { checkpointResults, recordCheckpoint } = useLessonProgress();
+  const { checkpointResults, recordCheckpoint, done } = useLessonProgress();
   const resultsRef = useRef(checkpointResults);
   resultsRef.current = checkpointResults;
+  // Persisted answers (server-stored) also count as answered, so a
+  // checkpoint never re-fires mid-video after a refresh.
+  const doneRef = useRef(done);
+  doneRef.current = done;
 
   const sortedCheckpoints = useMemo(
     () => [...checkpoints].sort((a, b) => a.timestampSeconds - b.timestampSeconds),
@@ -126,6 +138,8 @@ export function LessonVideo({
   const dragRef = useRef(false);
   const lastSaveRef = useRef(0);
   const pendingStartRef = useRef<{ si: number; offset: number } | null>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const seekLocalRef = useRef<((local: number) => void) | null>(null);
 
   const [phase, setPhase] = useState<"poster" | "loading" | "ready" | "error">("poster");
   const [playing, setPlaying] = useState(false);
@@ -135,6 +149,7 @@ export function LessonVideo({
   const [muted, setMuted] = useState(false);
   const [speedMenuOpen, setSpeedMenuOpen] = useState(false);
   const [activeCpId, setActiveCpId] = useState<string | null>(null);
+  const [attemptKey, setAttemptKey] = useState(0);
   const [finished, setFinished] = useState(false);
   const [resumeLocal, setResumeLocal] = useState<number | null>(null);
   const activeCpIdRef = useRef<string | null>(null);
@@ -226,7 +241,29 @@ export function LessonVideo({
     firedRef.current.add(cp.id);
     playerRef.current?.pauseVideo();
     setActiveCpId(cp.id);
+    setAttemptKey((k) => k + 1);
   }, []);
+
+  /** Open a checkpoint by choice (the strip below the timeline): pause + show. */
+  const openCheckpoint = useCallback(
+    (cp: Checkpoint) => {
+      playerRef.current?.pauseVideo();
+      setActiveCpId(cp.id);
+      setAttemptKey((k) => k + 1);
+    },
+    [],
+  );
+
+  /**
+   * Rewatch segment: close the overlay and replay the concept window just
+   * before this checkpoint's timestamp - never the whole lesson.
+   */
+  const rewatchSegment = useCallback((cp: Checkpoint) => {
+    setActiveCpId(null);
+    if (phase !== "ready") return;
+    seekLocalRef.current?.(Math.max(0, cp.timestampSeconds - REWATCH_WINDOW_SECONDS));
+    playerRef.current?.playVideo();
+  }, [phase]);
 
   // Poll: map source time -> lesson time, drive checkpoints + segment ends.
   useEffect(() => {
@@ -260,6 +297,7 @@ export function LessonVideo({
             (c) =>
               !firedRef.current.has(c.id) &&
               !resultsRef.current[c.id]?.answered &&
+              !doneRef.current.has(c.id) &&
               local >= c.timestampSeconds - 0.5 &&
               local < c.timestampSeconds + 8,
           );
@@ -358,6 +396,7 @@ export function LessonVideo({
     },
     [timings, total, loadSegment],
   );
+  seekLocalRef.current = seekLocal;
 
   const togglePlay = useCallback(() => {
     const player = playerRef.current;
@@ -402,6 +441,16 @@ export function LessonVideo({
   const activeCp = activeCpId ? checkpoints.find((c) => c.id === activeCpId) ?? null : null;
   const currentTiming = timings[segIndex] ?? timings[0];
   const currentSegment = segments[segIndex] ?? segments[0];
+  const answeredCheckpoints = sortedCheckpoints.filter(
+    (cp) => checkpointResults[cp.id]?.answered || done.has(cp.id),
+  ).length;
+
+  // When a checkpoint opens, move focus to the panel (keyboard + SR users).
+  useEffect(() => {
+    if (!activeCpId) return;
+    const t = window.setTimeout(() => overlayRef.current?.focus(), 30);
+    return () => window.clearTimeout(t);
+  }, [activeCpId]);
 
   function closeCheckpoint(resume: boolean) {
     setActiveCpId(null);
@@ -538,21 +587,36 @@ export function LessonVideo({
           </div>
         )}
 
-        {/* ── Checkpoint overlay: pauses playback, requires interaction ── */}
+        {/* ── Checkpoint overlay: pauses playback, lives in the video flow ── */}
         {activeCp && (
           <div className="absolute inset-0 z-20 flex items-center justify-center bg-void-950/80 p-4 backdrop-blur-[2px]">
             <div
+              ref={overlayRef}
               role="dialog"
               aria-modal="true"
               aria-label={`Checkpoint: ${activeCp.concept}`}
-              className="max-h-full w-full max-w-lg overflow-y-auto rounded-xl border border-volt-400/40 bg-void-900 p-5 shadow-pop"
+              tabIndex={-1}
+              data-checkpoint-overlay={activeCp.id}
+              onKeyDown={(e) => {
+                // Escape closes the panel (playback resumes / stays paused).
+                // The checkpoint still has to be answered before the section
+                // unlocks, so this can never bypass progression.
+                if (e.key === "Escape") closeCheckpoint(true);
+              }}
+              className="max-h-full w-full max-w-lg overflow-y-auto rounded-xl border border-volt-400/40 bg-void-900 p-5 shadow-pop focus-ring"
             >
               <p className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-volt-700 dark:text-volt-300">
-                <Icon name="brain" size={14} aria-hidden="true" /> Checkpoint — pause and think
+                <Icon name="brain" size={14} aria-hidden="true" /> Paused · Checkpoint
+                <span className="font-mono text-ink-faint">
+                  {sortedCheckpoints.findIndex((c) => c.id === activeCp.id) + 1} of {sortedCheckpoints.length}
+                </span>
+              </p>
+              <p className="sr-only" aria-live="assertive">
+                Video paused for a checkpoint. {activeCp.concept}. Answer to continue.
               </p>
               <div className="mt-3">
                 <CheckpointQuestion
-                  key={activeCp.id}
+                  key={`${activeCp.id}-${attemptKey}`}
                   checkpoint={activeCp}
                   onAnswered={(correct) => recordCheckpoint(activeCp.id, correct)}
                 />
@@ -567,15 +631,26 @@ export function LessonVideo({
                     Continue video
                   </button>
                 )}
+                {checkpointResults[activeCp.id]?.answered && !checkpointResults[activeCp.id]?.correct && (
+                  <button
+                    type="button"
+                    onClick={() => setAttemptKey((k) => k + 1)}
+                    className="rounded-lg border border-void-700 bg-void-850 px-4 py-2 text-sm font-semibold text-ink-dim transition-colors hover:text-ink focus-ring"
+                  >
+                    Try again
+                  </button>
+                )}
                 <button
                   type="button"
-                  onClick={() => closeCheckpoint(true)}
+                  onClick={() => rewatchSegment(activeCp)}
                   className="rounded-lg border border-void-700 bg-void-850 px-4 py-2 text-sm font-semibold text-ink-dim transition-colors hover:text-ink focus-ring"
                 >
-                  {checkpointResults[activeCp.id]?.answered ? "Close" : "Review later"}
+                  <span className="flex items-center gap-1.5">
+                    <Icon name="arrow-left" size={14} aria-hidden="true" /> Rewatch segment
+                  </span>
                 </button>
                 {!checkpointResults[activeCp.id]?.answered && (
-                  <span className="text-xs text-ink-faint">Answer now, or come back to the card below.</span>
+                  <span className="text-xs text-ink-faint">Answer to continue the video.</span>
                 )}
               </div>
             </div>
@@ -615,13 +690,46 @@ export function LessonVideo({
               <span
                 key={cp.id}
                 className={`absolute h-2 w-2 -translate-x-1/2 rounded-full ${
-                  checkpointResults[cp.id]?.answered ? "bg-mint-400" : "bg-volt-400"
+                  checkpointResults[cp.id]?.answered || done.has(cp.id) ? "bg-mint-400" : "bg-volt-400"
                 }`}
                 style={{ left: `${(cp.timestampSeconds / Math.max(1, total)) * 100}%` }}
               />
             ))}
           </div>
         </div>
+
+        {/* ── Checkpoint strip: progress + one-tap review, inside the player ── */}
+        {sortedCheckpoints.length > 0 && (
+          <div className="mt-2 flex flex-wrap items-center gap-2" data-checkpoint-strip>
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-ink-faint">
+              Checkpoints
+            </span>
+            {sortedCheckpoints.map((cp, i) => {
+              const answered = !!checkpointResults[cp.id]?.answered || done.has(cp.id);
+              return (
+                <button
+                  key={cp.id}
+                  type="button"
+                  data-checkpoint-chip={cp.id}
+                  aria-label={`Open checkpoint ${i + 1} of ${sortedCheckpoints.length}: ${cp.concept}${answered ? " (answered)" : ""}`}
+                  onClick={() => openCheckpoint(cp)}
+                  className={`flex h-7 min-w-7 items-center justify-center gap-1 rounded-full border px-2 font-mono text-[11px] font-bold transition-colors focus-ring ${
+                    activeCpId === cp.id
+                      ? "border-pulse-500 bg-pulse-400/15 text-pulse-700 dark:text-pulse-300"
+                      : answered
+                        ? "border-mint-400/60 bg-mint-400/10 text-mint-700 hover:bg-mint-400/20 dark:text-mint-300"
+                        : "border-volt-400/60 bg-volt-400/10 text-volt-700 hover:bg-volt-400/20 dark:text-volt-300"
+                  }`}
+                >
+                  {answered ? <Icon name="check" size={12} aria-hidden="true" /> : i + 1}
+                </button>
+              );
+            })}
+            <span className="text-[11px] text-ink-faint" aria-live="polite">
+              {answeredCheckpoints} of {sortedCheckpoints.length} answered
+            </span>
+          </div>
+        )}
 
         <div className="mt-2 flex flex-wrap items-center gap-1.5">
           <button
@@ -724,7 +832,7 @@ export function LessonVideo({
         {/* Segment identity + lesson clock */}
         <div className="mt-2 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
           <p className="min-w-0 truncate text-xs font-semibold text-ink" data-segment-label>
-            {segments.length > 1 ? `Segment ${segIndex + 1} of ${segments.length} — ` : ""}
+            {segments.length > 1 ? `Segment ${segIndex + 1} of ${segments.length} · ` : ""}
             {currentSegment?.label}
             <span className="ml-2 font-mono text-[11px] font-normal text-ink-faint">
               {currentTiming ? formatSegment(currentTiming.startSeconds, currentTiming.endSeconds) : ""}

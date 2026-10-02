@@ -218,8 +218,12 @@ export const MODULE_1: AcademyModule = {
 /** Mastery threshold (percent) for passing the Module 1 assessment. */
 export const MODULE_TEST_PASS_THRESHOLD = 80;
 
-/** Quiz score (percent) a lesson must reach to count as mastered. */
-export const LESSON_MASTERY_THRESHOLD = 80;
+/**
+ * Quiz score (percent) a lesson must reach to count as passed. Defined in
+ * lib/academy (client-safe) so section unlocking and server grading can
+ * never drift apart.
+ */
+export { LESSON_MASTERY_THRESHOLD } from "../../../lib/academy";
 
 export function lessonMetaBySlug(slug: string) {
   return MODULE_1.lessons.find((l) => l.slug === slug) ?? null;

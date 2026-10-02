@@ -1,10 +1,19 @@
 import { test, expect, type Page } from "@playwright/test";
+import { LESSONS } from "../../content/academy/module-1/lessons";
+import { LESSON_QUIZZES } from "../../content/academy/module-1/questions";
+import type { AcademyLesson, AcademyQuestion } from "../../content/academy/types";
 
 /**
  * E2E coverage for the two coexisting Academy experiences:
  *
  *  ACADEMY (original)      - untouched legacy text/quiz academy at /academy/...
- *  ACADEMY (NEW)           - the Module 1 course at /academy-new/...
+ *  ACADEMY (NEW)           - the Module 1 course at /academy-new/..., now a
+ *                            SEQUENTIAL lesson system: every lesson walks
+ *                            through four sections (Video -> Lesson Sheet ->
+ *                            References -> Quiz) selected with ?section=,
+ *                            with a collapsible course sidebar, in-video
+ *                            checkpoints, server-enforced locking and an
+ *                            80% quiz pass mark.
  *
  * Navigation contract (global sidebar, palette, mobile): exactly one
  * "Academy" item -> /academy, immediately followed by exactly one
@@ -16,12 +25,16 @@ import { test, expect, type Page } from "@playwright/test";
  * and no GEMINI_API_KEY (tutor tests exercise the honest "unavailable"
  * path). The YouTube player is never actually played in CI: the segment
  * regression tests verify the player shell's configuration (exact segment
- * boundaries, lesson-local timeline, custom controls) from the DOM.
+ * boundaries, lesson-local timeline, custom controls) from the DOM, and
+ * the in-video checkpoints are reached through the checkpoint strip.
  */
 
 const ACADEMY_NEW = "/academy-new";
 const LESSON1 = "/academy-new/module/1/lesson/welcome-to-machine-learning";
 const LESSON2 = "/academy-new/module/1/lesson/the-ml-roadmap";
+const LESSON3 = "/academy-new/module/1/lesson/supervised-vs-unsupervised";
+const MODULE_TEST_URL = "/academy-new/module/1/test";
+const REFERENCES_URL = "/academy-new/references";
 
 // Lesson 1 quiz auto-graded answers (repo-versioned content - q ids are stable).
 const L1_QUIZ: { id: string; kind: "mcq" | "multi"; correct: number[] }[] = [
@@ -32,6 +45,18 @@ const L1_QUIZ: { id: string; kind: "mcq" | "multi"; correct: number[] }[] = [
   { id: "q-m1-l1-5", kind: "mcq", correct: [1] },
   { id: "q-m1-l1-6", kind: "mcq", correct: [1] },
 ];
+
+// Lesson 1 checkpoints: id -> index of the correct option.
+const L1_CHECKPOINTS: { id: string; correct: number }[] = [
+  { id: "m1-l1-cp1", correct: 1 },
+  { id: "m1-l1-cp2", correct: 1 },
+  { id: "m1-l1-cp3", correct: 0 },
+];
+
+const FRQ_SAMPLE =
+  "A machine learns by finding patterns in examples instead of following only rules someone " +
+  "wrote. My music app probably learned from data about listening and skipping, so it can " +
+  "predict and recommend what I will like next.";
 
 async function answerQuizQuestion(
   page: Page,
@@ -61,6 +86,61 @@ async function registerAndOnboard(page: Page, tag: string) {
   await page.getByRole("button", { name: /See your roadmap/i }).click();
   await page.getByRole("button", { name: /Enter Cognia Quest/i }).click();
   await expect(page).toHaveURL(/\/dashboard/);
+}
+
+/** Open a checkpoint from the strip inside the player, answer, continue. */
+async function answerCheckpoint(page: Page, cpId: string, optionIndex: number) {
+  await page.locator(`[data-checkpoint-chip="${cpId}"]`).click();
+  const overlay = page.locator(`[data-checkpoint-overlay="${cpId}"]`);
+  await expect(overlay).toBeVisible();
+  await overlay.getByRole("radio").nth(optionIndex).click();
+  await overlay.getByRole("button", { name: "Check my answer" }).click();
+  await expect(overlay.getByText(/Exactly right\.|Not quite\./)).toBeVisible();
+  await overlay.getByRole("button", { name: "Continue video" }).click();
+  await expect(overlay).toHaveCount(0);
+}
+
+/** Perfect answers for a quiz, computed from the repo-versioned content. */
+function perfectAnswers(questions: AcademyQuestion[]): number[][] {
+  return questions.map((q) => (q.kind === "mcq" ? [q.correct] : [...q.correct]));
+}
+
+/** Fully complete one lesson over the progress + quiz APIs (page session). */
+async function seedLessonCompletion(page: Page, lesson: AcademyLesson) {
+  const quiz = LESSON_QUIZZES.find((q) => q.id === lesson.quizId)!;
+  const steps = lesson.requiredSectionIds.filter((id) => id !== `${lesson.meta.id}-quiz`);
+  for (const sectionId of steps) {
+    const res = await page.request.post("/api/academy/progress", {
+      data: { lessonId: lesson.meta.id, sectionId },
+    });
+    expect(res.ok()).toBeTruthy();
+  }
+  const res = await page.request.post("/api/academy/quiz", {
+    data: { quizId: quiz.id, answers: perfectAnswers(quiz.questions) },
+  });
+  expect(res.ok()).toBeTruthy();
+}
+
+/** Walk the whole UI flow through one lesson's Video section gates. */
+async function passVideoSection(page: Page) {
+  for (const cp of L1_CHECKPOINTS) {
+    await answerCheckpoint(page, cp.id, cp.correct);
+  }
+  await expect(page.locator("[data-checkpoint-strip]")).toContainText("3 of 3 answered");
+  await page.locator("[data-section-nav] a[data-next-section]").click();
+  await expect(page).toHaveURL(new RegExp(`${LESSON1}\\?section=lesson$`));
+}
+
+async function passWrittenReasoning(page: Page) {
+  for (let i = 0; i < 4; i++) {
+    const section = page.locator("[data-quiz-phase='written']");
+    await section.locator("textarea").fill(FRQ_SAMPLE);
+    await section.getByRole("button", { name: /Submit for feedback/ }).click();
+    await expect(section.getByText("Feedback score (0-100)")).toBeVisible();
+    if (i < 3) {
+      await section.getByRole("button", { name: "Next question" }).click();
+    }
+  }
 }
 
 // ── Navigation contract: one Academy + one Academy (New) ──────────────────
@@ -164,18 +244,58 @@ test.describe("Academy (New) - anonymous visitors", () => {
     await expect(page.getByRole("link", { name: /the test/i }).first()).toBeVisible();
     expect(await page.getByText(/Module 2/i).count()).toBe(0);
 
-    await page.goto("/academy-new/references");
+    await page.goto(REFERENCES_URL);
     await expect(page.getByText("LunarTech").first()).toBeVisible();
     await expect(page.getByRole("link", { name: /Watch on YouTube/ })).toBeVisible();
     await expect(page.getByText("freeCodeCamp.org").first()).toBeVisible();
   });
 
-  test("lesson 1 shows the custom player shell with the exact segment - never the full video", async ({ page }) => {
+  test("a lesson is four separate sections; the video is first", async ({ page }) => {
+    // Default lesson URL lands on the video - and ONLY the video.
+    await page.goto(LESSON1);
+    const player = page.locator("[data-video-id]");
+    await expect(player).toBeVisible();
+    await expect(page.locator("[data-video-credit]")).toContainText("Video source: LunarTech");
+    await expect(page.locator("[data-section-indicator]")).toContainText("Section 1 of 4");
+    await expect(page.getByRole("heading", { name: "What You Will Learn" })).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: "Lesson Quiz" })).toHaveCount(0);
+    // The full source record is NOT repeated under the video.
+    await expect(page.locator("[data-references-section]")).toHaveCount(0);
+
+    // Lesson Sheet is its own section (Step 2 of 4), no player on it.
+    await page.goto(`${LESSON1}?section=lesson`);
+    await expect(page.locator("[data-section-indicator]")).toContainText("Section 2 of 4");
+    await expect(page.getByRole("heading", { name: "What You Will Learn" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Core Idea" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Key Vocabulary" })).toBeVisible();
+    await expect(page.locator("[data-video-id]")).toHaveCount(0);
+
+    // References is its own section (Step 3 of 4): the one full citation.
+    await page.goto(`${LESSON1}?section=references`);
+    await expect(page.locator("[data-section-indicator]")).toContainText("Section 3 of 4");
+    await expect(page.getByRole("heading", { name: "References" })).toBeVisible();
+    await expect(page.locator("[data-references-section]")).toBeVisible();
+    await expect(page.getByText("Primary video", { exact: false }).first()).toBeVisible();
+    await expect(page.getByRole("link", { name: "Watch on YouTube" })).toHaveCount(1);
+    await expect(page.getByText("9:09\u201317:23").first()).toBeVisible();
+
+    // Quiz is its own section (Step 4 of 4).
+    await page.goto(`${LESSON1}?section=quiz`);
+    await expect(page.locator("[data-section-indicator]")).toContainText("Section 4 of 4");
+    await expect(page.getByRole("heading", { name: "Lesson Quiz" })).toBeVisible();
+    await expect(
+      page.getByText("10 questions: six auto-graded (1-6), four written-reasoning (7-10)"),
+    ).toBeVisible();
+    await expect(page.getByRole("button", { name: "Begin the quiz" })).toBeVisible();
+    await expect(page.locator("[data-video-id]")).toHaveCount(0);
+  });
+
+  test("lesson 1 player shows the custom shell with the exact segment - never the full video", async ({ page }) => {
     await page.goto(LESSON1);
     const player = page.locator("[data-video-id]");
 
-    // §56 regression: the exact source segment is configured - Lesson 1
-    // starts at 09:09 (549s), not at the beginning of the 11-hour source.
+    // The exact source segment is configured - Lesson 1 starts at 09:09
+    // (549s), not at the beginning of the 11-hour source.
     await expect(player).toHaveAttribute("data-video-id", "0oyDqO8PjIg");
     await expect(player).toHaveAttribute("data-segment-count", "1");
     await expect(player).toHaveAttribute("data-current-start", "549");
@@ -207,61 +327,101 @@ test.describe("Academy (New) - anonymous visitors", () => {
 
     // Segment identity + source time are visible.
     await expect(page.getByText("What is Machine Learning?").first()).toBeVisible();
-    await expect(page.getByText("9:09–17:23").first()).toBeVisible();
+    await expect(page.getByText("9:09\u201317:23").first()).toBeVisible();
 
-    // Creator credit sits directly below the video.
-    const attribution = page.getByRole("complementary", { name: "Video source attribution" });
-    await expect(attribution.getByText("LunarTech").first()).toBeVisible();
-    await expect(attribution.getByRole("link", { name: /Watch original video/ })).toBeVisible();
+    // Compact creator credit sits directly below the video.
+    await expect(page.locator("[data-video-credit]")).toContainText("Video source: LunarTech");
   });
 
-  test("lesson 2 is a five-segment playlist with per-segment attribution", async ({ page }) => {
-    await page.goto(LESSON2);
-    const player = page.locator("[data-video-id]");
-    await expect(player).toHaveAttribute("data-segment-count", "5");
-    await expect(player).toHaveAttribute("data-current-start", "1043");
-    await expect(player).toHaveAttribute("data-current-end", "1335");
-    // Segment 1 of 5 identity is shown; the total lesson timeline covers
-    // all five segments (18:21 total = 1104s).
-    await expect(page.getByText("Segment 1 of 5", { exact: false })).toBeVisible();
-    await expect(page.getByText("Mathematics foundation").first()).toBeVisible();
-    // Attribution lists every segment with its exact source time.
-    const attribution = page.getByRole("complementary", { name: "Video source attribution" });
-    for (const label of ["Mathematics foundation", "Statistics foundation", "Machine learning fundamentals", "Python foundation", "Introductory NLP"]) {
-      await expect(attribution.getByText(label).first()).toBeVisible();
-    }
-  });
-
-  test("checkpoints answer with explanations; video-tied data is present", async ({ page }) => {
+  test("checkpoints live inside the video flow - no duplicate list below it", async ({ page }) => {
     await page.goto(LESSON1);
-    const cp = page.locator("#m1-l1-cp1");
-    // The checkpoint is anchored to the video timeline.
-    await expect(cp.getByText(/at 02:/)).toBeVisible();
-    await expect(cp.getByText("Exactly right.")).toHaveCount(0);
-    await cp.getByRole("radio").nth(1).click();
-    await cp.getByRole("button", { name: "Check my answer" }).click();
-    await expect(cp.getByText("Exactly right.")).toBeVisible();
-    await expect(cp.getByText(/learning from examples/).first()).toBeVisible();
-    await expect(cp.getByText("Answered correctly")).toBeVisible();
+
+    // No standalone checkpoint section anywhere on the section page.
+    await expect(page.getByRole("heading", { name: "Checkpoints", exact: true })).toHaveCount(0);
+    await expect(page.getByText("Review later")).toHaveCount(0);
+
+    // The strip inside the player carries one chip per checkpoint.
+    const strip = page.locator("[data-checkpoint-strip]");
+    await expect(strip).toContainText("0 of 3 answered");
+    await expect(page.locator("[data-checkpoint-chip='m1-l1-cp1']")).toBeVisible();
+
+    // Opening a checkpoint pauses the video: dialog, question, feedback.
+    await page.locator("[data-checkpoint-chip='m1-l1-cp1']").click();
+    const overlay = page.locator("[data-checkpoint-overlay='m1-l1-cp1']");
+    await expect(overlay).toBeVisible();
+    await expect(overlay.getByText("Paused · Checkpoint")).toBeVisible();
+    await expect(
+      overlay.getByText("Which sentence best describes how a machine learning system gets its behavior?"),
+    ).toBeVisible();
+    await expect(overlay.getByRole("button", { name: "Check my answer" })).toBeDisabled();
+    await expect(overlay.getByRole("button", { name: "Rewatch segment" })).toBeVisible();
+
+    // Answer wrong first: feedback + Try again + Rewatch, no bypass.
+    await overlay.getByRole("radio").nth(0).click();
+    await overlay.getByRole("button", { name: "Check my answer" }).click();
+    await expect(overlay.getByText("Not quite.")).toBeVisible();
+    await overlay.getByRole("button", { name: "Try again" }).click();
+    await expect(overlay.getByText("Not quite.")).toHaveCount(0);
+
+    // Now answer correctly and continue the video.
+    await overlay.getByRole("radio").nth(1).click();
+    await overlay.getByRole("button", { name: "Check my answer" }).click();
+    await expect(overlay.getByText("Exactly right.")).toBeVisible();
+    await expect(overlay.getByText(/learning from examples/).first()).toBeVisible();
+    await overlay.getByRole("button", { name: "Continue video" }).click();
+    await expect(overlay).toHaveCount(0);
+
+    // The strip reflects the answer (chip marked answered).
+    await expect(strip).toContainText("1 of 3 answered");
+    await expect(page.locator("[data-checkpoint-chip='m1-l1-cp1']")).toHaveAttribute("aria-label", /answered/);
 
     // The player timeline carries checkpoint markers for every checkpoint.
-    const player = page.locator("[data-video-id]");
-    expect(await player.locator("span.bg-volt-400, span.bg-mint-400").count()).toBeGreaterThanOrEqual(3);
+    expect(await page.locator("[data-video-id] span.bg-volt-400, [data-video-id] span.bg-mint-400").count()).toBeGreaterThanOrEqual(3);
   });
 
-  test("guest lesson quiz (6 auto-graded) gets honest feedback but is not saved", async ({ page }) => {
+  test("keyboard navigation completes a checkpoint without a mouse", async ({ page }) => {
     await page.goto(LESSON1);
+    await page.locator("[data-checkpoint-chip='m1-l1-cp1']").focus();
+    await page.keyboard.press("Enter");
+    const overlay = page.locator("[data-checkpoint-overlay='m1-l1-cp1']");
+    await expect(overlay).toBeFocused();
+
+    // Tab reaches the options; select + submit entirely by keyboard.
+    await page.keyboard.press("Tab");
+    await page.keyboard.press("Tab");
+    await page.keyboard.press("Enter");
+    await overlay.getByRole("button", { name: "Check my answer" }).focus();
+    await page.keyboard.press("Enter");
+    await expect(overlay.getByText(/Not quite\.|Exactly right\./)).toBeVisible();
+  });
+
+  test("guest lesson quiz: sequential flow with honest guest feedback", async ({ page }) => {
+    await page.goto(`${LESSON1}?section=quiz`);
+    await page.getByRole("button", { name: "Begin the quiz" }).click();
+
+    // One question at a time, 10 total; questions 1-6 are auto-graded.
+    await expect(page.locator("[data-quiz-phase='auto']")).toContainText("Question 1 of 10");
     for (const q of L1_QUIZ) {
       await answerQuizQuestion(page, q);
+      if (q !== L1_QUIZ[L1_QUIZ.length - 1]) {
+        await page.getByRole("button", { name: "Next question" }).click();
+      }
     }
-    await page.getByRole("button", { name: "Submit quiz" }).click();
-    await expect(page.getByText(/6\/6 correct/)).toBeVisible();
-    await expect(page.getByText("Guest attempt — not saved.")).toBeVisible();
-    await expect(page.getByRole("link", { name: "Sign in" }).first()).toBeVisible();
+    await page.getByRole("button", { name: "Submit answers" }).click();
+    await expect(page.getByText("Passed: 6/6 correct (100%)")).toBeVisible();
+    await expect(page.getByText("Guest attempt, not saved.")).toBeVisible();
+
+    // Continue into the written-reasoning half (question 7 of 10).
+    await page.getByRole("button", { name: "Continue to written reasoning" }).click();
+    const written = page.locator("[data-quiz-phase='written']");
+    await expect(written).toContainText("Question 7 of 10");
+    await written.locator("textarea").fill("x".repeat(400));
+    await written.getByRole("button", { name: /Submit for feedback/ }).click();
+    await expect(written.getByText("Feedback score (0-100)")).toBeVisible();
   });
 
   test("module test works in guest mode with full feedback", async ({ page }) => {
-    await page.goto("/academy-new/module/1/test");
+    await page.goto(MODULE_TEST_URL);
     await expect(page.getByRole("heading", { name: /Module 1 Test/ })).toBeVisible();
     await page.getByRole("button", { name: "Begin the test" }).click();
     const count = await page.locator("li[id^='q-t-m1-']").count();
@@ -295,24 +455,15 @@ test.describe("Academy (New) - anonymous visitors", () => {
 
   test("the AI tutor degrades gracefully when unavailable on this server", async ({ page }) => {
     await page.goto(LESSON1);
-    await page.getByRole("button", { name: /Need a hand/i }).first().click();
+    const pill = page.locator("[data-tutor-open]");
+    await expect(pill).toBeVisible();
+    await pill.click();
     const panel = page.getByRole("dialog", { name: "Lesson learning assistant" });
     await expect(panel.getByText("Need a hand?")).toBeVisible();
     await panel.getByRole("button", { name: "Explain this simply" }).first().click();
     await expect(
       panel.getByText(/isn't enabled on this server right now|could not be answered right now/i),
     ).toBeVisible({ timeout: 20000 });
-  });
-
-  test("keyboard navigation completes a checkpoint without a mouse", async ({ page }) => {
-    await page.goto(LESSON1);
-    const cp = page.locator("#m1-l1-cp1");
-    await cp.getByRole("radio").nth(0).focus();
-    await page.keyboard.press("Enter");
-    await expect(cp.getByRole("radio").nth(0)).toHaveAttribute("aria-checked", "true");
-    await cp.getByRole("button", { name: "Check my answer" }).focus();
-    await page.keyboard.press("Enter");
-    await expect(cp.getByText(/Not quite\.|Exactly right\./)).toBeVisible();
   });
 
   test("mobile: course sidebar collapses to a drawer and the app stays usable at 390px", async ({ page }) => {
@@ -322,12 +473,26 @@ test.describe("Academy (New) - anonymous visitors", () => {
     await page.goto(LESSON1);
     await expect(page.getByRole("button", { name: /^Lessons$/ })).toBeVisible();
     await page.getByRole("button", { name: /^Lessons$/ }).click();
-    await expect(page.getByRole("dialog", { name: "Module 1 lessons" })).toBeVisible();
-    await expect(
-      page.getByRole("dialog", { name: "Module 1 lessons" }).getByText("Bias and Variance"),
-    ).toBeVisible();
+    const drawer = page.getByRole("dialog", { name: "Module 1 lessons" });
+    await expect(drawer).toBeVisible();
+    await expect(drawer.getByText("AI & Machine Learning Foundations")).toBeVisible();
+    await expect(drawer.getByText("Bias and Variance")).toBeVisible();
+    // The current lesson's four sections are expanded inside the drawer.
+    await expect(drawer.locator("[data-section-link='video']")).toBeVisible();
+    await expect(drawer.locator("[data-section-link='quiz']")).toBeVisible();
+
     // Custom controls fit and remain visible on mobile.
     await expect(page.getByRole("button", { name: "Back 10 seconds" })).toBeVisible();
+
+    // Need a hand? stays anchored bottom-right, above the bottom nav.
+    const pill = page.locator("[data-tutor-open]");
+    await expect(pill).toBeVisible();
+    const vp = page.viewportSize()!;
+    const box = (await pill.boundingBox())!;
+    expect(box.x + box.width).toBeGreaterThan(vp.width - 24);
+    expect(box.x + box.width).toBeLessThanOrEqual(vp.width);
+    expect(box.y).toBeGreaterThan(vp.height / 2);
+
     // No horizontal overflow.
     const overflow = await page.evaluate(
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
@@ -380,7 +545,7 @@ test.describe("Academy (New) - anonymous visitors", () => {
     expect(r7.status()).toBe(404);
   });
 
-  test("no console errors across all 8 lessons + module pages", async ({ page }) => {
+  test("no console errors across all 8 lessons and all 4 sections of each", async ({ page }) => {
     const errors: string[] = [];
     page.on("pageerror", (e) => errors.push(String(e)));
     page.on("console", (msg) => {
@@ -388,102 +553,208 @@ test.describe("Academy (New) - anonymous visitors", () => {
     });
     await page.goto(ACADEMY_NEW);
     await page.goto("/academy-new/module/1");
-    const LESSON_SLUGS = [
-      "welcome-to-machine-learning",
-      "the-ml-roadmap",
-      "supervised-vs-unsupervised",
-      "regression-vs-classification",
-      "how-do-we-know-a-model-is-working",
-      "training-validation-and-testing",
-      "bias-and-variance",
-      "overfitting-and-generalization",
-    ];
+    const LESSON_SLUGS = LESSONS.map((l) => l.meta.slug);
     for (const slug of LESSON_SLUGS) {
-      await page.goto(`/academy-new/module/1/lesson/${slug}`);
-      await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-      await expect(page.getByText("Video source: LunarTech")).toBeVisible();
-      await expect(page.getByRole("heading", { name: "References" })).toBeVisible();
-      // The lesson sheet, checkpoint cards, quiz and FRQ all mount cleanly.
+      const base = `/academy-new/module/1/lesson/${slug}`;
+      await page.goto(base);
+      await expect(page.locator("[data-video-id]")).toBeVisible();
+      await expect(page.locator("[data-video-credit]")).toContainText("Video source: LunarTech");
+      await page.goto(`${base}?section=lesson`);
       await expect(page.getByRole("heading", { name: "What You Will Learn" })).toBeVisible();
       await expect(page.getByRole("heading", { name: "Core Idea" })).toBeVisible();
-      await expect(page.getByRole("heading", { name: "Key Vocabulary" })).toBeVisible();
       await expect(page.getByRole("heading", { name: "Key Takeaways" })).toBeVisible();
-      await expect(page.getByRole("heading", { name: "Checkpoints" })).toBeVisible();
+      await page.goto(`${base}?section=references`);
+      await expect(page.getByRole("heading", { name: "References" })).toBeVisible();
+      await page.goto(`${base}?section=quiz`);
       await expect(page.getByRole("heading", { name: "Lesson Quiz" })).toBeVisible();
-      await expect(page.locator("[data-video-id]")).toBeVisible();
       expect(await page.getByText(/Module 2|Coming next/i).count()).toBe(0);
     }
-    await page.goto("/academy-new/module/1/test");
-    await page.goto("/academy-new/references");
+    await page.goto(MODULE_TEST_URL);
+    await page.goto(REFERENCES_URL);
     expect(errors).toEqual([]);
   });
 });
 
-// ── Authenticated students: shell + course sidebar + saved progress ──────
+// ── Authenticated students: sequential course + saved progress ────────────
 
-test.describe("Academy (New) - authenticated student", () => {
-  test("global app shell + course sidebar are both visible; completion banks XP once", async ({ page }) => {
-    await registerAndOnboard(page, "complete");
+test.describe("Academy (New) - sequential lesson system", () => {
+  test("global app shell + collapsible course sidebar; locks until prerequisites complete", async ({ page }) => {
+    await registerAndOnboard(page, "sidebar");
 
     await page.goto(LESSON1);
-    // Global app shell stays visible (spec §5).
+    // Global app shell stays visible (spec §3).
     const sidebar = page.getByRole("navigation", { name: "Primary" });
     await expect(sidebar.getByRole("link", { name: "Dashboard" })).toBeVisible();
     await expect(sidebar.getByRole("link", { name: "Academy (New)" })).toHaveAttribute("aria-current", "page");
-    // Course sidebar shows module progress + all 8 lessons + the test.
+
+    // Course sidebar: module tree with all 8 lessons + the locked test.
     const courseNav = page.getByRole("complementary", { name: "Course navigation" });
     await expect(courseNav.getByText("AI & Machine Learning Foundations")).toBeVisible();
-    await expect(courseNav.getByText("0 / 8 lessons")).toBeVisible();
-    await expect(courseNav.getByRole("link", { name: "Module Test" })).toBeVisible();
+    await expect(courseNav.getByText("0 / 8 lessons complete")).toBeVisible();
 
-    // 1. Checkpoints (3 cards).
-    for (const [cpId, correctIdx] of [
-      ["m1-l1-cp1", 1],
-      ["m1-l1-cp2", 1],
-      ["m1-l1-cp3", 0],
-    ] as const) {
-      const cp = page.locator(`#${cpId}`);
-      await cp.getByRole("radio").nth(correctIdx).click();
-      await cp.getByRole("button", { name: "Check my answer" }).click();
-      await expect(cp.getByText(/Answered/)).toBeVisible();
-    }
+    // Future lessons are locked (aria-disabled, no links).
+    const l2 = courseNav.locator("[data-locked-lesson='the-ml-roadmap']");
+    await expect(l2).toHaveAttribute("aria-disabled", "true");
+    await expect(courseNav.locator("[data-locked-lesson='supervised-vs-unsupervised']")).toBeVisible();
+    await expect(courseNav.locator("[data-locked-module-test]")).toHaveAttribute("aria-disabled", "true");
 
-    // 2. Quiz: perfect 6/6.
-    for (const q of L1_QUIZ) {
-      await answerQuizQuestion(page, q);
-    }
-    await page.getByRole("button", { name: "Submit quiz" }).click();
-    await expect(page.getByText(/6\/6 correct/)).toBeVisible();
+    // The current lesson is expanded with its four sections; quiz is locked.
+    await expect(courseNav.locator("[data-section-link='video']")).toBeVisible();
+    await expect(courseNav.locator("[data-locked-section='lesson']")).toHaveAttribute("aria-disabled", "true");
+    await expect(courseNav.locator("[data-locked-section='quiz']")).toHaveAttribute("aria-disabled", "true");
 
-    // 3. Written reasoning: all four FRQs.
-    for (let i = 0; i < 4; i++) {
-      const section = page.getByRole("region", { name: "Written reasoning questions" });
-      await section.locator("textarea").fill(
-        "A machine learns by finding patterns in examples instead of following only rules someone " +
-          "wrote. My music app probably learned from data about listening and skipping, so it can " +
-          "predict and recommend what I will like next.",
-      );
-      await section.getByRole("button", { name: /Submit for feedback/ }).click();
-      await expect(section.getByText("Feedback score (0-100)")).toBeVisible();
-      if (i < 3) await section.getByRole("button", { name: "Next question" }).click();
-    }
+    // Module tree collapses and expands.
+    const moduleToggle = courseNav.locator("[data-module-toggle]");
+    await expect(moduleToggle).toHaveAttribute("aria-expanded", "true");
+    await moduleToggle.click();
+    await expect(moduleToggle).toHaveAttribute("aria-expanded", "false");
+    await expect(courseNav.locator("[data-locked-lesson='the-ml-roadmap']")).toHaveCount(0);
+    await moduleToggle.click();
+    await expect(courseNav.locator("[data-locked-lesson='the-ml-roadmap']")).toBeVisible();
 
-    // 4. Completion panel: XP banked exactly once.
-    await expect(page.getByText("Lesson complete").first()).toBeVisible();
-    await expect(page.getByText("+50 XP").first()).toBeVisible();
-
-    // 5. Refresh: progress persists, no duplicate XP toast/award.
-    await page.reload();
-    await expect(page.getByText("Lesson complete").first()).toBeVisible();
-    await expect(page.locator("#m1-l1-cp1").getByText(/Answered/)).toBeVisible();
-    // Course sidebar now reflects 1/8 lessons.
-    await expect(page.getByRole("complementary", { name: "Course navigation" }).getByText("1 / 8 lessons")).toBeVisible();
+    // The current lesson's section list collapses and expands too.
+    const lessonToggle = courseNav.locator("[data-current-lesson-toggle]");
+    await expect(lessonToggle).toHaveAttribute("aria-expanded", "true");
+    await lessonToggle.click();
+    await expect(lessonToggle).toHaveAttribute("aria-expanded", "false");
+    await expect(courseNav.locator("[data-section-link='video']")).toHaveCount(0);
+    await lessonToggle.click();
+    await expect(courseNav.locator("[data-section-link='video']")).toBeVisible();
   });
 
-  test("module test: a passing attempt shows the module completion state", async ({ page }) => {
+  test("full sequential flow: video gates, sections, quiz pass, unlock next lesson", async ({ page }) => {
+    test.slow();
+    await registerAndOnboard(page, "flow");
+    await page.goto(LESSON1);
+    const courseNav = page.getByRole("complementary", { name: "Course navigation" });
+
+    // 1. Video first: Next is gated until every checkpoint is answered.
+    await expect(page.locator("[data-gated-next]")).toBeVisible();
+    await expect(page.locator("[data-section-nav]")).toContainText("Answer every checkpoint during the video (0 of 3)");
+    await passVideoSection(page);
+
+    // 2. Lesson Sheet (Step 2): study material, then Next marks it done.
+    await expect(page.getByRole("heading", { name: "What You Will Learn" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Key Takeaways" })).toBeVisible();
+    // The optional enrichment exercise lives at the end of the sheet.
+    await expect(page.getByRole("region", { name: /Spot the machine learning/ })).toBeVisible();
+
+    await page.locator("[data-section-nav] a[data-next-section]").click();
+    await expect(page).toHaveURL(new RegExp(`${LESSON1}\\?section=references$`));
+
+    // Browser back returns to the Lesson Sheet (spec §38), forward to References.
+    await page.goBack();
+    await expect(page.getByRole("heading", { name: "What You Will Learn" })).toBeVisible();
+    await page.goForward();
+    await expect(page.getByRole("heading", { name: "References" })).toBeVisible();
+
+    // 3. References (Step 3): the one canonical citation.
+    await expect(page.getByRole("heading", { name: "References" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Watch on YouTube" })).toHaveCount(1);
+    await expect(page.getByText("LunarTech").first()).toBeVisible();
+
+    await page.locator("[data-section-nav] a[data-next-section]").click();
+    await expect(page).toHaveURL(new RegExp(`${LESSON1}\\?section=quiz$`));
+
+    // 4. Quiz (Step 4): fail first - "Review and try again", lesson stays locked.
+    await page.getByRole("button", { name: "Begin the quiz" }).click();
+    for (const q of L1_QUIZ) {
+      // Deliberately wrong answers for questions 1 and 2 (0-indexed 0, 1).
+      if (q.id === "q-m1-l1-1" || q.id === "q-m1-l1-2") {
+        await page.locator(`#q-${q.id}`).getByRole("radio").nth(0).click();
+      } else {
+        await answerQuizQuestion(page, q);
+      }
+      if (q.id !== "q-m1-l1-6") {
+        await page.getByRole("button", { name: "Next question" }).click();
+      }
+    }
+    await page.getByRole("button", { name: "Submit answers" }).click();
+    await expect(page.getByText(/Not yet: 4\/6 correct \(67%\)/)).toBeVisible();
+    await expect(page.getByRole("button", { name: "Review and try again" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Show answer review" })).toBeVisible();
+    await expect(courseNav.locator("[data-locked-lesson='the-ml-roadmap']")).toBeVisible();
+    await expect(page.locator("[data-completion-panel]")).toHaveCount(0);
+
+    // Review answers are shown with explanations.
+    await page.getByRole("button", { name: "Show answer review" }).click();
+    await expect(page.getByText("Review this:", { exact: false }).first()).toBeVisible();
+
+    // 5. Retry and pass: 6/6.
+    await page.getByRole("button", { name: "Review and try again" }).click();
+    await expect(page.locator("[data-quiz-phase='auto']")).toContainText("Question 1 of 10");
+    for (const q of L1_QUIZ) {
+      await answerQuizQuestion(page, q);
+      if (q.id !== "q-m1-l1-6") {
+        await page.getByRole("button", { name: "Next question" }).click();
+      }
+    }
+    await page.getByRole("button", { name: "Submit answers" }).click();
+    await expect(page.getByText("Passed: 6/6 correct (100%)")).toBeVisible();
+
+    // 6. Written reasoning (7-10), then the lesson-complete pass screen.
+    await page.getByRole("button", { name: "Continue to written reasoning" }).click();
+    await passWrittenReasoning(page);
+
+    const panel = page.locator("[data-completion-panel]");
+    await expect(panel).toBeVisible();
+    await expect(panel.getByText("Lesson complete")).toBeVisible();
+    await expect(panel.getByText("+50 XP")).toBeVisible();
+    await expect(panel.getByRole("link", { name: /Next lesson: The Machine Learning Roadmap/ })).toBeVisible();
+
+    // The sidebar flips live: current lesson complete, next lesson unlocked,
+    // 1/8 done, later lessons still locked, module test still locked.
+    await expect(courseNav.getByText("1 / 8 lessons complete")).toBeVisible();
+    await expect(courseNav.locator("[data-lesson-link='the-ml-roadmap']")).toBeVisible();
+    await expect(courseNav.locator("[data-locked-lesson='supervised-vs-unsupervised']")).toBeVisible();
+    await expect(courseNav.locator("[data-locked-module-test]")).toBeVisible();
+
+    // 7. Next lesson is reachable and shows its own video section.
+    await panel.getByRole("link", { name: /Next lesson/ }).click();
+    await expect(page.locator("[data-video-id]")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "The Machine Learning Roadmap" })).toBeVisible();
+
+    // 8. Deep-linking a locked lesson shows the friendly lock screen.
+    await page.goto(LESSON3);
+    await expect(page.locator("[data-locked-screen]")).toBeVisible();
+    await expect(page.getByText("This lesson is locked for now")).toBeVisible();
+    await expect(page.getByText(/Complete Lesson 2/)).toBeVisible();
+    await expect(page.locator("[data-video-id]")).toHaveCount(0);
+    await page.getByRole("link", { name: "Back to current lesson" }).click();
+    await expect(page).toHaveURL(new RegExp("the-ml-roadmap"));
+    await expect(page.locator("[data-video-id]")).toBeVisible();
+
+    // 9. Refresh at the quiz deep link: completed state persists.
+    await page.goto(`${LESSON1}?section=quiz`);
+    await expect(page.locator("[data-completion-panel]")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Retake the quiz for practice" })).toBeVisible();
+    await expect(courseNav.getByText("1 / 8 lessons complete")).toBeVisible();
+    // Reviewing the completed lesson keeps every section open.
+    await page.goto(`${LESSON1}?section=video`);
+    await expect(page.locator("[data-video-id]")).toBeVisible();
+    await expect(page.locator("[data-section-nav] a[data-next-section]")).toBeVisible();
+  });
+
+  test("module test stays locked until all 8 lessons are completed, then passes", async ({ page }) => {
+    test.slow();
     await registerAndOnboard(page, "test");
-    await page.goto("/academy-new/module/1/test");
-    await page.getByRole("button", { name: /Begin the test|Retake the test/ }).click();
+
+    // Locked for a fresh student: friendly screen, no test content.
+    await page.goto(MODULE_TEST_URL);
+    await expect(page.locator("[data-locked-screen]")).toBeVisible();
+    await expect(page.getByText("The test unlocks when every lesson is complete")).toBeVisible();
+    await expect(page.getByText("You have finished 0 of 8 lessons.")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Begin the test" })).toHaveCount(0);
+    await expect(page.getByRole("link", { name: "Back to current lesson" })).toBeVisible();
+
+    // Complete every lesson over the API (page session, in teaching order).
+    for (const lesson of LESSONS) {
+      await seedLessonCompletion(page, lesson);
+    }
+
+    // Now the test opens.
+    await page.goto(MODULE_TEST_URL);
+    await page.getByRole("button", { name: /Begin the test/ }).click();
 
     const mcqCorrect: Record<string, number> = {
       "t-m1-1": 1, "t-m1-2": 1, "t-m1-4": 2, "t-m1-5": 1, "t-m1-6": 2, "t-m1-7": 1,
@@ -513,5 +784,7 @@ test.describe("Academy (New) - authenticated student", () => {
 
     await page.goto("/academy-new/module/1");
     await expect(page.getByText("module test passed", { exact: false }).first()).toBeVisible();
+    // All lessons are complete and reviewable links.
+    await expect(page.locator("[data-locked-lesson]")).toHaveCount(0);
   });
 });

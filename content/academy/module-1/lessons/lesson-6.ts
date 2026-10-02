@@ -90,7 +90,7 @@ export const lesson6: AcademyLesson = {
       "Generalization to unseen data is the whole goal; held-out splits are how we estimate it honestly.",
     ],
     sourceConnection:
-      "This lesson plays the source segment 1:01:42\u20131:05:07 (Chapter 3 — ML Basics), where LunarTech walks through the model-training workflow: preparing data, splitting into training/validation/test sets, training, hyperparameter tuning, final testing and evaluation.",
+      "This lesson plays the source segment 1:01:42\u20131:05:07 (Chapter 3 - ML Basics), where LunarTech walks through the model-training workflow: preparing data, splitting into training/validation/test sets, training, hyperparameter tuning, final testing and evaluation.",
   },
   checkpoints: [
     {
@@ -150,7 +150,7 @@ export const lesson6: AcademyLesson = {
   ],
   activity: {
     kind: "workflow-ordering",
-    heading: "Optional exercise — Order the ML workflow",
+    heading: "Optional exercise - Order the ML workflow",
     intro: "The six steps of the workflow are shuffled. Restore the correct order using the move buttons or your keyboard.",
   },
   quizId: "quiz-m1-l6",
@@ -216,6 +216,8 @@ export const lesson6: AcademyLesson = {
     "m1-l6-cp1",
     "m1-l6-cp2",
     "m1-l6-cp3",
+    "m1-l6-sheet",
+    "m1-l6-refs",
     "m1-l6-quiz",
     "fr-m1-l6-1",
     "fr-m1-l6-2",

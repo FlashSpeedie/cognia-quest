@@ -44,7 +44,13 @@ interface LessonProgressContextValue {
   checkpointResults: Readonly<Record<string, { answered: boolean; correct: boolean }>>;
   /** record a checkpoint answer (marks the step done + shares the result) */
   recordCheckpoint: (checkpointId: string, correct: boolean) => void;
-  markDone: (sectionId: string) => void;
+  /**
+   * Mark a lesson step done. For signed-in students the step is POSTed to
+   * /api/academy/progress (server validates + persists + awards idempotent
+   * XP); the returned promise resolves once the write settles so section
+   * navigation can wait for it. Guests resolve immediately.
+   */
+  markDone: (sectionId: string) => Promise<void>;
   /**
    * Update local state for a step the SERVER has already persisted (e.g. the
    * quiz section after a graded submission) - no extra write is sent.
@@ -112,8 +118,8 @@ export function LessonProgressProvider({
         next.add(sectionId);
         return next;
       });
-      if (!signedIn) return;
-      void (async () => {
+      if (!signedIn) return Promise.resolve();
+      return (async () => {
         try {
           const res = await fetch("/api/academy/progress", {
             method: "POST",

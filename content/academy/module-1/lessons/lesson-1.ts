@@ -139,7 +139,7 @@ export const lesson1: AcademyLesson = {
   ],
   activity: {
     kind: "applications-spotter",
-    heading: "Optional exercise — Spot the machine learning",
+    heading: "Optional exercise - Spot the machine learning",
     intro:
       "Six real products, one question each: which flavor of ML application is at work? Pick a category for each card, then submit.",
   },
@@ -206,6 +206,8 @@ export const lesson1: AcademyLesson = {
     "m1-l1-cp1",
     "m1-l1-cp2",
     "m1-l1-cp3",
+    "m1-l1-sheet",
+    "m1-l1-refs",
     "m1-l1-quiz",
     "fr-m1-l1-1",
     "fr-m1-l1-2",
